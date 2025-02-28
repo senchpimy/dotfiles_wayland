@@ -1,0 +1,15 @@
+(defwidget gif1 []
+  (box :halign "center" :valign "center" :class "container"
+    (image :path 'images/gif1.gif')
+  )
+)
+
+(defwidget gif2 []
+  (box :halign "center" :valign "center" :class "container"
+    (image :path 'images/gif2.gif')
+  )
+)
+
+(defwidget gif3 []
+  (image :path 'images/gif3.gif')
+)
