@@ -43,3 +43,59 @@
     :anchor "bottom left")
   (gif3)
 )
+
+(defwindow gif4
+  :monitor '["<primary>", 2, 1, 0]'
+  :windowtype "dock"
+  :stacking "bg"
+  :namespace "eww"
+  :geometry (geometry
+    :x "30px"
+    :y "200px"
+    :width "70px"
+    :height "70px"
+    :anchor "top right")
+  (gif4)
+)
+
+(defwindow gif5
+  :monitor '["<primary>", 2, 1, 0]'
+  :windowtype "dock"
+  :stacking "bg"
+  :namespace "eww"
+  :geometry (geometry
+    :x "30px"
+    :y "200px"
+    :width "70px"
+    :height "70px"
+    :anchor "top right")
+  (gif5)
+)
+
+(defwindow gif6
+  :monitor '["<primary>", 2, 1, 0]'
+  :windowtype "dock"
+  :stacking "bg"
+  :namespace "eww"
+  :geometry (geometry
+    :x "30px"
+    :y "200px"
+    :width "70px"
+    :height "70px"
+    :anchor "top right")
+  (gif6)
+)
+
+(defwindow gif7
+  :monitor '["<primary>", 2, 1, 0]'
+  :windowtype "dock"
+  :stacking "bg"
+  :namespace "eww"
+  :geometry (geometry
+    :x "30px"
+    :y "200px"
+    :width "70px"
+    :height "70px"
+    :anchor "top right")
+  (gif7)
+)

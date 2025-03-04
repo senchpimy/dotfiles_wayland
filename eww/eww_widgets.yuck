@@ -10,6 +10,31 @@
   )
 )
 
+(defwidget gif4 []
+  (box :halign "center" :valign "center" :class "container"
+    (image :path 'images/gif4.gif')
+  )
+)
+
 (defwidget gif3 []
   (image :path 'images/gif3.gif')
+)
+
+
+(defwidget gif5 []
+  (box :halign "center" :valign "center" :class "container"
+    (image :path 'images/gif5.gif')
+  )
+)
+
+(defwidget gif6 []
+  (box :halign "center" :valign "center" :class "container"
+    (image :path 'images/gif6.gif')
+  )
+)
+
+(defwidget gif7 []
+  (box :halign "center" :valign "center" :class "container"
+    (image :path 'images/gif7.gif')
+  )
 )

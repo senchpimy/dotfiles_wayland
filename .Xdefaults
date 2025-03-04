@@ -1,27 +1,27 @@
-*.font:	Cascadia Code:pixelsize=16:antialias=true:autohint=true;
+*.font:	Cascadia Code:pixelsize=18:antialias=true:autohint=true;
 st.alpha: 0.58
 
 /* !! brogrammer: 
  *
   st.background:  #131313 
  * */
-st.foreground:  #e0e4db
-st.background:  #101510
+st.foreground:  #d6dbe5 
+st.background: #0d120d
 st.color0:      #1f1f1f 
 st.color8:      #d6dbe5 
-st.color1:      #AC4242
-st.color9:      #C55555
-st.color2:      #90A959
-st.color10:     #AAC474
+st.color1:      #f81118 
+st.color9:      #de352e 
+st.color2:      #2dc55e 
+st.color10:     #1dd361 
 st.color3:      #ecba0f 
 st.color11:     #f3bd09 
-st.color4:      #6A9FB5 
-st.color12:     #82B8C8 
-st.color5:      #AA759F 
-st.color13:     #C28CB8
-st.color6:      #75B5AA
-st.color14:     #93D3C3
-st.color7:      #D8D8D8
+st.color4:      #2a84d2 
+st.color12:     #1081d6 
+st.color5:      #4e5ab7 
+st.color13:     #5350b9 
+st.color6:      #1081d6 
+st.color14:     #0f7ddb 
+st.color7:      #d6dbe5 
 st.color15:     #ffffff 
 st.colorBD:     #d6dbe5 
 

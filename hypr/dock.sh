@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 
 sleep 5
-DOCK_HEIGHT=120
+DOCK_HEIGHT=100
 INITIAL_LAUNCH_FLAGS=" -r -i 64 -w 10 -mb 6 -hd 0 -c 'qs -p /home/plof/.config/quickshell/app_launcher/main.qml' -ico '/usr/share/icons/kora/actions/symbolic/view-app-grid-symbolic.svg'"
 HIDE_SIGNAL="pkill -37 -f nwg-dock-hyprland"
 SHOW_SIGNAL="pkill -36 -f nwg-dock-hyprland"
 SHOULD_SHOW_FILE=$(mktemp)  # Archivo temporal para compartir el estado
 val=$(hyprctl monitors -j | jq -r ".[0].width")
+height=$(hyprctl monitors -j | jq -r ".[0].height")
 min_w=$(($val/2-400))
 max_w=$(($val/2+400))
 echo $max_w
@@ -39,14 +40,14 @@ get_active_ws_id() {
 
 monitor_cursor() {
     while true; do
-        local y
-        y=$(hyprctl cursorpos -j | jq -r '.y')
+        local y=$(hyprctl cursorpos -j | jq -r '.y')
         local x=$(hyprctl cursorpos -j | jq '.x')
+        local min_y=$(($height*95/100))
         
         # Leer el estado actualizado desde el archivo
         local should_show=$(cat "$SHOULD_SHOW_FILE")
 
-        if [[ "$y" -gt 950 && "$x" -ge "$min_w" && "$x" -le "$max_w" ]]; then
+        if [[ "$y" -gt "$min_y" && "$x" -ge "$min_w" && "$x" -le "$max_w" ]]; then
             toggle_dock "show"
         # Opcional: Ocultar si no está en la zona
          else
