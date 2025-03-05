@@ -1,4 +1,4 @@
-format = """$status$hostname[](#e0e0e0)[$custom](bg:#e0e0e0 black)[](#e0e0e0)$cmd_duration
+format = """$status$hostname[]($white)[$custom](bg:#D6DBE5 black)[]($white)$cmd_duration
 ❯ 
 """
 right_format = """$character$git_branch$git_status"""
@@ -12,7 +12,8 @@ grey="#808080"
 green="#047e84"
 blue="#0055aa"
 red="#DD352E"
-white="#e0e0e0"
+#white="#e0e0e0"
+white="#D6DBE5"
 
 # Prompt Symbols
 [character]
