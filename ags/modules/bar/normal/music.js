@@ -184,7 +184,7 @@ export default () => {
     } else return BarGroup({
       child: Box({
         children: [
-          BarResource(getString('RAM Usage'), 'memory', `LANG=C free | awk '/^Mem/ {printf("%.2f\\n", ($3/$2) * 100)}'`, //TODO Change for C program
+          BarResource(getString('RAM Usage'), 'memory', `~/.config/ags/scripts/system/ram`, //TODO Change for C program
             'bar-ram-circprog', 'bar-ram-txt', 'bar-ram-icon'),
           Revealer({
             revealChild: true,
@@ -193,7 +193,7 @@ export default () => {
             child: Box({
               className: 'spacing-h-10 margin-left-10',
               children: [
-                BarResource(getString('CPU Usage'), 'settings_motion_mode', `LANG=C top -bn1 | grep Cpu | sed 's/\\,/\\./g' | awk '{print $2}'`, //TODO Change for C program
+                BarResource(getString('CPU Usage'), 'settings_motion_mode', `~/.config/ags/scripts/system/cpu`, //TODO Change for C program
                   'bar-cpu-circprog', 'bar-cpu-txt', 'bar-cpu-icon'),
               ]
             }),
