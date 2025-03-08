@@ -1,0 +1,33 @@
+st.alpha: 0.58
+st.font: Cascadia Code:pixelsize=17:antialias=true:autohint=true
+st.font2: Symbols Nerd Font:pixelsize=32
+
+
+/* !! brogrammer: 
+ *
+st.font: JetBrainsMono Nerd Font:size=12:antialias=true:autohint=true
+  st.background:  #131313 
+ * */
+st.foreground:  #d6dbe5 
+st.background: #0d120d
+st.color0:      #1f1f1f 
+st.color8:      #d6dbe5 
+st.color1:      #f81118 
+st.color9:      #de352e 
+st.color2:      #2dc55e 
+st.color10:     #1dd361 
+st.color3:      #ecba0f 
+st.color11:     #f3bd09 
+st.color4:      #2a84d2 
+st.color12:     #1081d6 
+st.color5:      #4e5ab7 
+st.color13:     #5350b9 
+st.color6:      #1081d6 
+st.color14:     #0f7ddb 
+st.color7:      #d6dbe5 
+st.color15:     #ffffff 
+st.colorBD:     #d6dbe5 
+
+Sxiv.background: #000000
+Sxiv.foreground: #00C0FF 
+
