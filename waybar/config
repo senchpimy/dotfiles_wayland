@@ -1,0 +1,91 @@
+{
+	"layer": "top",	
+	"exclusive": true,	
+	"position": "top",
+    "height": 20,
+
+
+    "modules-left": ["hyprland/workspaces", "sway/mode", "hyprland/window"],
+    "modules-center": [],
+    "modules-right": ["pulseaudio","network","battery" ,"backlight", "clock", "tray"],
+
+
+	"hyprland/window": {
+    	"format": "{}",
+    	"max-length": 50
+},
+
+
+
+    "tray": {
+        "icon-size": 18,
+        "spacing": 15
+},
+"battery": {
+	"bat": "BAT1",
+	"interval": 60,
+	"states": {
+		"warning": 30,
+		"critical": 15
+	},
+	"format": "BAT:{capacity}% {icon}",
+	"max-length": 25
+},
+
+    "clock": {
+        "format": "{:%b %e  %R}",
+        "interval": 30
+},
+
+    "network": {
+        "interface": "wlp4s0", 
+        "format-wifi": "   WiFi-On",
+        "format-disconnected": "睊   Disconnected",
+        "interval": 60
+},
+
+
+	"backlight": {
+    	"device": "intel_backlight",
+    	"format": "{icon} {percent}% ",
+    	"format-icons": ["","","",""],
+    	"interval": 60
+},
+
+    "network": {
+        // "interface": "wlp2s0", // (Optional) To force the use of this interface
+        "format-wifi": "{essid} ({signalStrength}%) ",
+        "format-ethernet": "{ifname}: {ipaddr}/{cidr} ",
+        "format-disconnected": "Disconnected ⚠"
+    },
+
+    "pulseaudio": {
+        "format": " {icon} {volume}% ",
+        "format-bluetooth": "  {volume}%  ",
+        "format-muted":"婢  Mute  ",
+        "interval": 60,
+
+        "format-icons": {
+          "default": [""]
+        },
+        "on-click": "pavucontrol"
+    }
+
+}
+
+    "hyprland/workspaces": {
+        "disable-markup": true,
+        "format": "{index}" 
+        "disable-scroll": true,
+		"format": "{name} {icon}",
+		"format-icons": {
+			"active": " ",
+			"default": " "
+		},
+        "persistent_workspaces": {
+            "1": [],
+            "2": [],
+            "3": [],
+            "4": [],
+        },
+    },
