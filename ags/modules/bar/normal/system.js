@@ -76,6 +76,11 @@ const UtilitiesDesktop = () => Box({
       }
     }),
     UtilButton({
+      name: getString('Screen recoder'), icon: 'videocam', onClicked: () => {
+        Utils.execAsync(`${App.configDir}/scripts/record-script.sh`).catch(print)
+      }
+    }),
+    UtilButton({
       name: getString('Color picker'), icon: 'colorize', onClicked: () => {
         Utils.execAsync(['hyprpicker', '-a']).catch(print)
       }
@@ -91,6 +96,12 @@ const Utilities = () => Box({
       name: getString('Screen snip'), icon: 'screenshot_region', onClicked: () => {
         Utils.execAsync(`${App.configDir}/scripts/grimblast.sh copy area`)
           .catch(print)
+      }
+    }),
+
+    UtilButton({
+      name: getString('Screen recoder'), icon: 'videocam', onClicked: () => {
+        Utils.execAsync(`${App.configDir}/scripts/record-script.sh`).catch(print)
       }
     }),
     UtilButton({
