@@ -191,3 +191,4 @@ eval "$(pyenv init -)"
 
 export LD_LIBRARY_PATH="$(rustc --print sysroot)/lib:$LD_LIBRARY_PATH"
 export PYTHONPATH=/usr/lib/gobject-introspection:$PYTHONPATH
+#export PATH="$PATH:$HOME/.npm-global/bin"
