@@ -4,25 +4,24 @@ import QtQuick
 import Quickshell.Wayland
 import QtQuick.Controls
 import QtQuick.Layouts
+import Qt5Compat.GraphicalEffects
 
 ShellRoot {
     id: main
     property string font: "System Font"
-    //property string font: "Hurmit Nerd Font"
-    property string unchecked_color: "#9A9A99"
-    property string accent_color: "#21be2b"
+    property string unchecked_color: "#b0b0b0"
+    property string accent_color: "#1db954"
     property string serverUrl: "http://localhost:8080"
     property int pend_n: 0
 
     Component{
-      id:separator
-      Rectangle {
-          width: parent.width - 30
-          anchors.horizontalCenter: parent.horizontalCenter
-          height: 2
-          color: "#cccccc"
-          opacity:0.5
-      }
+        id:separator
+        Rectangle {
+            width: parent.width - 30
+            anchors.horizontalCenter: parent.horizontalCenter
+            height: 1
+            color: "#e0e0e0"
+        }
     }
 
     Timer {
@@ -30,56 +29,113 @@ ShellRoot {
         interval: 3000
         running: true
         repeat: true
-        onTriggered: {
-            console.log("Recargando datos desde el servidor...")
-            populateColumnFromServer()
-        }
+        onTriggered: populateColumnFromServer()
     }
 
     Component {
         id: checkBoxComponent
-        CheckBox {
-            id: dynamicCheckBox
-            property string dynamicText: ""
-            property int dynamicIndex: 0
-            property bool dynamicCheck: false
+        Item {
+            id: itemRoot
             width: parent.width
-            onClicked:{
-              sendUpdateToServer(dynamicIndex, dynamicCheckBox.checked)
+            height: content.height + 20
+
+            property alias checked: dynamicCheckBox.checked
+            property string dynamicText: "Texto no definido"
+            property int dynamicIndex: -1
+            property bool dynamicCheck: false
+
+            property var _parsedText: {
+                if (typeof dynamicText !== 'string' || !dynamicText) {
+                    return { time: "", tag: "", description: "Texto inválido" };
+                }
+                const match = dynamicText.match(/(\d{2}:\d{2}\s*-\s*\d{2}:\d{2})\s*(#\w+)\s*(.*)/);
+                if (match) {
+                    return { time: match[1] || "", tag: match[2] || "", description: match[3] || "Sin descripción" };
+                }
+                return { time: "", tag: "", description: dynamicText };
             }
 
-            checked: dynamicCheck
-            anchors.horizontalCenter: parent.horizontalLeft
-            indicator: Rectangle {
+            property string timeRange: _parsedText.time
+            property string tag: _parsedText.tag
+            property string description: _parsedText.description
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    dynamicCheckBox.checked = !dynamicCheckBox.checked;
+                    sendUpdateToServer(dynamicIndex, dynamicCheckBox.checked);
+                }
+            }
+
+            CheckBox {
+                id: dynamicCheckBox
+                visible: false
+                checked: itemRoot.dynamicCheck
+            }
+
+            Rectangle {
+                id: indicator
                 implicitWidth: 26
                 implicitHeight: 26
-                x: dynamicCheckBox.leftPadding
+                x: 15
                 y: parent.height / 2 - height / 2
-                radius: 20
-                border.color: dynamicCheckBox.checked ?  main.accent_color :main.unchecked_color
-                border.width:2
+                radius: 13
+                border.color: itemRoot.checked ? main.accent_color : main.unchecked_color
+                border.width: 2
 
                 Rectangle {
                     width: 18
                     height: 18
-                    x: 4
-                    y: 4
-                    radius: 20
-                    color: dynamicCheckBox.checked ?  main.accent_color :main.unchecked_color
-                    visible: dynamicCheckBox.checked
+                    anchors.centerIn: parent
+                    radius: 9
+                    color: main.accent_color
+                    visible: itemRoot.checked
                 }
             }
 
-            contentItem: Text {
-                color: dynamicCheckBox.checked ? main.unchecked_color : "black"
-                verticalAlignment: Text.AlignVCenter
-                leftPadding: dynamicCheckBox.indicator.width + dynamicCheckBox.spacing
-                text: dynamicText
-                font.family: main.font
-                font.pointSize: 13
-                x: 25
-                wrapMode: Text.WordWrap
-                elide: Text.ElideNone
+            Column {
+                id: content
+                anchors.left: indicator.right
+                anchors.leftMargin: 15
+                anchors.right: parent.right
+                anchors.rightMargin: 15
+                anchors.verticalCenter: parent.verticalCenter
+                spacing: 4
+
+                Row {
+                    width: parent.width
+                    spacing: 8
+                    visible: timeRange !== "" || tag !== ""
+
+                    Text {
+                        text: timeRange
+                        font.family: main.font
+                        font.pointSize: 10
+                        color: "#777"
+                        opacity: itemRoot.checked ? 0.6 : 1.0
+                        visible: timeRange !== ""
+                    }
+                    Text {
+                        text: tag
+                        font.family: main.font
+                        font.pointSize: 10
+                        font.bold: true
+                        color: main.accent_color
+                        opacity: itemRoot.checked ? 0.6 : 1.0
+                        visible: tag !== ""
+                    }
+                }
+
+                Text {
+                    text: description
+                    color: itemRoot.checked ? main.unchecked_color : "#333"
+                    font.family: main.font
+                    font.pointSize: 13
+                    wrapMode: Text.WordWrap
+                    width: parent.width
+                    elide: Text.ElideRight
+                    font.strikeout: itemRoot.checked
+                }
             }
         }
     }
@@ -89,10 +145,17 @@ ShellRoot {
         xhr.onreadystatechange = function() {
             if (xhr.readyState === XMLHttpRequest.DONE) {
                 if (xhr.status === 200) {
-                    var pendientes = JSON.parse(xhr.responseText);
-                    createCheckboxesFromServerData(pendientes);
+                    var pendientesData;
+                    try {
+                        pendientesData = JSON.parse(xhr.responseText);
+                    } catch (e) {
+                        console.error("Error al parsear JSON:", e, "Respuesta:", xhr.responseText);
+                        pendientesData = null;
+                    }
+                    createCheckboxesFromServerData(pendientesData);
                 } else {
-                    console.error("Error al obtener datos del servidor:", xhr.status, xhr.responseText);
+                    console.error("Error del servidor:", xhr.status, "Respuesta:", xhr.responseText);
+                    createCheckboxesFromServerData(null);
                 }
             }
         }
@@ -102,147 +165,152 @@ ShellRoot {
 
     function sendUpdateToServer(index, isChecked) {
         var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                if (xhr.status === 200) {
-                    console.log("Actualización enviada con éxito para el índice:", index);
-                } else {
-                    console.error("Error al actualizar el servidor:", xhr.status, xhr.responseText);
-                }
-            }
-        }
         xhr.open("POST", main.serverUrl + "/update", true);
         xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         var data = JSON.stringify({ "index": index, "checked": isChecked });
         xhr.send(data);
     }
 
-    // MODIFICADO: Ahora actualiza la cuenta de items en el Flickable.
     function createCheckboxesFromServerData(pendientes) {
         for (var i = column.children.length - 1; i >= 0; i--) {
-            column.children[i].destroy();
+            if (column.children[i]) {
+                column.children[i].destroy();
+            }
         }
         main.pend_n = 0;
-        
-        // Actualizamos la propiedad que controla el padding inferior
-        flickable.numItems = pendientes ? pendientes.length : 0;
 
-        if (!pendientes) return;
+        if (!pendientes || !Array.isArray(pendientes) || pendientes.length === 0) {
+            return;
+        }
 
         pendientes.forEach(function(item, index) {
-            if (!item.checked) {
+            if (!item) return;
+            if (item.hasOwnProperty('checked') && !item.checked) {
                 main.pend_n += 1;
             }
-
-            if (index > 0){
-                separator.createObject(column, {})
-            }
-            
-            flickable.addDynamicCheckbox(item.text, index, item.checked);
+            // if (index > 0) { separator.createObject(column, {}); } // Descomentar para separadores entre ítems
+            flickable.addDynamicCheckbox(item.text || "Texto por defecto", index, !!item.checked);
         });
     }
 
     PanelWindow {
         id: window
         width: 300
-        height: 400
-        color: "transparent"
-        anchors.left: true
+        height: 450
+        color: "transparent" 
+        anchors.left: true    
         WlrLayershell.layer: WlrLayer.Bottom
+        
         property var borde: 30
         property var radio: 20
 
         Rectangle {
+            id: mainCard 
             width: parent.width - window.borde
-            height: parent.height
-            x: window.borde
+            height: parent.height          
+            x: window.borde                 
+            y: 0                             
             color: "white"
-            opacity: 1.0
-            radius: window.radio
+            radius: window.radio              
 
             Rectangle {
-                width: parent.width
-                height: 400
-                color: "white"
-                clip: true
-                radius: window.radio
+                anchors.fill: parent
+                color: "transparent" 
+                radius: parent.radius 
+                clip: true 
 
-                Rectangle {
-                    id: clipRegion
-                    x: 0
-                    y: window.borde
-                    width: parent.width
-                    height: parent.height
-                    color: "transparent"
-                    clip: true
+                Column {
+                    id: mainLayout
+                    anchors.fill: parent
+                    spacing: 0
+
+                    Column {
+                        id: headerColumn
+                        width: parent.width
+                        z: 1
+
+                        Rectangle { height: 15; width: parent.width; color: "transparent" }
+
+                        Item {
+                            width: parent.width
+                            RowLayout {
+                                anchors.fill: parent
+                                anchors.leftMargin: 15
+                                anchors.rightMargin: 15
+
+                                Text {
+                                    text: "Pendientes"
+                                    font.family: main.font
+                                    font.pointSize: 16
+                                    font.bold: true
+                                    color: main.accent_color
+                                    Layout.alignment: Qt.AlignLeft
+                                }
+                                Text {
+                                    text: Number(main.pend_n)
+                                    font.family: main.font
+                                    font.pointSize: 16
+                                    font.bold: true
+                                    color: "#555"
+                                    Layout.alignment: Qt.AlignRight
+                                }
+                            }
+                        }
+
+                        Rectangle { height: 10; width: parent.width; color: "transparent" }
+                        Rectangle {
+                            width: parent.width - 30
+                            height: 1
+                            color: "#eeeeee"
+                            anchors.horizontalCenter: parent.horizontalCenter
+                        }
+                    }
 
                     Flickable {
                         id: flickable
-                        property int numItems: 0
-                        anchors.fill: parent
-                        contentWidth: parent.width
-                        // Si hay más de 9 items, se añaden 40px de espacio extra al final
-                        contentHeight: column.height + (numItems > 9 ? 40 : 0)
+                        width: parent.width
+                        anchors.top: headerColumn.bottom
+                        anchors.bottom: parent.bottom
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        contentWidth: width
+                        contentHeight: column.height
+                        clip: true
 
                         Column {
                             id: column
                             width: parent.width
-                            spacing: 1
+                            spacing: 0
                         }
 
-                        function addDynamicCheckbox(lineText, index, checked) {
-                            var checkBox = checkBoxComponent.createObject(
+                        function addDynamicCheckbox(lineText, index, checkedState) {
+                            var newCheckBox = checkBoxComponent.createObject(
                                 column,
                                 {
                                     "dynamicText": lineText,
                                     "dynamicIndex": index,
-                                    "dynamicCheck": checked
+                                    "dynamicCheck": checkedState
                                 }
-                              );
+                            );
+                            return newCheckBox;
                         }
                     }
                 }
             }
+        }
 
-            Column {
-                id:col
-                width: parent.width
-                property var space:15
-
-                RowLayout {
-                    width: parent.width
-                    spacing: 0
-
-                    Text {
-                        font.family: main.font
-                        font.pointSize: 16
-                        text:"Pendientes"
-                        color: main.accent_color
-                        Layout.alignment: Qt.AlignLeft
-                        anchors.left: parent.left
-                        anchors.leftMargin: col.space
-                    }
-
-                    Text {
-                        font.family: main.font
-                        font.pointSize: 16
-                        text: Number(main.pend_n)
-                        Layout.alignment: Qt.AlignRight
-                        anchors.right: parent.right
-                        anchors.rightMargin: col.space
-                    }
-                }
-
-                Rectangle {
-                    width: parent.width
-                    height: 2
-                    color: "#cccccc"
-                }
-            }
+        DropShadow {
+            anchors.fill: mainCard 
+            source: mainCard      
+            radius: 12.0
+            samples: 24
+            color: "#40000000"
+            horizontalOffset: 0 
+            verticalOffset: 4  
         }
 
         Component.onCompleted: {
-          populateColumnFromServer()
+            populateColumnFromServer();
         }
     }
 }

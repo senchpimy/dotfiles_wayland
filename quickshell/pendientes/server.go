@@ -12,8 +12,7 @@ import (
 	"time"
 )
 
-const configFilePath = "/home/plof/configs/quickshell/pendientes/pendientes.txt"
-const timeFormat = "2006-01-02 15:04:05" // Formato que incluye la hora.
+const timeFormat = "2006-01-02 15:04:05"
 
 type Pendiente struct {
 	Text        string     `json:"text"`
@@ -22,40 +21,36 @@ type Pendiente struct {
 }
 
 type FileLine struct {
-	IsTask      bool      // True si la línea es una tarea.
-	Content     string    // Contenido de la línea (texto plano o texto de la tarea).
-	Indentation string    // Sangría original.
-	Checked     bool      // Estado de la tarea.
-	CompletedAt *time.Time // Hora de completado.
+	IsTask      bool
+	Content     string
+	Indentation string
+	Checked     bool
+	CompletedAt *time.Time
 }
 
 var (
-	fileModel []FileLine
-	mutex     = &sync.RWMutex{}
+	fileModel    []FileLine
+	markdownPath string
+	mutex        = &sync.RWMutex{}
 )
 
-
-func getMarkdownPath(path string) (string, error) {
-	content, err := os.ReadFile(path)
-	if err != nil { return "", err }
-	return strings.TrimSpace(string(content)), nil
-}
-
-func loadFullFileStructure(markdownPath string) error {
-	file, err := os.Open(markdownPath)
-	if err != nil { return err }
+func loadFullFileStructure(path string) error {
+	file, err := os.Open(path)
+	if err != nil {
+		return err
+	}
 	defer file.Close()
 
 	mutex.Lock()
 	defer mutex.Unlock()
 
-	fileModel = []FileLine{}
+	fileModel = []FileLine{} 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := scanner.Text()
 		taskMarkerIndex := strings.Index(line, "- [")
 
-		if taskMarkerIndex != -1 { // Es una línea de tarea
+		if taskMarkerIndex != -1 {
 			var fl FileLine
 			fl.IsTask = true
 			fl.Indentation = line[:taskMarkerIndex]
@@ -73,23 +68,25 @@ func loadFullFileStructure(markdownPath string) error {
 				} else {
 					fl.Content = fullText
 				}
-			} else { // - [ ]
+			} else { // Trata [ ] y [-] como no completadas
 				fl.Checked = false
-				fl.Content = strings.TrimSpace(strings.TrimPrefix(taskContent, "- [ ]"))
+				contentWithoutMarker := strings.TrimPrefix(taskContent, "- [ ]")
+				contentWithoutMarker = strings.TrimPrefix(contentWithoutMarker, "- [-]")
+				fl.Content = strings.TrimSpace(contentWithoutMarker)
 			}
 			fileModel = append(fileModel, fl)
-		} else { // No es una línea de tarea (encabezado, línea vacía, etc.)
+		} else {
 			fileModel = append(fileModel, FileLine{IsTask: false, Content: line})
 		}
 	}
-	log.Printf("Cargadas %d líneas (incluyendo estructura) desde %s", len(fileModel), markdownPath)
+	log.Printf("Cargadas %d líneas (incluyendo estructura) desde %s", len(fileModel), path)
 	return scanner.Err()
 }
 
 func saveFileStructure() error {
-
-  todays_path := time.Now().Format("2006-01-02")
-	markdownPath := "/home/plof/Documents/PythonProjects/Eiri/secretariobot/pro/horarios/" + todays_path + ".md"
+	if markdownPath == "" {
+		return fmt.Errorf("no hay una ruta de archivo configurada para guardar")
+	}
 
 	var builder strings.Builder
 	for i, line := range fileModel {
@@ -111,8 +108,10 @@ func saveFileStructure() error {
 		}
 	}
 
-	err = os.WriteFile(markdownPath, []byte(builder.String()), 0644)
-	if err != nil { return err }
+	err := os.WriteFile(markdownPath, []byte(builder.String()), 0644)
+	if err != nil {
+		return err
+	}
 	log.Printf("Estructura guardada exitosamente en %s", markdownPath)
 	return nil
 }
@@ -120,6 +119,11 @@ func saveFileStructure() error {
 func getPendientesHandler(w http.ResponseWriter, r *http.Request) {
 	mutex.RLock()
 	defer mutex.RUnlock()
+
+	if markdownPath == "" {
+		http.Error(w, "No se ha configurado un horario todavía. Use el endpoint /set-path.", http.StatusNotFound)
+		return
+	}
 
 	var tasksOnly []Pendiente
 	for _, line := range fileModel {
@@ -136,33 +140,23 @@ func getPendientesHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getPendientesMarkdownHandler(w http.ResponseWriter, r *http.Request) {
-    mutex.RLock()
-    defer mutex.RUnlock()
-    
-    var builder strings.Builder
-	for i, line := range fileModel {
-		if line.IsTask {
-			builder.WriteString(line.Indentation)
-			if line.Checked {
-				builder.WriteString(fmt.Sprintf("- [x] %s", line.Content))
-				if line.CompletedAt != nil {
-					builder.WriteString(fmt.Sprintf(" @{%s}", line.CompletedAt.Format(timeFormat)))
-				}
-			} else {
-				builder.WriteString(fmt.Sprintf("- [ ] %s", line.Content))
-			}
-		} else {
-			builder.WriteString(line.Content)
-		}
-		if i < len(fileModel)-1 {
-			builder.WriteString("\n")
-		}
-	}
-    
-    w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-    w.Write([]byte(builder.String()))
-}
+	mutex.RLock()
+	defer mutex.RUnlock()
 
+	if markdownPath == "" {
+		http.Error(w, "No se ha configurado un horario todavía.", http.StatusNotFound)
+		return
+	}
+
+	content, err := os.ReadFile(markdownPath)
+	if err != nil {
+		http.Error(w, "Error al leer el archivo de horario.", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	w.Write(content)
+}
 
 type UpdateRequest struct {
 	Index   int  `json:"index"`
@@ -178,6 +172,11 @@ func updatePendienteHandler(w http.ResponseWriter, r *http.Request) {
 
 	mutex.Lock()
 	defer mutex.Unlock()
+
+	if markdownPath == "" {
+		http.Error(w, "No se ha configurado un horario para actualizar.", http.StatusNotFound)
+		return
+	}
 
 	taskCount := -1
 	targetLineIndex := -1
@@ -207,23 +206,57 @@ func updatePendienteHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err := saveFileStructure(); err != nil {
 		log.Printf("¡ATENCIÓN! Error al guardar cambios en el archivo: %v", err)
+		http.Error(w, "Error interno al guardar el archivo", http.StatusInternalServerError)
+		return
 	}
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{"status": "ok"})
 }
 
+type SetPathRequest struct {
+	Path string `json:"path"`
+}
+
+func setPathHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Método no permitido. Usa POST.", http.StatusMethodNotAllowed)
+		return
+	}
+	var req SetPathRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Cuerpo JSON inválido", http.StatusBadRequest)
+		return
+	}
+	if req.Path == "" {
+		http.Error(w, "El campo 'path' no puede estar vacío", http.StatusBadRequest)
+		return
+	}
+
+	log.Printf("Recibida nueva ruta de horario: %s", req.Path)
+	if err := loadFullFileStructure(req.Path); err != nil {
+		log.Printf("ERROR al cargar el nuevo archivo de horario: %v", err)
+		http.Error(w, "No se pudo cargar el archivo en la ruta especificada", http.StatusInternalServerError)
+		return
+	}
+
+	mutex.Lock()
+	markdownPath = req.Path
+	mutex.Unlock()
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"status": "ok", "message": "Ruta actualizada y archivo cargado."})
+}
+
 func main() {
-  todays_path := time.Now().Format("2006-01-02")
-	markdownPath := "/home/plof/Documents/PythonProjects/Eiri/secretariobot/pro/horarios/" + todays_path + ".md"
-	if err := loadFullFileStructure(markdownPath); err != nil { log.Fatalf("Error al cargar pendientes: %v", err) }
+	log.Println("Servidor de horarios iniciado. Esperando ruta en http://localhost:8080/set-path")
 
 	corsHandler := func(h http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Access-Control-Allow-Origin", "*")
 			if r.Method == http.MethodOptions {
-				w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
-				w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+				w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+				w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 				return
 			}
 			h(w, r)
@@ -233,8 +266,8 @@ func main() {
 	http.HandleFunc("/pendientes", corsHandler(getPendientesHandler))
 	http.HandleFunc("/update", corsHandler(updatePendienteHandler))
 	http.HandleFunc("/pendientes/markdown", corsHandler(getPendientesMarkdownHandler))
+	http.HandleFunc("/set-path", corsHandler(setPathHandler))
 
-	log.Println("Servidor de pendientes (v3 - Estructura preservada) iniciado en http://localhost:8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatalf("No se pudo iniciar el servidor: %v", err)
 	}
