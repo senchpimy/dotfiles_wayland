@@ -192,3 +192,26 @@ eval "$(pyenv init -)"
 export LD_LIBRARY_PATH="$(rustc --print sysroot)/lib:$LD_LIBRARY_PATH"
 export PYTHONPATH=/usr/lib/gobject-introspection:$PYTHONPATH
 #export PATH="$PATH:$HOME/.npm-global/bin"
+
+# bun completions
+[ -s "/home/plof/.bun/_bun" ] && source "/home/plof/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+# --- Inicio: Abrir nueva terminal en directorio guardado ---
+
+alias here='pwd > ~/.zsh_next_dir && pwd | wl-copy && echo "✅ Directorio para la próxima terminal guardado: $(cat ~/.zsh_next_dir)"'
+
+if [ -f ~/.zsh_next_dir ]; then
+    TARGET_DIR=$(cat ~/.zsh_next_dir)
+
+    rm ~/.zsh_next_dir
+
+    if [ -d "$TARGET_DIR" ]; then
+        cd "$TARGET_DIR"
+        echo "↪️  Cambiando al directorio guardado: $TARGET_DIR"
+    else
+        echo "⚠️  El directorio guardado ya no existe: $TARGET_DIR"
+    fi
+fi
