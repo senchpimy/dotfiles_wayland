@@ -3,6 +3,10 @@
 input_path = '~/.config/matugen/templates/ImagePath.qml'
 output_path = '~/.config/quickshell/lockscreen/ImagePath.qml'
 
+[templates.quickshell_pendientes]
+input_path = '~/.config/matugen/templates/pendientes_colores.qml'
+output_path = '~/.config/quickshell/pendientes/Colores.qml'
+
 [templates.hyprlock]
 input_path = '~/.config/matugen/templates/colors-hyprland.conf'
 output_path = '~/.config/hypr/colors.conf'

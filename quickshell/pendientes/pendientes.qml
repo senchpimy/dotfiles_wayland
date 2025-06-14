@@ -9,10 +9,45 @@ import Qt5Compat.GraphicalEffects
 ShellRoot {
     id: main
     property string font: "System Font"
-    property string unchecked_color: "#b0b0b0"
-    property string accent_color: "#1db954"
+
+
     property string serverUrl: "http://localhost:8080"
     property int pend_n: 0
+    property bool themeLoaded: false
+
+    property color panelBackgroundColor: "#FFFFFF"
+    property color primaryTextColor: "#000000"
+    property color secondaryTextColor: "#666666"
+    property color dividerColor: "#CCCCCC"
+    property color accentColor: "#FF5722"
+    property color uncheckedColor: "#BDBDBD"
+
+Loader {
+    id: themeLoader
+    source: "./Colores.qml"
+    onLoaded: {
+        var colores = themeLoader.item;
+        main.themeLoaded = true;
+        console.log("Colores loaded:", colores);
+
+        // Esto ahora funcionará porque los tipos coinciden (color -> color)
+        main.panelBackgroundColor = colores.panelBackgroundColor;
+        main.primaryTextColor = colores.primaryTextColor;
+        main.secondaryTextColor = colores.secondaryTextColor;
+        main.dividerColor = colores.dividerColor;
+        main.accentColor = colores.accent_color;
+        main.uncheckedColor = colores.unchecked_color;
+
+        console.log("Colores asignados correctamente.");
+    }
+}
+
+    //property color panelBackgroundColor: colores.panelBackgroundColor // Asignación directa para ver si funciona
+    //property color primaryTextColor: colores.primaryTextColor // Asignación directa para ver si funciona
+    //property color secondaryTextColor: colores.secondaryTextColor // Asignación directa para ver si funciona
+    //property color dividerColor: colores.dividerColor // Asignación directa para ver si funciona
+    //property string accentColor: colores.accent_color // Asignación directa para ver si funciona
+    //property string uncheckedColor: colores.uncheckedColor // Asignación directa para ver si funciona
 
     Component{
         id:separator
@@ -20,13 +55,13 @@ ShellRoot {
             width: parent.width - 30
             anchors.horizontalCenter: parent.horizontalCenter
             height: 1
-            color: "#e0e0e0"
+            color: main.dividerColor
         }
     }
 
     Timer {
         id: reloadTimer
-        interval: 3000
+        interval: 1000* 60 *60 // 1 hour
         running: true
         repeat: true
         onTriggered: populateColumnFromServer()
@@ -80,7 +115,7 @@ ShellRoot {
                 x: 15
                 y: parent.height / 2 - height / 2
                 radius: 13
-                border.color: itemRoot.checked ? main.accent_color : main.unchecked_color
+                border.color: itemRoot.checked ? main.accentColor : main.uncheckedColor
                 border.width: 2
 
                 Rectangle {
@@ -88,7 +123,7 @@ ShellRoot {
                     height: 18
                     anchors.centerIn: parent
                     radius: 9
-                    color: main.accent_color
+                    color: main.accentColor
                     visible: itemRoot.checked
                 }
             }
@@ -111,7 +146,7 @@ ShellRoot {
                         text: timeRange
                         font.family: main.font
                         font.pointSize: 10
-                        color: "#777"
+                        color: main.secondaryTextColor
                         opacity: itemRoot.checked ? 0.6 : 1.0
                         visible: timeRange !== ""
                     }
@@ -120,7 +155,7 @@ ShellRoot {
                         font.family: main.font
                         font.pointSize: 10
                         font.bold: true
-                        color: main.accent_color
+                        color: main.accentColor
                         opacity: itemRoot.checked ? 0.6 : 1.0
                         visible: tag !== ""
                     }
@@ -128,7 +163,7 @@ ShellRoot {
 
                 Text {
                     text: description
-                    color: itemRoot.checked ? main.unchecked_color : "#333"
+                    color: itemRoot.checked ? main.uncheckedColor : main.primaryTextColor
                     font.family: main.font
                     font.pointSize: 13
                     wrapMode: Text.WordWrap
@@ -188,7 +223,6 @@ ShellRoot {
             if (item.hasOwnProperty('checked') && !item.checked) {
                 main.pend_n += 1;
             }
-            // if (index > 0) { separator.createObject(column, {}); } // Descomentar para separadores entre ítems
             flickable.addDynamicCheckbox(item.text || "Texto por defecto", index, !!item.checked);
         });
     }
@@ -197,27 +231,27 @@ ShellRoot {
         id: window
         width: 300
         height: 450
-        color: "transparent" 
-        anchors.left: true    
+        color: "transparent"
+        anchors.left: true
         WlrLayershell.layer: WlrLayer.Bottom
         
         property var borde: 30
         property var radio: 20
 
         Rectangle {
-            id: mainCard 
+            id: mainCard
             width: parent.width - window.borde
-            height: parent.height          
-            x: window.borde                 
-            y: 0                             
-            color: "white"
-            radius: window.radio              
+            height: parent.height
+            x: window.borde
+            y: 0
+            color: main.panelBackgroundColor
+            radius: window.radio
 
             Rectangle {
                 anchors.fill: parent
-                color: "transparent" 
-                radius: parent.radius 
-                clip: true 
+                color: "transparent"
+                radius: parent.radius
+                clip: true
 
                 Column {
                     id: mainLayout
@@ -243,15 +277,14 @@ ShellRoot {
                                     font.family: main.font
                                     font.pointSize: 16
                                     font.bold: true
-                                    color: main.accent_color
-                                    Layout.alignment: Qt.AlignLeft
+                                    color: main.accentColor
                                 }
                                 Text {
                                     text: Number(main.pend_n)
                                     font.family: main.font
                                     font.pointSize: 16
                                     font.bold: true
-                                    color: "#555"
+                                    color: main.primaryTextColor 
                                     Layout.alignment: Qt.AlignRight
                                 }
                             }
@@ -261,7 +294,7 @@ ShellRoot {
                         Rectangle {
                             width: parent.width - 30
                             height: 1
-                            color: "#eeeeee"
+                            color: main.dividerColor
                             anchors.horizontalCenter: parent.horizontalCenter
                         }
                     }
@@ -300,13 +333,13 @@ ShellRoot {
         }
 
         DropShadow {
-            anchors.fill: mainCard 
-            source: mainCard      
+            anchors.fill: mainCard
+            source: mainCard
             radius: 12.0
             samples: 24
             color: "#40000000"
-            horizontalOffset: 0 
-            verticalOffset: 4  
+            horizontalOffset: 0
+            verticalOffset: 4
         }
 
         Component.onCompleted: {
