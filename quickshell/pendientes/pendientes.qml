@@ -14,6 +14,7 @@ ShellRoot {
     property string serverUrl: "http://localhost:8080"
     property int pend_n: 0
     property bool themeLoaded: false
+    property bool alreadyLoaded: false
 
     property color panelBackgroundColor: "#FFFFFF"
     property color primaryTextColor: "#000000"
@@ -61,7 +62,7 @@ Loader {
 
     Timer {
         id: reloadTimer
-        interval: 1000* 60 *60 // 1 hour
+        interval: main.alreadyLoaded ? 60000*60 : 1000 // 1 hora si ya se cargó, 1 segundo si no
         running: true
         repeat: true
         onTriggered: populateColumnFromServer()
@@ -182,7 +183,8 @@ Loader {
                 if (xhr.status === 200) {
                     var pendientesData;
                     try {
-                        pendientesData = JSON.parse(xhr.responseText);
+                      pendientesData = JSON.parse(xhr.responseText);
+                      main.alreadyLoaded = true;
                     } catch (e) {
                         console.error("Error al parsear JSON:", e, "Respuesta:", xhr.responseText);
                         pendientesData = null;
