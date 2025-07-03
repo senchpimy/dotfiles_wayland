@@ -1,4 +1,8 @@
 set ratios 1:2:3
-set previewer ~/.config/lf/preview
-set sixel
+set preview_images true
+set preview_images_method kitty
 map . set hidden! 
+
+cmd on-cd 'kitty +kitten icat --clear'
+cmd on-enter 'kitty +kitten icat --clear'
+cmd on-quit 'kitty +kitten icat --clear'

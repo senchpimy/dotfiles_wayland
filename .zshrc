@@ -183,9 +183,9 @@ function sxiveh {
 	esac
 }
 
-export PYENV_ROOT="$HOME/.pyenv"
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
+#export PYENV_ROOT="$HOME/.pyenv"
+#[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+#eval "$(pyenv init -)"
 
 
 
@@ -215,3 +215,5 @@ if [ -f ~/.zsh_next_dir ]; then
         echo "⚠️  El directorio guardado ya no existe: $TARGET_DIR"
     fi
 fi
+
+alias open="xdg-open"
