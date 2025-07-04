@@ -1,0 +1,8 @@
+Display de Hyprland
+Dirpath
+wlogout
+
+spicetify config custom_apps lyrics-plus
+spicetify config extensions fullAppDisplay.js
+
+iio-hyprland
