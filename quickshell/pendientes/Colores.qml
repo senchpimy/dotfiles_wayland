@@ -1,10 +1,10 @@
 import QtQuick
 
 QtObject {
-    property color panelBackgroundColor: "#ffffff"
-    property color primaryTextColor: "#2f3036" // Este no usaba set_lightness en tu ejemplo, se tomaba directo
-    property color secondaryTextColor: "#8f9099"         // Este tampoco usaba set_lightness en tu ejemplo
-    property color dividerColor: "#aaaab1"
-    property color accent_color: "#96b4ff"
-    property color unchecked_color: "#9c9da5"
+    property color panelBackgroundColor: "#b785cc"
+    property color primaryTextColor: "#342f34" // Este no usaba set_lightness en tu ejemplo, se tomaba directo
+    property color secondaryTextColor: "#978e97"         // Este tampoco usaba set_lightness en tu ejemplo
+    property color dividerColor: "#afa9af"
+    property color accent_color: "#dca1ee"
+    property color unchecked_color: "#a39ba3"
 }

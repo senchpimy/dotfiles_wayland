@@ -1,192 +1,164 @@
-format = """$python$status$hostname[](#D6DBE5)[$custom](bg:#D6DBE5 black)[](#D6DBE5)$cmd_duration
-❯ 
-"""
-right_format = """$character$git_branch$git_status"""
-
+# Don't print a new line at the start of the prompt
 add_newline = false
+# Pipes ╰─ ╭─
+# Powerline symbols                                     
+# Wedges 🭧🭒 🭣🭧🭓
+# Random noise 🬖🬥🬔🬗
+# Cool stuff 󰜥   
 
-palette = 'foo'
+format = """$python$status$hostname$custom(bg:#D6DBE5 black)$cmd_duration
+$character
+"""
 
-[palettes.foo]
-grey="#808080"
-green="#047e84"
-blue="#0055aa"
-red="#DD352E"
-#white="#e0e0e0"
-white="#D6DBE5"
+right_format = """$git_branch $git_status"""
 
-# Prompt Symbols
-[character]
-success_symbol = '[➜](bold green)'
-error_symbol = '[✗](bold red) '
+[custom.dir]
+command = 'Dirpath' 
+when = true
+style = "bg:green fg:black"
+format = '[](green)[$output]($style)[](green)'
 
-# Git Status
-[git_status]
-style="bg:#e0e0e0 black"
-deleted="✘ ${count} "
-modified="!${count} "
-staged="+${count} "
-ahead="⇡${count}"
-untracked="?${count}"
-format = "[$all_status$ahead_behind ]($style)"
-up_to_date = '✓'
 
-# Git Branch
+[character]                            # The name of the module we are configuring is "character"
+success_symbol = "[](bold fg:blue)"
+error_symbol = "[](bold fg:red)"
+
+#[character]
+#success_symbol = '[➜](bold green)'
+#error_symbol = '[✗](bold red) '
+
+[package]
+disabled = true
+
+
 [git_branch]
-style="bg:#7F7F7F black"
-format="[ $branch ]($style)"
+symbol = "󰘬"
+truncation_length = 12
+truncation_symbol = ""
+style = "fg:black bg:#7F7F7F"
+format = "[](fg:#7F7F7F)[ $symbol $branch(:$remote_branch) ]($style)[](fg:#7F7F7F)"
 
-# Command Status
+[git_commit]
+commit_hash_length = 4
+tag_symbol = " "
+
+[git_state]
+format = '[\($state( $progress_current of $progress_total)\)](bold red) '
+cherry_pick = "[🍒 PICKING](bold red)"
+
+[git_status]
+conflicted = "🏳 "
+ahead = "⇡${count} "
+behind = "⇣${count} "
+diverged = "😵 "
+untracked = "?${count} "
+stashed = "📦 "
+modified = "!${count} "
+staged = "+${count} "
+renamed = "✍️ "
+deleted = "✘ ${count} "
+up_to_date = "✓"
+style = "fg:black bg:#e0e0e0"
+format = "[ $all_status$ahead_behind ]($style)"
+
 [status]
-symbol = '[✗](bg:#DD352E #000000 bold)'
+symbol = '[✗](bg:#DD352E fg:black bold)'
 success_symbol = ''
-sigint_symbol=''
+sigint_symbol = ''
 format = '$symbol'
 map_symbol = true
 disabled = false
 
-# Time Display
+
+#[hostname]
+#ssh_only = false
+#format =  "[•$hostname](bg:cyan bold fg:black)[](bold fg:cyan)"
+#trim_at = ".companyname.com"
+#disabled = false
+
+[line_break]
+disabled = false
+
+#[memory_usage]
+#disabled = true
+#threshold = -1
+#symbol = " "
+#style = "bold dimmed green"
+
+[directory]
+home_symbol = "  "
+read_only = "  "
+style = "bg:green fg:black"
+truncation_length = 6
+truncation_symbol = " ••/"
+format = '[](bold fg:green)[󰉋 $path]($style)[](bold fg:green)'
+
+
+[directory.substitutions]
+"Desktop" = "  "
+"Documents" = "  "
+"Downloads" = "  "
+"Music" = " 󰎈 "
+"Pictures" = "  "
+"Videos" = "  "
+"GitHub" = " 󰊤 "
+
+[cmd_duration]
+min_time = 5_000
+format = '[](bold fg:yellow)[$duration](bold bg:yellow fg:black)[](bold fg:yellow)'
+
+## Prompt Symbols
+#
+## Git Status
+#[git_status]
+#style="bg:#e0e0e0 black"
+#deleted="✘ ${count} "
+#modified="!${count} "
+#staged="+${count} "
+#ahead="⇡${count}"
+#untracked="?${count}"
+#format = "[$all_status$ahead_behind ]($style)"
+#up_to_date = '✓'
+#
+## Git Branch
+#[git_branch]
+#style="bg:#7F7F7F black"
+#format="[ $branch ]($style)"
+#
+## Command Status
+#[status]
+#symbol = '[✗](bg:#DD352E #000000 bold)'
+#success_symbol = ''
+#sigint_symbol=''
+#format = '$symbol'
+#map_symbol = true
+#disabled = false
+#
+## Time Display
 [time]
 disabled = false
 time_format = "%H:%M"
-format = "🕙[$time]($style) "
+format = "[$time]($style) "
 
-# Command Duration
-[cmd_duration]
-style = 'bg:#0055aa bold'
-format="[$duration ]($style)"
+## Command Duration
+#[cmd_duration]
+#style = 'bg:#0055aa bold'
+#format="[$duration ]($style)"
+#
+## Custom Directory Path
+#
+## Hostname
 
-# Custom Directory Path
-[custom.dir]
-command = 'Dirpath' 
-when = true
-format = '$output'
-
-# Hostname
 [hostname]
 format = " $hostname "
+
 
 [python]
 format = '(($virtualenv) )'
 pyenv_version_name = true
-## version: 1.0.0
-#
-#add_newline = true
-#continuation_prompt = "[▸▹ ](dimmed white)"
-#
-#format = """($nix_shell$container$fill$git_metrics\n)$cmd_duration\
-#$hostname\
-#$localip\
-#$shlvl\
-#$shell\
-#$env_var\
-#$jobs\
-#$sudo\
-#$username\
-#$character"""
-#
-#right_format = """
-#$singularity\
-#$kubernetes\
-#$directory\
-#$vcsh\
-#$fossil_branch\
-#$git_branch\
-#$git_commit\
-#$git_state\
-#$git_status\
-#$hg_branch\
-#$pijul_channel\
-#$docker_context\
-#$package\
-#$c\
-#$cmake\
-#$cobol\
-#$daml\
-#$dart\
-#$deno\
-#$dotnet\
-#$elixir\
-#$elm\
-#$erlang\
-#$fennel\
-#$golang\
-#$guix_shell\
-#$haskell\
-#$haxe\
-#$helm\
-#$java\
-#$julia\
-#$kotlin\
-#$gradle\
-#$lua\
-#$nim\
-#$nodejs\
-#$ocaml\
-#$opa\
-#$perl\
-#$php\
-#$pulumi\
-#$purescript\
-#$python\
-#$raku\
-#$rlang\
-#$red\
-#$ruby\
-#$rust\
-#$scala\
-#$solidity\
-#$swift\
-#$terraform\
-#$vlang\
-#$vagrant\
-#$zig\
-#$buf\
-#$conda\
-#$meson\
-#$spack\
-#$memory_usage\
-#$aws\
-#$gcloud\
-#$openstack\
-#$azure\
-#$crystal\
-#$custom\
-#$status\
-#$os\
-#$battery\
-#$time"""
-#
-#[fill]
-#symbol = ' '
-#
-#[character]
-#format = "$symbol "
-#success_symbol = "[◎](bold italic bright-yellow)"
-#error_symbol = "[○](italic purple)"
-#vimcmd_symbol = "[■](italic dimmed green)"
-## not supported in zsh
-#vimcmd_replace_one_symbol = "◌"
-#vimcmd_replace_symbol = "□"
-#vimcmd_visual_symbol = "▼"
-#
-#[env_var.VIMSHELL]
-#format = "[$env_value]($style)"
-#style = 'green italic'
-#
-#[sudo]
-#format = "[$symbol]($style)"
-#style = "bold italic bright-purple"
-#symbol = "⋈┈"
-#disabled = false
-#
-#[username]
-#style_user = "bright-yellow bold italic"
-#style_root = "purple bold italic"
-#format = "[⭘ $user]($style) "
-#disabled = false
-#show_always = false
-#
+
+
+
 #[directory]
 #home_symbol = "⌂"
 #truncation_length = 2
