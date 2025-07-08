@@ -16,7 +16,7 @@ ShellRoot {
 
 			anchors {
 				right: true
-				bottom: true
+				top: true
 			}
 
 			margins {
@@ -34,7 +34,8 @@ ShellRoot {
 
 			// Use the wlroots specific layer property to ensure it displays over
 			// fullscreen windows.
-			WlrLayershell.layer: WlrLayer.Overlay
+			//WlrLayershell.layer: WlrLayer.Overlay
+			WlrLayershell.layer: WlrLayer.Bottom
 
 			ColumnLayout {
 				id: content
