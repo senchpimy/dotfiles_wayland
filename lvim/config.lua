@@ -128,6 +128,7 @@ lvim.plugins = {
   },
   {
     'MeanderingProgrammer/render-markdown.nvim',
+    ft = { "markdown", "quarto" },
     after = { 'nvim-treesitter' },
     dependencies = { 'echasnovski/mini.nvim', opt = true }, -- if you use the mini.nvim suite
     -- requires = { 'echasnovski/mini.icons', opt = true }, -- if you use standalone mini plugins
@@ -136,6 +137,105 @@ lvim.plugins = {
       require('render-markdown').setup({})
     end,
   },
+  --/////////////// TEST \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+  { "Isrothy/neominimap.nvim", },
+  {
+    "3rd/image.nvim",
+    ft = { "markdown", "norg" },
+    config = function()
+      local image = require("image")
+
+      ---@diagnostic disable-next-line: missing-fields
+      image.setup({
+        backend = "kitty",
+        integrations = {
+          markdown = {
+            enabled = true,
+            clear_in_insert_mode = false,
+            download_remote_images = false,
+            only_render_image_at_cursor = false,
+            filetypes = { "markdown", "quarto" }, -- markdown extensions (ie. quarto) can go here
+          },
+          neorg = {
+            enabled = true,
+            clear_in_insert_mode = false,
+            download_remote_images = false,
+            only_render_image_at_cursor = false,
+            filetypes = { "norg" },
+          },
+        },
+        max_width = 100,
+        max_height = 8,
+        max_height_window_percentage = math.huge,
+        max_width_window_percentage = math.huge,
+        window_overlap_clear_enabled = true,    -- toggles images when windows are overlapped
+        editor_only_render_when_focused = true, -- auto show/hide images when the editor gains/looses focus
+        tmux_show_only_in_active_window = true, -- auto show/hide images in the correct Tmux window (needs visual-activity off)
+        window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "fidget", "" },
+      })
+    end,
+  },
+  { "3rd/diagram.nvim",  dependencies = { "image.nvim" },      enabled = true, opts = {} },
+  {
+    "GCBallesteros/jupytext.nvim",
+    -- ft = { "ipynb" },
+    opts = {
+      style = "markdown",
+      output_extension = "md",
+      force_ft = "markdown",
+    },
+  },
+  { "jmbuhr/otter.nvim", ft = { "markdown", "quarto", "norg" } },
+  {
+    "quarto-dev/quarto-nvim",
+    dependencies = {
+      "nvim-lspconfig",
+      "hydra.nvim",
+      "otter.nvim",
+    },
+    ft = { "quarto", "markdown", "norg" },
+    config = function()
+      local quarto = require("quarto")
+      quarto.setup({
+        lspFeatures = {
+          languages = { "python", "rust", "lua" },
+          chunks = "all", -- 'curly' or 'all'
+          diagnostics = {
+            enabled = true,
+            triggers = { "BufWritePost" },
+          },
+          completion = {
+            enabled = true,
+          },
+        },
+        keymap = {
+          hover = "H",
+          definition = "gd",
+          rename = "<leader>rn",
+          references = "gr",
+          format = "<leader>gf",
+        },
+        codeRunner = {
+          enabled = true,
+          ft_runners = {
+            bash = "slime",
+          },
+          default_method = "molten",
+        },
+      })
+
+      vim.keymap.set("n", "<localleader>qp", quarto.quartoPreview,
+        { desc = "Preview the Quarto document", silent = true, noremap = true })
+      -- to create a cell in insert mode, I have the ` snippet
+      vim.keymap.set("n", "<localleader>cc", "i`<c-j>", { desc = "Create a new code cell", silent = true })
+      vim.keymap.set("n", "<localleader>cs", "i```\r\r```{}<left>",
+        { desc = "Split code cell", silent = true, noremap = true })
+
+      -- for more keybinds that I would use in a quarto document, see the configuration for molten
+      --require("benlubas.hydra.notebook")
+    end,
+  },
+
   --/////////////// TEST \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
   {
     "chrisgrieser/nvim-spider",
@@ -160,7 +260,6 @@ lvim.plugins = {
       )
     end
   },
-  --/////////////// TEST \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
   { "RRethy/vim-illuminate" },
   { 'wakatime/vim-wakatime', lazy = false },
   { "cordx56/rustowl",       dependencies = { "neovim/nvim-lspconfig" } },
@@ -211,7 +310,7 @@ lvim.plugins = {
     end
   },
   { "lambdalisue/suda.vim" },
-  --{ "github/copilot.vim" },
+  { "github/copilot.vim" },
   { "farmergreg/vim-lastplace" },
   { "akinsho/bufferline.nvim" },
   --  {
