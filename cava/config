@@ -284,11 +284,11 @@
 
  gradient = 1
  gradient_count = 8
- gradient_color_1 = '#402952'
- gradient_color_2 = '#563A6B'
- gradient_color_3 = '#6B4B7D'
- gradient_color_4 = '#7B578F'
- gradient_color_5 = '#A3658A'
- gradient_color_6 = '#C27AA5'
- gradient_color_7 = '#E69A9E'
- gradient_color_8 = '#F0AAAE'
+ gradient_color_1 = '#294052'
+ gradient_color_2 = '#3A566B'
+ gradient_color_3 = '#4B747D'
+ gradient_color_4 = '#57858F'
+ gradient_color_5 = '#84A365'
+ gradient_color_6 = '#9EC27A'
+ gradient_color_7 = '#E6BB9A'
+ gradient_color_8 = '#F0C8AA'

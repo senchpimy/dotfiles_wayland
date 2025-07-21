@@ -140,6 +140,41 @@ lvim.plugins = {
   --/////////////// TEST \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
   { "Isrothy/neominimap.nvim", },
   {
+    "ThePrimeagen/refactoring.nvim",
+    dependencies = {
+      { "nvim-lua/plenary.nvim" },
+      { "nvim-treesitter/nvim-treesitter" }
+    },
+    config = function()
+      require("telescope").load_extension("refactoring")
+      require("refactoring").setup({
+        prompt_func_return_type = {
+          go = true,
+          python = true,
+          javascript = true,
+          typescript = true,
+          rust = true,
+        },
+        prompt_func_param_type = {
+          go = true,
+          python = true,
+          javascript = true,
+          typescript = true,
+          rust = true,
+        },
+      })
+
+      vim.keymap.set(
+        { "n", "x" },
+        "<leader>rr", -- "Refactor Refactor"
+        function()
+          require("telescope").extensions.refactoring.refactors()
+        end,
+        { noremap = true, silent = true, desc = "[R]efactor -> [R]efactor menu" }
+      )
+    end
+  },
+  {
     "3rd/image.nvim",
     ft = { "markdown", "norg" },
     config = function()
@@ -389,3 +424,6 @@ lvim.builtin.alpha.active = false -- Dashboard
 --dashboard.section.header.val = vim.split(
 --  get_command_output("chafa /home/plof/configs/hyde/themes/Leo/wallpapers/fondo2.png -f sixel --polite on"), "\n")
 --
+vim.g.neominimap = {
+  auto_enable = false
+}
