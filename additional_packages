@@ -1,0 +1,9 @@
+ln -s  /home/plof/configs/hyprland_scripts /home/plof/.local/share/bin
+wl-clipboard
+paru (desde git)
+lvim
+jq
+bluemanapplet
+tmux
+node
+woomer
