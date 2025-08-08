@@ -36,8 +36,8 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 lvim.log.level = "warn"
-lvim.format_on_save.enabled = true
---lvim.format_on_save.enabled = false
+--lvim.format_on_save.enabled = true
+lvim.format_on_save.enabled = false
 lvim.colorscheme = "lunar"
 lvim.leader = "space"
 lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
@@ -296,6 +296,22 @@ lvim.plugins = {
     end
   },
   { "RRethy/vim-illuminate" },
+  --{ 'numToStr/Comment.nvim' },
+  --{
+  --  "lukas-reineke/indent-blankline.nvim",
+  --  main = "ibl",
+  --  ---@module "ibl"
+  --  ---@type ibl.config
+  --  opts = {},
+  --},
+  --{
+  --  'windwp/nvim-autopairs',
+  --  event = "InsertEnter",
+  --  config = true
+  --  -- use opts = {} for passing setup options
+  --  -- this is equivalent to setup({}) function
+  --},
+  --https://github.com/edluffy/hologram.nvim
   { 'wakatime/vim-wakatime', lazy = false },
   { "cordx56/rustowl",       dependencies = { "neovim/nvim-lspconfig" } },
 
