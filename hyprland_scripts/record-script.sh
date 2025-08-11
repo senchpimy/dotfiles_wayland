@@ -1,29 +1,46 @@
 #!/usr/bin/env bash
 
+SAVE_DIR="$HOME/Videos"
+mkdir -p "$SAVE_DIR"
+
 getdate() {
     date '+%Y-%m-%d_%H.%M.%S'
 }
+
 getaudiooutput() {
-    pactl list sources | grep 'Name' | grep 'monitor' | cut -d ' ' -f2
+    echo "alsa_output.pci-0000_13_00.6.analog-stereo.monitor"
 }
+
 getactivemonitor() {
     hyprctl monitors -j | jq -r '.[] | select(.focused == true) | .name'
 }
 
-mkdir -p "$(xdg-user-dir VIDEOS)"
-cd "$(xdg-user-dir VIDEOS)" || exit
 if pgrep wf-recorder > /dev/null; then
-    notify-send "Recording Stopped" "Stopped" -a 'record-script.sh' &
-    pkill wf-recorder &
-else
-    notify-send "Starting recording" 'recording_'"$(getdate)"'.mp4' -a 'record-script.sh'
-    if [[ "$1" == "--sound" ]]; then
-        wf-recorder --pixel-format yuv420p -f './recording_'"$(getdate)"'.mp4' -t --geometry "$(slurp)" --audio="$(getaudiooutput)" & disown
-    elif [[ "$1" == "--fullscreen-sound" ]]; then
-        wf-recorder -o $(getactivemonitor) --pixel-format yuv420p -f './recording_'"$(getdate)"'.mp4' -t --audio="$(getaudiooutput)" & disown
-    elif [[ "$1" == "--fullscreen" ]]; then
-        wf-recorder -o $(getactivemonitor) --pixel-format yuv420p -f './recording_'"$(getdate)"'.mp4' -t & disown
-    else
-        wf-recorder --pixel-format yuv420p -f './recording_'"$(getdate)"'.mp4' -t --geometry "$(slurp)" & disown
-    fi
+    pkill -INT wf-recorder
+    #notify-send "🎥 Grabación finalizada" "El video ha sido guardado."
+    exit 0
 fi
+
+FILENAME="$SAVE_DIR/recording_$(getdate).mp4"
+AUDIO_DEVICE="$(getaudiooutput)"
+
+echo "Iniciando grabación en '$FILENAME'. Presiona Ctrl+C para detener."
+
+case "$1" in
+    --fullscreen)
+        wf-recorder \
+            -o "$(getactivemonitor)" \
+            --pixel-format yuv420p \
+            -f "$FILENAME" \
+            --audio="$AUDIO_DEVICE"
+        ;;
+    *)
+        wf-recorder \
+            --pixel-format yuv420p \
+            -f "$FILENAME" \
+            --geometry "$(slurp)" \
+            --audio="$AUDIO_DEVICE"
+        ;;
+esac
+
+notify-send "🎥 Grabación finalizada" "Archivo guardado en $FILENAME"
