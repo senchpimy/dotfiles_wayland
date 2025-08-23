@@ -1,0 +1,116 @@
+# ------------------------------------------------------------------------------
+# TLP - CONFIGURACIÓN DE MÁXIMA VELOCIDAD
+# Perfil AC y BAT: Máxima Velocidad y Capacidad de Respuesta
+# ADVERTENCIA: Esta configuración consumirá la batería muy rápidamente y
+# aumentará la temperatura del equipo.
+# ------------------------------------------------------------------------------
+
+# --- General ---
+TLP_ENABLE=1
+# El modo por defecto es AC para asegurar que siempre arranque con máxima potencia.
+TLP_DEFAULT_MODE=AC
+# No restaurar estados de radio, TLP gestionará todo.
+RESTORE_DEVICE_STATE_ON_STARTUP=0
+
+# --- Gestión de CPU ---
+# El gobernador "performance" fija la CPU a su frecuencia más alta (sin contar Turbo Boost).
+CPU_SCALING_GOVERNOR_ON_AC=performance
+CPU_SCALING_GOVERNOR_ON_BAT=performance
+
+# La política de energía se establece en "performance" para priorizar la velocidad.
+CPU_ENERGY_PERF_POLICY_ON_AC=performance
+CPU_ENERGY_PERF_POLICY_ON_BAT=performance
+
+# Para intel_pstate/amd-pstate: fija la CPU al 100% de su frecuencia base.
+CPU_MIN_PERF_ON_AC=100
+CPU_MAX_PERF_ON_AC=100
+CPU_MIN_PERF_ON_BAT=100
+CPU_MAX_PERF_ON_BAT=100
+
+# Turbo Boost activado siempre para picos de velocidad máximos.
+CPU_BOOST_ON_AC=1
+CPU_BOOST_ON_BAT=1
+
+# El planificador del sistema se optimiza para rendimiento, no para ahorro.
+SCHED_POWERSAVE_ON_AC=0
+SCHED_POWERSAVE_ON_BAT=0
+
+# Desactivado por seguridad y un mínimo impacto en el rendimiento.
+NMI_WATCHDOG=0
+
+# --- Gestión de Discos (HDD/SSD) ---
+# 0 = Nunca apagar los discos. Evita cualquier latencia al acceder a ellos.
+DISK_IDLE_SECS_ON_AC=0
+DISK_IDLE_SECS_ON_BAT=0
+
+# 254 = Prioriza el rendimiento del disco. 255 = Desactiva APM por completo.
+DISK_APM_LEVEL_ON_AC=254
+DISK_APM_LEVEL_ON_BAT=254
+
+# El enlace SATA siempre a máxima velocidad para transferencias más rápidas.
+SATA_LINKPWR_ON_AC=max_performance
+SATA_LINKPWR_ON_BAT=max_performance
+
+# --- Gestión de PCIe ---
+# ASPM (Gestión de Energía del Estado Activo) se configura para rendimiento.
+# Esto reduce la latencia en dispositivos NVMe, tarjetas WiFi, etc.
+PCIE_ASPM_ON_AC=performance
+PCIE_ASPM_ON_BAT=performance
+
+# --- Gestión de Gráficos ---
+# Para GPUs AMD Radeon: siempre en perfil de alto rendimiento.
+RADEON_POWER_PROFILE_ON_AC=high
+RADEON_POWER_PROFILE_ON_BAT=high
+RADEON_DPM_STATE_ON_AC=performance
+RADEON_DPM_STATE_ON_BAT=performance
+
+# Para GPUs Intel: permite que la GPU alcance sus frecuencias máximas sin restricciones.
+# Dejar en 0 (o comentado) significa "sin límite".
+# INTEL_GPU_MIN_FREQ_ON_AC=0
+# INTEL_GPU_MAX_FREQ_ON_AC=0
+# INTEL_GPU_BOOST_FREQ_ON_AC=0
+# INTEL_GPU_MIN_FREQ_ON_BAT=0
+# INTEL_GPU_MAX_FREQ_ON_BAT=0
+# INTEL_GPU_BOOST_FREQ_ON_BAT=0
+
+# --- Gestión de Red ---
+# Ahorro de energía de WiFi desactivado para menor latencia y máxima estabilidad/velocidad.
+WIFI_PWR_ON_AC=off
+WIFI_PWR_ON_BAT=off
+
+# Desactivar Wake-On-LAN no afecta al rendimiento en uso.
+WOL_DISABLE=Y
+
+# --- Gestión de Audio ---
+# Ahorro de energía de audio desactivado para evitar cualquier "pop" o retraso al iniciar un sonido.
+SOUND_POWER_SAVE_ON_AC=0
+SOUND_POWER_SAVE_ON_BAT=0
+SOUND_POWER_SAVE_CONTROLLER=N
+
+# --- Gestión de USB ---
+# Autosuspend de USB desactivado. Crítico para la respuesta inmediata de ratones,
+# teclados y otros periféricos.
+USB_AUTOSUSPEND=0
+# Las líneas _ON_AC/_ON_BAT ya no son necesarias si se usa la de arriba.
+# USB_AUTOSUSPEND_ON_AC=0
+# USB_AUTOSUSPEND_ON_BAT=0
+
+# La Denylist no es necesaria ya que el autosuspend está globalmente desactivado.
+# USB_DENYLIST=""
+
+# --- Runtime Power Management (PM) ---
+# Se mantiene en "on" para permitir que el kernel gestione dispositivos individuales,
+# pero no se usan los modos de ahorro agresivos como "auto".
+RUNTIME_PM_ON_AC=on
+RUNTIME_PM_ON_BAT=on
+
+# Para un rendimiento extremo, podrías desactivar Runtime PM por completo con la siguiente línea,
+# pero puede tener efectos secundarios en algunos sistemas. Prueba con "on" primero.
+# RUNTIME_PM_ALL=0
+
+# --- Desactivación de Dispositivos ---
+# TODAS LAS SIGUIENTES LÍNEAS DEBEN ESTAR COMENTADAS.
+# No queremos desactivar ningún dispositivo, ya que volver a activarlo introduce retrasos.
+# DEVICES_TO_DISABLE_ON_BAT=""
+# DEVICES_TO_DISABLE_ON_BAT_NOT_IN_USE=""
+# DEVICES_TO_DISABLE_ON_STARTUP=""

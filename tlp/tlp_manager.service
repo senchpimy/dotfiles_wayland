@@ -1,0 +1,15 @@
+[Unit]
+Description=Servicio para gestionar perfiles de TLP vía socket
+
+After=network.target
+
+[Service]
+Type=simple
+
+User=root
+
+ExecStart=/usr/bin/python3 /usr/local/bin/tlp_manager.py
+
+
+[Install]
+WantedBy=multi-user.target

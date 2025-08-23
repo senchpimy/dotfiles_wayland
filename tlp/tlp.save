@@ -1,0 +1,101 @@
+# ------------------------------------------------------------------------------
+# TLP - CONFIGURACIÓN OPTIMIZADA
+# Perfil AC: Máximo Rendimiento
+# Perfil BAT: Máximo Ahorro de Batería
+# ------------------------------------------------------------------------------
+
+# --- General ---
+TLP_ENABLE=1
+TLP_DEFAULT_MODE=BAT # Asume batería si no detecta nada (seguro para ahorro)
+# Comenta la siguiente línea si NO quieres que TLP gestione dispositivos WWAN/LTE
+# TLP_WWAN_SET_RADIO_STATE=1
+RESTORE_DEVICE_STATE_ON_STARTUP=0 # No restaurar estados de radio al inicio
+
+# --- Gestión de CPU ---
+CPU_SCALING_GOVERNOR_ON_AC=performance
+CPU_SCALING_GOVERNOR_ON_BAT=powersave        # Más agresivo que conservative/schedutil
+
+CPU_ENERGY_PERF_POLICY_ON_AC=performance
+CPU_ENERGY_PERF_POLICY_ON_BAT=power          # Prioriza ahorro sobre rendimiento
+
+# Frecuencias (si usa intel_pstate o amd-pstate en modo activo)
+CPU_MIN_PERF_ON_AC=0                         # Permite bajar al mínimo en idle
+CPU_MAX_PERF_ON_AC=100                       # Permite alcanzar el máximo
+CPU_MIN_PERF_ON_BAT=0                         # Permite bajar al mínimo en idle
+CPU_MAX_PERF_ON_BAT=25                        # !! EXTREMADAMENTE BAJO !! Puede hacer el sistema muy lento. Ajusta (ej. 30-50) si es inutilizable.
+
+CPU_BOOST_ON_AC=1                             # Turbo Boost ACTIVADO en AC
+CPU_BOOST_ON_BAT=0                             # Turbo Boost DESACTIVADO en BAT (gran ahorro)
+
+SCHED_POWERSAVE_ON_AC=0                       # Optimización del planificador para rendimiento en AC
+SCHED_POWERSAVE_ON_BAT=1                       # Optimización del planificador para ahorro en BAT
+
+NMI_WATCHDOG=0                                # Desactivado (pequeño ahorro, generalmente seguro)
+
+# --- Gestión de Discos (HDD/SSD) ---
+DISK_IDLE_SECS_ON_AC=0                         # 0 = Nunca apagar disco en AC (mejor rendimiento)
+DISK_IDLE_SECS_ON_BAT=3                         # !! MUY AGRESIVO (3 seg) !! Puede causar lag al acceder al disco tras inactividad. Aumenta (5-10) si es molesto. Para SSDs, el efecto es menor.
+
+DISK_APM_LEVEL_ON_AC=254                       # 254 = Prioriza rendimiento en AC (255 = desactiva APM)
+DISK_APM_LEVEL_ON_BAT=1                         # !! EXTREMADAMENTE AGRESIVO !! Máximo ahorro, pero puede causar excesivo aparcamiento de cabezales en *algunos* HDDs y reducir su vida útil. Si tienes HDD y notas clics constantes, cambia a 128. Para SSDs, este valor suele ser ignorado.
+
+SATA_LINKPWR_ON_AC=max_performance            # Máximo rendimiento del enlace SATA en AC
+SATA_LINKPWR_ON_BAT=min_power                 # Máximo ahorro de energía del enlace SATA en BAT (puede afectar ligeramente rendimiento SSD)
+
+# --- Gestión de PCIe ---
+PCIE_ASPM_ON_AC=performance                   # ASPM configurado para rendimiento en AC
+PCIE_ASPM_ON_BAT=powersupersave               # !! MÁXIMO AHORRO POSIBLE !! Puede causar inestabilidad con algunas tarjetas WiFi/NVMe. Si experimentas cortes o problemas, cambia a 'powersave'.
+
+# --- Gestión de Gráficos ---
+# Para GPUs AMD Radeon (si aplica)
+RADEON_POWER_PROFILE_ON_AC=high               # Perfil alto rendimiento en AC
+RADEON_POWER_PROFILE_ON_BAT=low               # Perfil bajo consumo en BAT
+RADEON_DPM_STATE_ON_AC=performance            # Gestión dinámica de energía para rendimiento en AC
+RADEON_DPM_STATE_ON_BAT=battery               # Gestión dinámica de energía para batería en BAT
+
+# Para GPUs Intel (si aplica)
+#INTEL_GPU_MIN_FREQ_ON_AC=0                    # Sin límite inferior (manejado por driver) en AC
+#INTEL_GPU_MAX_FREQ_ON_AC=0                    # Sin límite superior (máximo posible) en AC
+#INTEL_GPU_BOOST_FREQ_ON_AC=0                  # Sin límite de boost (máximo posible) en AC
+
+INTEL_GPU_MIN_FREQ_ON_BAT=100                 # Frecuencia mínima muy baja en BAT (o el mínimo soportado)
+INTEL_GPU_MAX_FREQ_ON_BAT=250                 # !! FRECUENCIA MÁXIMA MUY BAJA !! Puede hacer que la interfaz gráfica y videos se sientan lentos. Ajusta (ej. 300, 350, 400) si es inaceptable.
+INTEL_GPU_BOOST_FREQ_ON_BAT=250               # Igual que MAX para evitar boost en BAT
+
+# --- Gestión de Red ---
+WIFI_PWR_ON_AC=off                            # Ahorro WiFi DESACTIVADO en AC (mejor rendimiento/latencia)
+WIFI_PWR_ON_BAT=on                            # Ahorro WiFi ACTIVADO en BAT
+
+WOL_DISABLE=Y                                 # Desactivar Wake-On-LAN
+
+# --- Gestión de Audio ---
+SOUND_POWER_SAVE_ON_AC=0                      # Ahorro de audio DESACTIVADO en AC
+SOUND_POWER_SAVE_ON_BAT=1                      # Ahorro de audio ACTIVADO en BAT
+
+SOUND_POWER_SAVE_CONTROLLER=Y                 # Permite que el controlador de audio entre en modo ahorro
+SOUND_POWER_SAVE_IDLE_SECS=10                 # !! AGRESIVO (10 seg) !! Puede causar un pequeño 'pop' al iniciar/detener audio tras inactividad. Si es muy molesto, aumenta (ej. 30). Poner 1 es posible pero a menudo problemático.
+
+# --- Gestión de USB ---
+# Requiere una versión reciente de TLP que soporte _ON_AC/_ON_BAT para USB_AUTOSUSPEND
+USB_AUTOSUSPEND_ON_AC=0                       # Autosuspend USB DESACTIVADO en AC (mejor compatibilidad/respuesta de periféricos)
+USB_AUTOSUSPEND_ON_BAT=1                       # Autosuspend USB ACTIVADO en BAT (ahorro significativo)
+                                              # !! CUIDADO !! Puede hacer que ratones/teclados USB tarden en responder tras inactividad. Si un dispositivo da problemas, añádelo a USB_DENYLIST.
+
+# Ejemplo de Denylist (lista negra): Descomenta y añade IDs si un dispositivo USB falla con autosuspend en BAT
+# USB_DENYLIST="1234:5678 9abc:def0"
+
+# --- Runtime Power Management (PM) ---
+RUNTIME_PM_ON_AC=on                           # Activa Runtime PM en AC (permite ahorro en dispositivos inactivos)
+RUNTIME_PM_ON_BAT=auto                        # Activa Runtime PM en BAT (modo 'auto' es el recomendado para ahorro)
+
+# --- Desactivación de Dispositivos ---
+# !! MUY EFECTIVO PARA AHORRAR BATERÍA !!
+# Descomenta y personaliza las siguientes líneas si NO usas ciertos dispositivos en batería.
+# Deshabilita Bluetooth y WWAN (modem móvil) siempre que estés en batería:
+# DEVICES_TO_DISABLE_ON_BAT="bluetooth wwan"
+
+# Deshabilita WiFi si no hay conexión activa en batería:
+# DEVICES_TO_DISABLE_ON_BAT_NOT_IN_USE="wifi"
+
+# Deshabilita dispositivos al arrancar el sistema si NUNCA los usas:
+# DEVICES_TO_DISABLE_ON_STARTUP="bluetooth wwan nfc"
