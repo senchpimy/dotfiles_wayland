@@ -1,248 +1,65 @@
-import "root:/"
-import "root:/services"
-import "root:/modules/common"
-import "root:/modules/common/widgets"
-import "root:/modules/common/functions/string_utils.js" as StringUtils
-import "./translator/"
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Layouts
-import Quickshell
-import Quickshell.Io
-import Quickshell.Hyprland
+import Quickshell.Io // Importante para poder usar el componente Process
 
 /**
- * Translator widget with the `trans` commandline tool.
+ * Un widget simple con un único botón que envía una notificación
+ * de escritorio al ser presionado, usando un script de Python.
  */
 Item {
     id: root
-    // Widgets
-    property var inputField: inputCanvas.inputTextArea
-    // Widget variables
-    property bool translationFor: false // Indicates if the translation is for an autocorrected text
-    property string translatedText: ""
-    property list<string> languages: []
-    // Options
-    property string targetLanguage: Config.options.language.translator.targetLanguage
-    property string sourceLanguage: Config.options.language.translator.sourceLanguage
-    property string hostLanguage: targetLanguage
+    width: 300
+    height: 150
 
-    property bool showLanguageSelector: false
-    property bool languageSelectorTarget: false // true for target language, false for source language
+    // El componente Process se encarga de ejecutar comandos externos.
+    // Lo configuramos para que no se ejecute al iniciar (running: false).
+    Process {
+        id: notificationProc
+        running: false // No se ejecuta al cargar, solo cuando lo activemos.
 
-    function showLanguageSelectorDialog(isTargetLang: bool) {
-        root.languageSelectorTarget = isTargetLang;
-        root.showLanguageSelector = true
-    }
+        // El comando a ejecutar. Es un array de strings.
+        // 1. "python": El ejecutable.
+        // 2. "-c": Le dice a Python que ejecute el siguiente string como un script.
+        // 3. El script de Python:
+        //    - import os: Importa el módulo 'os' para interactuar con el sistema.
+        //    - os.system(...): Ejecuta un comando de la terminal.
+        //    - 'notify-send "Título" "Mensaje"': Es el comando que envía la notificación.
+        //      Usamos comillas simples para el script de Python y dobles para el mensaje.
+        command: [
+            "python",
+            "-c",
+            "import os; os.system('notify-send \"Notificación desde QML\" \"¡El botón fue presionado!\"')"
+        ]
 
-    onFocusChanged: (focus) => {
-        if (focus) {
-            root.inputField.forceActiveFocus()
-        }
-    }
-
-    Timer {
-        id: translateTimer
-        interval: Config.options.sidebar.translator.delay
-        repeat: false
-        onTriggered: () => {
-            if (root.inputField.text.trim().length > 0) {
-                // console.log("Translating with command:", translateProc.command);
-                translateProc.running = false;
-                translateProc.buffer = ""; // Clear the buffer
-                translateProc.running = true; // Restart the process
+        // (Opcional) Para ver si hubo errores en la consola.
+        onExited: (exitCode, exitStatus) => {
+            if (exitCode !== 0) {
+                console.error("El proceso de notificación falló. Código de salida:", exitCode);
             } else {
-                root.translatedText = "";
+                console.log("Notificación enviada con éxito.");
             }
         }
     }
 
-    Process {
-        id: translateProc
-        command: ["bash", "-c", `trans -no-theme -no-bidi`
-            + ` -source '${StringUtils.shellSingleQuoteEscape(root.sourceLanguage)}'`
-            + ` -target '${StringUtils.shellSingleQuoteEscape(root.targetLanguage)}'`
-            + ` -no-ansi '${StringUtils.shellSingleQuoteEscape(root.inputField.text.trim())}'`]
-        property string buffer: ""
-        stdout: SplitParser {
-            onRead: data => {
-                translateProc.buffer += data + "\n";
-            }
-        }
-        onExited: (exitCode, exitStatus) => {
-            // 1. Split into sections by double newlines
-            const sections = translateProc.buffer.trim().split(/\n\s*\n/);
-            // console.log("BUFFER:", translateProc.buffer);
-            // console.log("SECTIONS:", sections);
+    // El único botón en nuestra interfaz.
+    Button {
+        id: notificationButton
 
-            // 2. Extract relevant data
-            root.translatedText = sections.length > 1 ? sections[1].trim() : "";
-        }
-    }
+        // Descripción del botón.
+        text: qsTr("Enviar Notificación")
 
-    Process {
-        id: getLanguagesProc
-        command: ["trans", "-list-languages", "-no-bidi"]
-        property list<string> bufferList: ["auto"]
-        running: true
-        stdout: SplitParser {
-            onRead: data => {
-                getLanguagesProc.bufferList.push(data.trim());
-            }
-        }
-        onExited: (exitCode, exitStatus) => {
-            // Ensure "auto" is always the first language
-            let langs = getLanguagesProc.bufferList
-                .filter(lang => lang.trim().length > 0 && lang !== "auto")
-                .sort((a, b) => a.localeCompare(b));
-            langs.unshift("auto");
-            root.languages = langs;
-            getLanguagesProc.bufferList = []; // Clear the buffer
-        }
-    }
+        // Lo centramos en el componente padre (el Item 'root').
+        anchors.centerIn: parent
 
-    ColumnLayout {
-        anchors.fill: parent
-        Flickable {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            contentHeight: contentColumn.implicitHeight
+        // Esta es la acción que se ejecuta al hacer clic.
+        onClicked: {
+            // Imprimimos un mensaje en la consola para depuración.
+            console.log("Botón presionado. Ejecutando el proceso de notificación...")
 
-            ColumnLayout {
-                id: contentColumn
-                anchors.fill: parent
-
-                LanguageSelectorButton { // Target language button
-                    id: targetLanguageButton
-                    displayText: root.targetLanguage
-                    onClicked: {
-                        root.showLanguageSelectorDialog(true);
-                    }
-                }
-
-                TextCanvas { // Content translation
-                    id: outputCanvas
-                    isInput: false
-                    placeholderText: qsTr("Translation goes here...")
-                    property bool hasTranslation: (root.translatedText.trim().length > 0)
-                    text: hasTranslation ? root.translatedText : ""
-                    GroupButton {
-                        id: copyButton
-                        baseWidth: height
-                        buttonRadius: Appearance.rounding.small
-                        enabled: outputCanvas.displayedText.trim().length > 0
-                        contentItem: MaterialSymbol {
-                            anchors.centerIn: parent
-                            horizontalAlignment: Text.AlignHCenter
-                            iconSize: Appearance.font.pixelSize.larger
-                            text: "content_copy"
-                            color: copyButton.enabled ? Appearance.colors.colOnLayer1 : Appearance.colors.colSubtext
-                        }
-                        onClicked: {
-                            Quickshell.clipboardText = outputCanvas.displayedText
-                        }
-                    }
-                    GroupButton {
-                        id: searchButton
-                        baseWidth: height
-                        buttonRadius: Appearance.rounding.small
-                        enabled: outputCanvas.displayedText.trim().length > 0
-                        contentItem: MaterialSymbol {
-                            anchors.centerIn: parent
-                            horizontalAlignment: Text.AlignHCenter
-                            iconSize: Appearance.font.pixelSize.larger
-                            text: "travel_explore"
-                            color: searchButton.enabled ? Appearance.colors.colOnLayer1 : Appearance.colors.colSubtext
-                        }
-                        onClicked: {
-                            let url = Config.options.search.engineBaseUrl + outputCanvas.displayedText;
-                            for (let site of Config.options.search.excludedSites) {
-                                url += ` -site:${site}`;
-                            }
-                            Qt.openUrlExternally(url);
-                        }
-                    }
-                }
-
-            }    
-        }
-
-        LanguageSelectorButton { // Source language button
-            id: sourceLanguageButton
-            displayText: root.sourceLanguage
-            onClicked: {
-                root.showLanguageSelectorDialog(false);
-            }
-        }
-
-        TextCanvas { // Content input
-            id: inputCanvas
-            isInput: true
-            placeholderText: qsTr("Enter text to translate...")
-            onInputTextChanged: {
-                translateTimer.restart();
-            }
-            GroupButton {
-                id: pasteButton
-                baseWidth: height
-                buttonRadius: Appearance.rounding.small
-                contentItem: MaterialSymbol {
-                    anchors.centerIn: parent
-                    horizontalAlignment: Text.AlignHCenter
-                    iconSize: Appearance.font.pixelSize.larger
-                    text: "content_paste"
-                    color: deleteButton.enabled ? Appearance.colors.colOnLayer1 : Appearance.colors.colSubtext
-                }
-                onClicked: {
-                    root.inputField.text = Quickshell.clipboardText
-                }
-            }
-            GroupButton {
-                id: deleteButton
-                baseWidth: height
-                buttonRadius: Appearance.rounding.small
-                enabled: inputCanvas.inputTextArea.text.length > 0
-                contentItem: MaterialSymbol {
-                    anchors.centerIn: parent
-                    horizontalAlignment: Text.AlignHCenter
-                    iconSize: Appearance.font.pixelSize.larger
-                    text: "close"
-                    color: deleteButton.enabled ? Appearance.colors.colOnLayer1 : Appearance.colors.colSubtext
-                }
-                onClicked: {
-                    root.inputField.text = ""
-                }
-            }
-        }
-    }
-
-    Loader {
-        anchors.fill: parent
-        active: root.showLanguageSelector
-        visible: root.showLanguageSelector
-        z: 9999
-        sourceComponent: SelectionDialog {
-            id: languageSelectorDialog
-            titleText: qsTr("Select Language")
-            items: root.languages
-            defaultChoice: root.languageSelectorTarget ? root.targetLanguage : root.sourceLanguage
-            onCanceled: () => {
-                root.showLanguageSelector = false;
-            }
-            onSelected: (result) => {
-                root.showLanguageSelector = false;
-                if (!result || result.length === 0) return; // No selection made
-
-                if (root.languageSelectorTarget) {
-                    root.targetLanguage = result;
-                    Config.options.language.translator.targetLanguage = result; // Save to config
-                } else {
-                    root.sourceLanguage = result;
-                    Config.options.language.translator.sourceLanguage = result; // Save to config
-                }
-
-                translateTimer.restart(); // Restart translation after language change
-            }
+            // Para asegurar que el proceso se ejecute cada vez que hacemos clic,
+            // primero lo detenemos (si estuviera corriendo) y luego lo iniciamos.
+            notificationProc.running = false
+            notificationProc.running = true
         }
     }
 }

@@ -18,9 +18,7 @@ Item {
     required property var scopeRoot
     anchors.fill: parent
     property var tabButtonList: [
-        ...(Config.options.policies.ai !== 0 ? [{"icon": "neurology", "name": qsTr("Intelligence")}] : []),
-        {"icon": "translate", "name": qsTr("Translator")},
-        ...(Config.options.policies.weeb === 1 ? [{"icon": "bookmark_heart", "name": qsTr("Anime")}] : [])
+        {"icon": "Settings_Applications", "name": qsTr("System")},
     ]
     property int selectedTab: 0
 
@@ -88,24 +86,13 @@ Item {
             }
 
             contentChildren: [
-                ...(Config.options.policies.ai !== 0 ? [aiChat.createObject()] : []),
                 translator.createObject(),
-                ...(Config.options.policies.weeb === 0 ? [] : [anime.createObject()])
             ]
         }
 
-        //Component {
-        //    id: aiChat
-        //    //AiChat {}
-        //}
         Component {
             id: translator
             Translator {}
         }
-        Component {
-            id: anime
-            Anime {}
-        }
-        
     }
 }

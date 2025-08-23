@@ -12,7 +12,7 @@ Item{
    readonly property var huella:Process {
     id:test
     running:true
-    command: [ "sh", "/home/plof/.config/quickshell/lockscreen/huella.sh" ]
+    command: [ "sh", "/home/plof/.config/quickshell/extra/lockscreen/huella.sh" ]
 		//manageLifetime: false
     stdout: SplitParser {
       onRead: data => {
