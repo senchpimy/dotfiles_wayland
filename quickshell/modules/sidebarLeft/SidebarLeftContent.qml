@@ -86,13 +86,13 @@ Item {
             }
 
             contentChildren: [
-                translator.createObject(),
+                //translator.createObject(),
             ]
         }
 
-        Component {
-            id: translator
-            Translator {}
-        }
+        //Component {
+        //    id: translator
+        //    Translator {}
+        //}
     }
 }

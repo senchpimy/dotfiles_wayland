@@ -15,6 +15,32 @@ import Quickshell.Hyprland
 
 Scope { // Scope
     id: root
+
+    property string currentTlpStatus: qsTr("Cargando...")
+
+    Process {
+         id: tlpSwitchProcess
+         running: false
+         command: ["/home/plof/configs/tlp/client.py", "--switch"]
+         onRunningChanged: {
+             if (!running) {
+                 tlpStatusProcess.running = true;
+             }
+         }
+    }
+
+    Process {
+        id: tlpStatusProcess
+        running: false
+        command: ["/home/plof/configs/tlp/client.py"]
+        stdout: SplitParser {
+            onRead: data => {
+                root.currentTlpStatus = data;
+                console.log("TlpSwitcher recibió nuevo estado: '" + tlpButton.tlpStatus + "'");
+            }
+        }
+    }
+
     property int sidebarPadding: 15
     property bool detach: false
     property Component contentComponent: SidebarLeftContent {}
@@ -25,6 +51,7 @@ Scope { // Scope
             "scopeRoot": root,
         });
         sidebarLoader.item.contentParent.children = [root.sidebarContent];
+        tlpStatusProcess.running = true;
     }
 
     onDetachChanged: {
@@ -51,7 +78,7 @@ Scope { // Scope
             
             property bool extend: false
             property real sidebarWidth: sidebarRoot.extend ? Appearance.sizes.sidebarWidthExtended : Appearance.sizes.sidebarWidth
-            property var contentParent: sidebarLeftBackground
+            property var contentParent: dynamicContentParent
 
             function hide() {
                 GlobalStates.sidebarLeftOpen = false
@@ -120,9 +147,66 @@ Scope { // Scope
                         event.accepted = true;
                     }
                 }
+
+                ColumnLayout {
+                    anchors.fill: parent
+                    anchors.margins: root.sidebarPadding
+                    spacing: 15 // Un poco más de espacio para la nueva etiqueta
+
+                    Item {
+                        id: dynamicContentParent
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                    }
+
+                    Text {
+                        Layout.fillWidth: true
+                        horizontalAlignment: Text.AlignHCenter
+                        font.family: Appearance.font.family.main
+                        font.pixelSize: Appearance.font.pixelSize.normal
+                        color: Appearance.colors.colSubtext
+                        text: qsTr("Estado actual: <b>%1</b>").arg(root.currentTlpStatus)
+                        textFormat: Text.RichText
+                    }
+
+                    Button {
+                        id: tlpButton
+                        text: qsTr("Cambiar Modo de Energía")
+                        Layout.fillWidth: true
+                        Layout.alignment: Qt.AlignHCenter
+                        implicitHeight: Appearance.sizes.barHeight
+
+                        onClicked: {
+                            tlpSwitchProcess.running = true;
+                        }
+
+                        background: Rectangle {
+                            radius: Appearance.rounding.small
+                            color: tlpButton.pressed ? Appearance.colors.colPrimaryActive
+                                 : (tlpButton.hovered ? Appearance.colors.colPrimary 
+                                 : Appearance.colors.colLayer1)
+                            border.color: Appearance.colors.colOutlineVariant
+                            border.width: 1
+                            Behavior on color {
+                                animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
+                            }
+                        }
+
+                        contentItem: Text {
+                            text: tlpButton.text
+                            font: Appearance.font.family.main
+                            color: tlpButton.hovered || tlpButton.pressed 
+                                   ? Appearance.colors.colOnPrimary 
+                                   : Appearance.colors.colOnLayer2
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                    }
+                }
             }
         }
     }
+
 
     Loader {
         id: detachedSidebarLoader
@@ -131,9 +215,9 @@ Scope { // Scope
         sourceComponent: FloatingWindow {
             id: detachedSidebarRoot
             visible: GlobalStates.sidebarLeftOpen
-            property var contentParent: detachedSidebarBackground
+            property var contentParent: detachedDynamicContentParent 
             
-            Rectangle {
+            Rectangle{
                 id: detachedSidebarBackground
                 anchors.fill: parent
                 color: Appearance.colors.colLayer0
@@ -144,6 +228,62 @@ Scope { // Scope
                             root.detach = !root.detach;
                         }
                         event.accepted = true;
+                    }
+                }
+
+                ColumnLayout {
+                    anchors.fill: parent
+                    anchors.margins: root.sidebarPadding
+                    spacing: 15
+
+                    Item {
+                        id: detachedDynamicContentParent
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                    }
+                    
+                    Text {
+                        Layout.fillWidth: true
+                        horizontalAlignment: Text.AlignHCenter
+                        font.family: Appearance.font.family.main
+                        font.pixelSize: Appearance.font.pixelSize.normal
+                        color: Appearance.colors.colSubtext
+                        text: qsTr("Estado actual: <b>%1</b>").arg(root.currentTlpStatus)
+                        textFormat: Text.RichText
+                    }
+                    
+                    Button {
+                        id: detachedTlpButton
+                        text: qsTr("Cambiar Modo de Energía")
+                        Layout.fillWidth: true
+                        Layout.alignment: Qt.AlignHCenter
+                        implicitHeight: Appearance.sizes.barHeight
+
+                        onClicked: {
+                            tlpSwitchProcess.running = true;
+                        }
+
+                        background: Rectangle {
+                            radius: Appearance.rounding.small
+                            color: detachedTlpButton.pressed ? Appearance.colors.colPrimaryActive
+                                 : (detachedTlpButton.hovered ? Appearance.colors.colPrimary 
+                                 : Appearance.colors.colLayer1)
+                            border.color: Appearance.colors.colOutlineVariant
+                            border.width: 1
+                            Behavior on color {
+                                animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
+                            }
+                        }
+
+                        contentItem: Text {
+                            text: detachedTlpButton.text
+                            font: Appearance.font.family.main
+                            color: detachedTlpButton.hovered || detachedTlpButton.pressed 
+                                   ? Appearance.colors.colOnPrimary 
+                                   : Appearance.colors.colOnLayer2
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                        }
                     }
                 }
             }

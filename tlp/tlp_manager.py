@@ -34,7 +34,6 @@ def get_current_mode():
     if not os.path.exists(TLP_CONF):
         return "No encontrado"
     
-    # Compara el contenido de los archivos
     if filecmp.cmp(TLP_CONF, TLP_SAVE, shallow=False):
         return "Ahorro"
     elif filecmp.cmp(TLP_CONF, TLP_PERF, shallow=False):
@@ -65,7 +64,6 @@ def switch_config():
 
 
 def run_server():
-    """Inicia el servidor en un socket UNIX para escuchar comandos."""
     if os.path.exists(SOCKET_PATH):
         os.remove(SOCKET_PATH)
 
@@ -73,8 +71,6 @@ def run_server():
 
     try:
         server.bind(SOCKET_PATH)
-        # Permisos 777. Es inseguro, pero funciona. Una mejor opción sería
-        # crear un grupo específico y dar permisos 770.
         os.chmod(SOCKET_PATH, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
         server.listen(1)
         print(f"[+] Servidor escuchando en {SOCKET_PATH}")
@@ -91,7 +87,7 @@ def run_server():
                         conn.sendall(b"OK: Configuracion cambiada.\n")
                     else:
                         current_mode = get_current_mode()
-                        response = f"Estado actual: {current_mode}\n"
+                        response = f"{current_mode}\n"
                         conn.sendall(response.encode())
     except Exception as e:
         print(f"[!] Error en el servidor: {e}")

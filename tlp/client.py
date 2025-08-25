@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 import argparse
 import socket
+import subprocess
+
+#Ejecutar notify-send "TLP Manager" "Profile switched to $PROFILE"
+subprocess.run(["notify-send", "TLP Manager", "Profile switched"])
 
 parser = argparse.ArgumentParser(
     description="Client for TLP Manager"
