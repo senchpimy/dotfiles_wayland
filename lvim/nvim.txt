@@ -1,1 +1,1 @@
-/home/plof/configs/hyde/themes/Catppuccin_Mocha/wallpapers/evening_sky.png
+/home/plof/configs/hyde/themes/Local/wallpapers/00012.png
