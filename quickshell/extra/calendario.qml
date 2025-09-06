@@ -107,6 +107,7 @@ ShellRoot {
 			implicitHeight: 250
         color: "transparent" // Make the panel transparent
         WlrLayershell.layer: WlrLayer.Bottom
+        WlrLayershell.exclusiveZone: 0
 
         anchors {
             left: true

@@ -36,7 +36,7 @@ Scope { // Scope
         stdout: SplitParser {
             onRead: data => {
                 root.currentTlpStatus = data;
-                console.log("TlpSwitcher recibió nuevo estado: '" + tlpButton.tlpStatus + "'");
+                //console.log("TlpSwitcher recibió nuevo estado: '" + tlpButton.tlpStatus + "'");
             }
         }
     }
@@ -106,7 +106,7 @@ Scope { // Scope
                 windows: [ sidebarRoot ]
                 active: sidebarRoot.visible
                 onActiveChanged: { // Focus the selected tab
-                    if (active) sidebarLeftBackground.children[0].focusActiveItem()
+                    //if (active) sidebarLeftBackground.children[0].focusActiveItem()
                 }
                 onCleared: () => {
                     if (!active) sidebarRoot.hide()

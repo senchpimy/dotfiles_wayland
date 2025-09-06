@@ -36,6 +36,7 @@ ShellRoot {
 			// fullscreen windows.
 			//WlrLayershell.layer: WlrLayer.Overlay
 			WlrLayershell.layer: WlrLayer.Bottom
+      WlrLayershell.exclusiveZone: 0
 
 			ColumnLayout {
 				id: content

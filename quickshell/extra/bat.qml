@@ -12,6 +12,7 @@ ShellRoot {
     anchors {
       left:true
     }
+            WlrLayershell.exclusiveZone: 0
     color:"transparent"
     implicitWidth:1000
     implicitHeight:400
