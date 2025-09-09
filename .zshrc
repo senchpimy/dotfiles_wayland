@@ -1,6 +1,6 @@
 # Path to your oh-my-zsh installation.
 #export EDITOR="neovide"
-export EDITOR="lvim"
+export EDITOR="nvim"
 export STARSHIP_CONFIG="/home/plof/.starship.toml"
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 autoload -U colors && colors

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-folders=("alacritty" "hyde" "hypr" "lvim" "rofi" "wal" "waybar" "wlogout" "lf" "eww" "spicetify"  "ags" "matugen" "rio" "cava" "quickshell" "nwg-dock-hyprland" "kitty") 
+folders=("alacritty" "hyde" "hypr" "lvim" "rofi" "wal" "waybar" "wlogout" "lf" "eww" "spicetify"  "ags" "matugen" "rio" "cava" "quickshell" "nwg-dock-hyprland" "kitty" "nvim") 
 
 source="/home/plof/configs"
 
