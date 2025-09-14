@@ -1,6 +1,7 @@
 #!/bin/bash
 
 failed_errors=0  # Contador de errores fallidos sin "no-match"
+no_match_errs=5
 
 while true; do
   while true; do
@@ -19,6 +20,14 @@ while true; do
 
   echo "$res" | grep -q no-match
   val=$?  # 0 si encontró "no-match", 1 si no
+  echo "$res" | grep -q "claim device"
+  releaseFailed=$?
+
+  if [[ $releaseFailed -eq 0 ]];then
+    echo "Rebooted system"
+    sudo /usr/bin/systemctl restart fprintd.service
+    continue
+  fi
 
   if [ $exit_code -eq 0 ]; then
       echo "El comando se ejecutó con éxito (exit code: $exit_code). Terminando el loop."
@@ -31,6 +40,7 @@ while true; do
           error_msg="no-match"
           time=1
           failed_errors=0  # Reinicia el contador si fue "no-match"
+          ((no_match_errs++))
       else
           ((failed_errors++))
           echo "Error fallido detectado. Total consecutivos: $failed_errors"
@@ -41,6 +51,12 @@ while true; do
       fi
       echo "$error_msg"
   fi
+
+  if [[ $no_match_errs -ge 4 ]];then
+    time = 200
+    echo "Too many failed attempts"
+  fi
+
 
   sleep $time
 done

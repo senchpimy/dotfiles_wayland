@@ -218,3 +218,6 @@ if [ -f ~/.zsh_next_dir ]; then
 fi
 
 alias open="xdg-open"
+
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path ~/.cache/zsh/zsh_cache

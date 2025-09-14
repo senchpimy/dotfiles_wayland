@@ -53,3 +53,5 @@ vim.g.neominimap = {
   auto_enable = false
 }
 
+
+vim.keymap.set("n", "<C-f>", "<Cmd>Yazi toggle<CR>")
