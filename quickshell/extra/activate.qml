@@ -16,7 +16,7 @@ ShellRoot {
 
 			anchors {
 				right: true
-				top: true
+				bottom: true
 			}
 
 			margins {

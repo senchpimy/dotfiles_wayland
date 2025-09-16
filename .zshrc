@@ -221,3 +221,11 @@ alias open="xdg-open"
 
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path ~/.cache/zsh/zsh_cache
+
+export PATH=$PATH:/opt/microchip/xc8/v3.10/bin
+
+setopt APPEND_HISTORY SHARE_HISTORY HIST_IGNORE_DUPS HIST_IGNORE_ALL_DUPS
+setopt HIST_FIND_NO_DUPS HIST_VERIFY
+setopt AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS
+setopt EXTENDED_GLOB NUMERIC_GLOB_SORT
+setopt NO_BEEP NOTIFY
