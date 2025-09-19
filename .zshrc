@@ -24,8 +24,8 @@ zmodload zsh/complist
 compinit
 _comp_options+=(globdots)		# Include hidden files.
 
-HISTSIZE=10000
-SAVEHIST=10000
+HISTSIZE=50000
+SAVEHIST=50000
 HISTFILE=~/.cache/zsh/history
 
 # Uncomment the following line to display red dots whilst waiting for completion.
@@ -224,8 +224,14 @@ zstyle ':completion:*' cache-path ~/.cache/zsh/zsh_cache
 
 export PATH=$PATH:/opt/microchip/xc8/v3.10/bin
 
-setopt APPEND_HISTORY SHARE_HISTORY HIST_IGNORE_DUPS HIST_IGNORE_ALL_DUPS
-setopt HIST_FIND_NO_DUPS HIST_VERIFY
-setopt AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS
-setopt EXTENDED_GLOB NUMERIC_GLOB_SORT
-setopt NO_BEEP NOTIFY
+#setopt APPEND_HISTORY SHARE_HISTORY HIST_IGNORE_DUPS HIST_IGNORE_ALL_DUPS
+#setopt HIST_FIND_NO_DUPS HIST_VERIFY
+#setopt AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS
+#setopt EXTENDED_GLOB NUMERIC_GLOB_SORT
+#setopt NO_BEEP NOTIFY
+
+alias shimejiImport="shimejictl prototypes import"
+alias shimejiList="shimejictl prototypes list"
+alias shimejiSummon="shimejictl mascot summon"
+alias shimejiKill="shimejictl mascot dismiss"
+alias camara="ffplay /dev/video1 -fast -max_delay 0 -fflags +nobuffer -flags +low_delay -max_probe_packets 1"

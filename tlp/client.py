@@ -31,7 +31,6 @@ def get_available_profiles():
         return [p for p in ordered_profiles if p in profiles]
 
     except (subprocess.CalledProcessError, FileNotFoundError):
-        # Si el comando falla o no se encuentra, informa al usuario y sale
         print("Error: No se pudo ejecutar 'powerprofilesctl'. ¿Está instalado power-profiles-daemon?", file=sys.stderr)
         sys.exit(1)
 
@@ -78,10 +77,16 @@ if __name__ == "__main__":
         action="store_true",
         help="Cambia al siguiente perfil de energía en el ciclo.",
     )
+    parser.add_argument(
+        '-m',
+        "--mode",
+        action="store_true",
+        help="Obten el modo actual de el sistema"
+    )
+
     args = parser.parse_args()
 
     if args.switch:
-        # Lógica para cambiar de perfil
         all_profiles = get_available_profiles()
         if not all_profiles:
             print("No se encontraron perfiles de energía disponibles.", file=sys.stderr)
@@ -99,14 +104,12 @@ if __name__ == "__main__":
             # Establece el nuevo perfil
             if set_profile(next_profile):
                 print(f"Cambiado de '{current}' a '{next_profile}'")
-                # Opcional: Enviar una notificación de escritorio
                 subprocess.run(["notify-send", "Perfil de Energía", f"Cambiado a {next_profile}"])
 
         except ValueError:
             print(f"El perfil actual '{current}' no se encuentra en la lista de perfiles disponibles. Estableciendo a 'balanced'.", file=sys.stderr)
             set_profile("balanced")
 
-    else:
-        # Lógica para mostrar el estado (comportamiento por defecto)
+    if args.mode:
         current = get_current_profile()
         print(current)

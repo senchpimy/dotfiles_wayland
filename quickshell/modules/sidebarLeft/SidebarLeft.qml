@@ -32,7 +32,7 @@ Scope { // Scope
     Process {
         id: tlpStatusProcess
         running: false
-        command: ["/home/plof/configs/tlp/client.py"]
+        command: ["/home/plof/configs/tlp/client.py","-m"]
         stdout: SplitParser {
             onRead: data => {
                 root.currentTlpStatus = data;
