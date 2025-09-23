@@ -5,12 +5,10 @@
 
 precision mediump float;
 
-// 'varying' se cambia por 'in'
 in vec2 v_texcoord;
 
 uniform sampler2D tex;
 
-// Se declara una variable de salida para el color
 out vec4 fragColor;
 
 void main() {
@@ -26,6 +24,5 @@ void main() {
     // red
     pixColor.r *= 0.5;
 
-    // 'gl_FragColor' se cambia por el nombre de tu variable de salida
     fragColor = pixColor;
 }
