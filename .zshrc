@@ -235,3 +235,5 @@ alias shimejiList="shimejictl prototypes list"
 alias shimejiSummon="shimejictl mascot summon"
 alias shimejiKill="shimejictl mascot dismiss"
 alias camara="ffplay /dev/video1 -fast -max_delay 0 -fflags +nobuffer -flags +low_delay -max_probe_packets 1"
+
+export PATH=$PATH:/home/plof/.spicetify
