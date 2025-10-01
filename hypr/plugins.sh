@@ -10,5 +10,5 @@ hyprpm enable hyprbars
 hyprpm add https://github.com/daxisunder/hyprfocus #puede cambiar
 hyprpm enable hyprfocus
 
-hyprpm add https://codeberg.org/zacoons/imgborders\
+hyprpm add https://codeberg.org/zacoons/imgborders
 hyprpm enable imgborders
