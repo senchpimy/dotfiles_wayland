@@ -242,3 +242,11 @@ camaraClient() {
 }
 
 export PATH=$PATH:/home/plof/.spicetify
+
+wtf() {
+  if [[ "$1" == "-k" ]]; then
+    kill $(lsof -t -i :"$2")
+  else
+    lsof -i :$1 | sed -n '2p' | awk -F' ' '{print $1,$2,$3,$8}'
+  fi
+}

@@ -82,7 +82,7 @@ Item {
             onRead: data => {
                 // 'data' será la ruta que imprimió el script de Python.
                 // Simplemente incrementamos la versión para forzar la recarga.
-                console.log("Recibida señal de recarga de imagen: " + data)
+                //console.log("Recibida señal de recarga de imagen: " + data)
                 imageVersion++ // ¡Esta es la magia!
             }
         }

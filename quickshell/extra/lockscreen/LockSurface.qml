@@ -124,8 +124,14 @@ Item {
         }
 
         MediaControls {
+            id:papu
             player: "spotify"
         }
+
+        //MediaControls {
+        //    id:mamu
+        //    player: "firefox"
+        //}
 
         ColumnLayout {
             anchors {
@@ -186,6 +192,21 @@ Item {
                 text: "Incorrect password"
             }
         }
+    }
+
+    Power {
+        id: powerMenu
+        
+        anchors {
+            bottom: root.bottom
+            right:root.right
+            rightMargin: 100
+            bottomMargin:50
+        }
+
+        iconColor: strLoad.item.color7
+        menuBackgroundColor: strLoad.item.input_back
+        menuTextColor: strLoad.item.color7
     }
 
     Rectangle {

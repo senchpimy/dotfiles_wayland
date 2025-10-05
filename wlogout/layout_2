@@ -1,6 +1,6 @@
 {
     "label" : "lock",
-    "action" : "qs -c ~/.config/quickshell/lockscreen",
+    "action" : "qs -p ~/.config/quickshell/extra/lockscreen",
     "text" : "Lock",
     "keybind" : "l"
 }
