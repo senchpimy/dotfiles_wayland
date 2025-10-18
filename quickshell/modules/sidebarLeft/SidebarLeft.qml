@@ -46,7 +46,7 @@ Scope {
  Process {
         id: kbdMaxBrightnessProcess
         running: false
-        command: ["/home/plof/configs/tlp/keyboard_client.py", "max"] // USA UNA RUTA ABSOLUTA Y VERIFICADA
+        command: ["/home/plof/configs/tlp/keyboard_client.py", "max"]
 
         stdout: SplitParser {
             onRead: data => {

@@ -231,22 +231,20 @@ Scope {
                     anchors.centerIn: parent
                     spacing: Config.options?.bar.borderless ? 4 : 8
 
-                    BarGroup {
-                        id: leftCenterGroup
-                        Layout.preferredWidth: barRoot.centerSideModuleWidth
-                        Layout.fillHeight: true
-
-                        Resources {
-                            alwaysShowAllResources: barRoot.useShortenedForm === 2
-                            Layout.fillWidth: barRoot.useShortenedForm === 2
-                        }
-
-                        Media {
-                            visible: barRoot.useShortenedForm < 2
-                            Layout.fillWidth: true
-                        }
-
+                BarGroup {
+                    id: leftCenterGroup
+                    Layout.fillHeight: true
+                
+                    Resources {
+                        alwaysShowAllResources: barRoot.useShortenedForm === 2
+                        Layout.fillWidth: barRoot.useShortenedForm === 2
                     }
+                
+                    Media {
+                        visible: barRoot.useShortenedForm < 2
+                        Layout.fillWidth: false
+                    }
+                }
 
                     VerticalBarSeparator {visible: Config.options?.bar.borderless}
 

@@ -13,7 +13,14 @@ Item {
     id: root
     property bool borderless: Config.options.bar.borderless
     readonly property MprisPlayer activePlayer: MprisController.activePlayer
-    readonly property string cleanedTitle: StringUtils.cleanMusicTitle(activePlayer?.trackTitle) || qsTr("No media")
+    readonly property string cleanedTitle: {
+        const title = StringUtils.cleanMusicTitle(activePlayer?.trackTitle) || qsTr("");
+        if (title.length > 20) {
+            return title.substring(0, 20) + "...";
+        }
+        return title;
+    }
+    visible: MprisController.activePlayer !== null
 
     Layout.fillHeight: true
     implicitWidth: rowLayout.implicitWidth + rowLayout.spacing * 2
@@ -70,7 +77,7 @@ Item {
         StyledText {
             width: rowLayout.width - (CircularProgress.size + rowLayout.spacing * 2)
             Layout.alignment: Qt.AlignVCenter
-            Layout.fillWidth: true // Ensures the text takes up available space
+            Layout.fillWidth: false
             Layout.rightMargin: rowLayout.spacing
             horizontalAlignment: Text.AlignHCenter
             elide: Text.ElideRight // Truncates the text on the right

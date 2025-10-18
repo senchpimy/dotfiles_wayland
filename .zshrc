@@ -169,14 +169,10 @@ source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zs
 #alias af='tmuxSessionSwitch'
 #source /usr/share/zsh/plugins/zsh-vi-mode/zsh-vi-mode.plugin.zsh
 
-eval "$(starship init zsh)"
 
 # opam configuration
 [[ ! -r /home/plof/.opam/opam-init/init.zsh ]] || source /home/plof/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
-export MODULAR_HOME="/home/plof/.modular"
 export PATH=$PATH:$HOME/.local/bin
-export PATH="/home/plof/.local/share/solana/install/active_release/bin:$PATH"
-#export PATH="/home/plof/.modular/pkg/packages.modular.com_mojo/bin:$PATH"
 function sxiveh {
 	case $@ in
 		http*://*) curl -o sxivimage -s "$@" ; sxiv sxivimage ; rm sxivimage;;
@@ -250,3 +246,4 @@ wtf() {
     lsof -i :$1 | sed -n '2p' | awk -F' ' '{print $1,$2,$3,$8}'
   fi
 }
+eval "$(starship init zsh)"
