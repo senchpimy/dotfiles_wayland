@@ -2,6 +2,7 @@
 return {
 
   --"andweeb/presence.nvim", -- Discord trash/ migth use
+      "benlubas/molten-nvim",
 {
     "ray-x/lsp_signature.nvim",
     event = "BufRead", -- Carga el plugin cuando abres un archivo
@@ -34,7 +35,7 @@ return {
             --cmd = 'chafa ~/img.jpg --format symbols --symbols vhalf --size 60x17 --stretch; sleep .1',
             cmd = "pokemon-colorscripts -r --no-title; sleep .1",
             random=18,
-            height = 17,
+            height = 18,
             padding = 1,
           },
           {
@@ -332,7 +333,7 @@ return {
   --},
   --https://github.com/edluffy/hologram.nvim
   --{ 'wakatime/vim-wakatime', lazy = false },
-  { "cordx56/rustowl",       dependencies = { "neovim/nvim-lspconfig" } },
+  --{ "cordx56/rustowl",       dependencies = { "neovim/nvim-lspconfig" } },
 
   {
     "anuvyklack/hydra.nvim",

@@ -232,9 +232,10 @@ alias shimejiSummon="shimejictl mascot summon"
 alias shimejiKill="shimejictl mascot dismiss"
 alias camara="ffplay /dev/video1 -fast -max_delay 0 -fflags +nobuffer -flags +low_delay -max_probe_packets 1"
 alias cameraServer='ffmpeg -f v4l2 -input_format mjpeg -framerate 30 -video_size 1280x720 -i /dev/video1 -c:v copy -f mpjpeg "tcp://0.0.0.0:8554?listen=1"'
-camaraClient() {
-  #ffplay -fflags nobuffer "tcp://$1:8554"
+
+cameraClient() {
   ffplay -window_title "StreamCam" -fflags nobuffer "tcp://$1:8554"
+  #ffplay -fflags nobuffer "tcp://$1:8554"
 }
 
 export PATH=$PATH:/home/plof/.spicetify
