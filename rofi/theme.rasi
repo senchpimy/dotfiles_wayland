@@ -1,8 +1,9 @@
 * {
-    main-bg:            #1F3106B3;
-    main-fg:            #EAFFCCE6;
-    main-br:            #6F777FE6;
-    main-ex:            #658A18E6;
-    select-bg:          #AACBF080;
-    select-fg:          #293C52E6;
+    font: "Google Sans Flex";
+    main-bg:            #29281BB3;
+    main-fg:            #FFFBCCE6;
+    main-br:            #93925AE6;
+    main-ex:            #52522DE6;
+    select-bg:          #F0DDAA80;
+    select-fg:          #524729E6;
 }
