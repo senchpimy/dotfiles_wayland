@@ -248,3 +248,10 @@ wtf() {
   fi
 }
 eval "$(starship init zsh)"
+
+export ANDROID_HOME=/opt/android-sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+export PATH=$PATH:$ANDROID_HOME/tools/bin
+export ELECTRON_OZONE_PLATFORM_HINT=wayland
+export ANDROID_NDK_ROOT=/opt/android-sdk/ndk/27.1.12297006

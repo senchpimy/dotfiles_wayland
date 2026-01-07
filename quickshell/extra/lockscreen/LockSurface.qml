@@ -3,6 +3,13 @@ import QtQuick.Layouts
 import QtQuick.Controls.Fusion
 import Quickshell.Wayland
 import Qt5Compat.GraphicalEffects
+import qs
+import "../../services"
+import "../../modules"
+import "../../modules/common/widgets"
+import "../../modules/common/functions"
+import PasswordChars
+import Quickshell
 
 Item {
     id: root
@@ -13,21 +20,20 @@ Item {
     property real fadeOutMul: 1
     property int animationDuration: 1200
 
+    // Shake when wrong password (from example)
     SequentialAnimation {
-        id: shakeAnimation
-        running: false
-
-        NumberAnimation { target: passwordRow; property: "x"; to: -5; duration: 50; easing.type: Easing.InOutQuad }
-        NumberAnimation { target: passwordRow; property: "x"; to: 5;  duration: 50; easing.type: Easing.InOutQuad }
-        NumberAnimation { target: passwordRow; property: "x"; to: -3; duration: 50; easing.type: Easing.InOutQuad }
-        NumberAnimation { target: passwordRow; property: "x"; to: 3;  duration: 50; easing.type: Easing.InOutQuad }
-        NumberAnimation { target: passwordRow; property: "x"; to: 0;  duration: 50; easing.type: Easing.InOutQuad }
+        id: wrongPasswordShakeAnim
+        NumberAnimation { target: passwordBox; property: "Layout.leftMargin"; to: -30; duration: 50 }
+        NumberAnimation { target: passwordBox; property: "Layout.leftMargin"; to: 30; duration: 50 }
+        NumberAnimation { target: passwordBox; property: "Layout.leftMargin"; to: -15; duration: 40 }
+        NumberAnimation { target: passwordBox; property: "Layout.leftMargin"; to: 15; duration: 40 }
+        NumberAnimation { target: passwordBox; property: "Layout.leftMargin"; to: 0; duration: 30 }
     }
 
     Item {
         id: mainContent
         anchors.fill: parent
-        y: fadeOutMul * (height / 2 + childrenRect.height) // Desplazamiento vertical
+        y: fadeOutMul * (height / 2 + childrenRect.height)
 
         Loader {
             id: strLoad
@@ -124,86 +130,113 @@ Item {
         }
 
         MediaControls {
-            id:papu
+            id: papu
             player: "spotify"
         }
 
-        //MediaControls {
-        //    id:mamu
-        //    player: "firefox"
-        //}
-
-        ColumnLayout {
+        // --- PASSWORD BAR (STYLE FROM EJEMPLO) ---
+        Toolbar {
+            id: mainIsland
             anchors {
                 horizontalCenter: parent.horizontalCenter
                 bottom: parent.bottom
                 bottomMargin: 50
             }
 
-            Huella {
-                func: root.context
-                anchors {
-                    bottom: parent.bottom
-                    bottomMargin: 100
-                }
-            }
+            // Optional Fingerprint icon from example
+            Loader {
+                Layout.leftMargin: 10
+                Layout.rightMargin: 6
+                Layout.alignment: Qt.AlignVCenter
+                active: root.context.fingerprintsConfigured || false
+                visible: active
 
-            RowLayout {
-                id: passwordRow
-                
-                TextField {
-                    id: passwordBox
-                    implicitWidth: 250
-                    padding: 10
-                    focus: true
-                    font.pointSize: 17
-                    enabled: !root.context.unlockInProgress
-                    echoMode: TextInput.Password
-                    inputMethodHints: Qt.ImhSensitiveData
-                    onTextChanged: {
-                        root.context.currentText = this.text;
-                        shakeAnimation.restart();
-                    }
-                    onAccepted: root.context.tryUnlock()
+                sourceComponent: MaterialSymbol {
+                    text: "fingerprint"
+                    iconSize: 24
                     color: strLoad.item.color7
-                    onCursorVisibleChanged: {
-                        if (cursorVisible) cursorVisible = false;
-                    }
-                    cursorVisible: false
+                }
+            }
 
-                    Connections {
-                        target: root.context
-                        function onCurrentTextChanged() {
-                            passwordBox.text = root.context.currentText;
-                        }
-                    }
+            ToolbarTextField {
+                id: passwordBox
+                Layout.rightMargin: -Layout.leftMargin
+                placeholderText: GlobalStates.screenUnlockFailed ? "Incorrect password" : "Enter password"
 
-                    background: Rectangle {
-                        color: strLoad.item.input_back
-                        border.color: strLoad.item.color7
-                        border.width: 5
-                        radius: height / 2
+                focus: true
+                clip: true
+                enabled: !root.context.unlockInProgress
+                echoMode: TextInput.Password
+                inputMethodHints: Qt.ImhSensitiveData
+
+                onTextChanged: {
+                    root.context.currentText = this.text;
+                }
+                onAccepted: root.context.tryUnlock()
+
+                Connections {
+                    target: root.context
+                    function onCurrentTextChanged() {
+                        passwordBox.text = root.context.currentText;
+                    }
+                }
+
+                // Custom dots logic from example
+                property bool materialShapeChars: true
+                color: ColorUtils.transparentize(strLoad.item.color7, materialShapeChars ? 0 : 1)
+                
+                Loader {
+                    active: passwordBox.materialShapeChars
+                    anchors {
+                        fill: parent
+                        leftMargin: passwordBox.padding
+                        rightMargin: passwordBox.padding
+                    }
+                    sourceComponent: PasswordChars {
+                        length: root.context.currentText.length
+                    }
+                }
+
+                Connections {
+                    target: GlobalStates
+                    function onScreenUnlockFailedChanged() {
+                        if (GlobalStates.screenUnlockFailed) wrongPasswordShakeAnim.restart();
                     }
                 }
             }
 
-            Label {
-                visible: root.context.showFailure
-                text: "Incorrect password"
+            ToolbarButton {
+                id: confirmButton
+                implicitWidth: height
+                onClicked: root.context.tryUnlock()
+
+                contentItem: MaterialSymbol {
+                    anchors.centerIn: parent
+                    iconSize: 24
+                    text: "arrow_right_alt"
+                    color: strLoad.item.color7
+                }
+            }
+        }
+
+        Huella {
+            func: root.context
+            anchors {
+                horizontalCenter: parent.horizontalCenter
+                bottom: mainIsland.top
+                bottomMargin: 20
             }
         }
     }
 
     Power {
         id: powerMenu
-        
         anchors {
             bottom: root.bottom
-            right:root.right
+            right: root.right
             rightMargin: 100
-            bottomMargin:50
+            bottomMargin: 50
         }
-
         iconColor: strLoad.item.color7
         menuBackgroundColor: strLoad.item.input_back
         menuTextColor: strLoad.item.color7
@@ -220,7 +253,6 @@ Item {
     SequentialAnimation {
         id: enterAnimation
         running: true
-        
         NumberAnimation {
             target: root
             property: "fadeOutMul"
@@ -229,9 +261,5 @@ Item {
             duration: root.animationDuration
             easing.type: Easing.OutCubic
         }
-    }
-
-    Connections {
-        target: root.context
     }
 }

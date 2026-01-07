@@ -20,7 +20,7 @@ Item {
     property var artist: ""
     property var name: ""
     property int imageVersion: 0
-    readonly property string imageBasePath: "file:///home/plof/configs/quickshell/extra/lockscreen/image.jpg"
+    readonly property string imageBasePath: "file:///home/plof/.config/quickshell/extra/lockscreen/image.jpg"
 
     readonly property var test: Process {
         running: true
@@ -77,7 +77,7 @@ Item {
     }
 
     readonly property var cover: Process {
-        command: ["python", "/home/plof/configs/quickshell/extra/lockscreen/artista.py", player]
+        command: ["python", "/home/plof/.config/quickshell/extra/lockscreen/artista.py", player]
         stdout: SplitParser {
             onRead: data => {
                 // 'data' será la ruta que imprimió el script de Python.

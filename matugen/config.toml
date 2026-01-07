@@ -1,4 +1,6 @@
 [config]
+post_hook = 'gsettings set org.gnome.desktop.interface gtk-theme "adw-gtk3-dark" && gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"'
+
 [templates.quickshell]
 input_path = '~/.config/matugen/templates/ImagePath.qml'
 output_path = '~/.config/quickshell/extra/lockscreen/ImagePath.qml'
@@ -47,21 +49,27 @@ green = "#00FF00"
 red = "#FF0000"
 blue = { color = "#0000FF", blend = false }
 
+[templates.kitty]
+input_path = '~/.config/matugen/templates/kitty.conf'
+output_path = '~/.config/kitty/theme.conf'
+post_hook = "kill -USR1 $(pidof kitty)"
+
 [templates.alacritty]
 input_path = '~/.config/matugen/templates/alacritty.toml'
 output_path = '~/.config/alacritty/colors.toml'
 
-[templates.nvim]
-input_path = '~/.config/matugen/templates/nvim.txt'
-output_path = '~/.config/lvim/nvim.txt'
+#[templates.nvim]
+#input_path = '~/.config/matugen/templates/nvim.txt'
+#output_path = '~/.config/lvim/nvim.txt'
 
 
 [templates.gtk3]
-input_path = '~/.config/matugen/templates/gtk/gtk-colors.css'
+input_path = '~/.config/matugen/templates/gtk-colors.css'
 output_path = '~/.config/gtk-3.0/gtk.css'
+post_hook = "thunar -q"
 
 [templates.gtk4]
-input_path = '~/.config/matugen/templates/gtk/gtk-colors.css'
+input_path = '~/.config/matugen/templates/gtk-colors.css'
 output_path = '~/.config/gtk-4.0/gtk.css'
 
 [templates.kde_colors]

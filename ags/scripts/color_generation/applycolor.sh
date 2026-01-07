@@ -116,8 +116,8 @@ apply_lightdark() {
 apply_gtk() { # Using gradience-cli
     usegradience=$(sed -n '4p' "$STATE_DIR/user/colormode.txt")
     if [[ "$usegradience" = "nogradience" ]]; then
-        rm "$XDG_CONFIG_HOME/gtk-3.0/gtk.css"
-        rm "$XDG_CONFIG_HOME/gtk-4.0/gtk.css"
+        # rm "$XDG_CONFIG_HOME/gtk-3.0/gtk.css"
+        # rm "$XDG_CONFIG_HOME/gtk-4.0/gtk.css"
         return
     fi
 
@@ -160,4 +160,4 @@ apply_hyprland &
 apply_lightdark &
 apply_gtk &
 apply_fuzzel &
-apply_term &
+#apply_term &

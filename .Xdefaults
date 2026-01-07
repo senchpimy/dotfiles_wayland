@@ -6,7 +6,7 @@ st.alpha: 0.58
   st.background:  #131313 
  * */
 st.foreground:  #d6dbe5 
-st.background: #10120a
+st.background: #020303
 st.color0:      #1f1f1f 
 st.color8:      #d6dbe5 
 st.color1:      #f81118 

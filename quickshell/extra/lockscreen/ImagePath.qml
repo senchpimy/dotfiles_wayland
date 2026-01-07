@@ -1,13 +1,13 @@
 import QtQuick
 
 QtObject {
-    property string path: "/home/plof/configs/hyde/themes/Local/wallpapers/Pasted5.png"
-    property string color7: "#2a380c"
-    property string color0 : "#424a31"
+    property string path: "/home/plof/configs/hyde/themes/Local/wallpapers/1635805100179.jpg"
+    property string color7: "#2d3405"
+    property string color0 : "#45492f"
 
-    property string containerGradientStart: "#667aa317"
-    property string containerGradientEnd:   "#337aa317"
-    property string containerBorderColor:   "#997aa317"
+    property string containerGradientStart: "#66818d3c"
+    property string containerGradientEnd:   "#33818d3c"
+    property string containerBorderColor:   "#99818d3c"
     property string containerShadowColor:   "#40000000"
 
     property string input_back: "rgb(0, 0, 0)"

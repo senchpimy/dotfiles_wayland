@@ -63,7 +63,7 @@ Scope {
         LazyLoader {
             required property var modelData
             readonly property HyprlandMonitor monitor: Hyprland.monitorFor(modelData)
-            activeAsync: !ToplevelManager.activeToplevel?.activated
+            activeAsync: true
             component: PanelWindow { // Window
                 id: windowRoot
                 screen: modelData
@@ -127,6 +127,12 @@ Scope {
                             style: Text.Raised
                             styleColor: Appearance.colors.colShadow
                             text: DateTime.date
+                        }
+
+                        CalendarWidget {
+                            Layout.topMargin: 20
+                            Layout.alignment: windowRoot.textHorizontalAlignment === Text.AlignLeft ? Qt.AlignLeft :
+                                              (windowRoot.textHorizontalAlignment === Text.AlignRight ? Qt.AlignRight : Qt.AlignHCenter)
                         }
                     }
                 }

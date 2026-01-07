@@ -1,112 +1,101 @@
-/*
-* GTK Colors
-* Generated with Matugen
-*/
+/* Colores dinámicos para Thunar y GTK3 */
 
-@define-color accent_color {
-    {
-    colors.primary.default.hex
-  }
+/* Colores Base */
+@define-color theme_bg_color {{colors.surface_container.default.hex}};
+@define-color theme_fg_color {{colors.on_surface.default.hex}};
+@define-color theme_base_color {{colors.surface.default.hex}};
+@define-color theme_text_color {{colors.on_surface.default.hex}};
+@define-color theme_selected_bg_color {{colors.primary.default.hex}};
+@define-color theme_selected_fg_color {{colors.on_primary.default.hex}};
+
+/* Principal - Usamos surface para que sea un poco más claro que surface_container si es necesario */
+window, 
+.background,
+thunar-window,
+.thunar {
+    background-color: @theme_bg_color;
+    color: @theme_fg_color;
 }
 
-;
-
-@define-color accent_fg_color {
-    {
-    colors.on_primary.default.hex
-  }
+/* Área de archivos */
+standard-view,
+.standard-view,
+view,
+.view,
+ThunarStandardView,
+ThunarIconView,
+ThunarTreeView,
+ThunarDetailsView {
+    background-color: @theme_base_color;
+    color: @theme_text_color;
 }
 
-;
-
-@define-color accent_bg_color {
-    {
-    colors.primary.default.hex
-  }
+/* Sidebar */
+.sidebar,
+.navigation-sidebar,
+scrolledwindow.sidebar,
+ThunarShortcutsView,
+ThunarTreeView,
+.shortcuts-pane,
+.tree-pane {
+    background-color: {{colors.surface_container_low.default.hex}};
 }
 
-;
-
-@define-color window_bg_color {
-    {
-    colors.background.default.hex
-  }
+/* Toolbar y Barras */
+toolbar,
+.toolbar,
+.location-bar,
+headerbar,
+menubar,
+.menubar {
+    background-color: {{colors.surface_container_high.default.hex}};
+    color: {{colors.on_surface.default.hex}};
 }
 
-;
-
-@define-color window_fg_color {
-    {
-    colors.on_background.default.hex
-  }
+/* Menus (File, Edit, View, etc.) */
+menubar > menuitem {
+    padding: 4px 8px;
 }
 
-;
-
-@define-color headerbar_bg_color {
-    {
-    colors.surface_dim.default.hex
-  }
+menubar > menuitem label {
+    color: {{colors.on_surface.default.hex}};
 }
 
-;
-
-@define-color headerbar_fg_color {
-    {
-    colors.on_surface.default.hex
-  }
+/* Manejo de Focus (Backdrop) */
+window:backdrop,
+.background:backdrop,
+thunar-window:backdrop {
+    color: {{colors.on_surface_variant.default.hex}};
 }
 
-;
-
-@define-color popover_bg_color {
-    {
-    colors.surface_dim.default.hex
-  }
+menubar:backdrop,
+menubar > menuitem:backdrop,
+menubar > menuitem label:backdrop {
+    color: {{colors.on_surface_variant.default.hex}};
 }
 
-;
-
-@define-color popover_fg_color {
-    {
-    colors.on_surface.default.hex
-  }
+/* Barra de búsqueda / Entradas de texto */
+entry {
+    background-color: {{colors.surface_container_highest.default.hex}};
+    color: {{colors.on_surface.default.hex}};
+    border: 1px solid {{colors.outline.default.hex}};
+    border-radius: 6px;
+    padding: 4px;
 }
 
-;
-
-@define-color view_bg_color {
-    {
-    colors.surface.default.hex
-  }
+entry:focus {
+    border-color: @theme_selected_bg_color;
 }
 
-;
-
-@define-color view_fg_color {
-    {
-    colors.on_surface.default.hex
-  }
+/* Selección */
+view:selected,
+.view:selected,
+entry:selected {
+    background-color: @theme_selected_bg_color;
+    color: @theme_selected_fg_color;
 }
 
-;
-
-@define-color card_bg_color {
-    {
-    colors.surface.default.hex
-  }
+/* Separadores */
+separator {
+    background-color: transparent;
 }
-
-;
-
-@define-color card_fg_color {
-    {
-    colors.on_surface.default.hex
-  }
-}
-
-;
-@define-color sidebar_bg_color @window_bg_color;
-@define-color sidebar_fg_color @window_fg_color;
-@define-color sidebar_border_color @window_bg_color;
-@define-color sidebar_backdrop_color @window_bg_color;

@@ -67,16 +67,11 @@ Item {
         }
     }
 
-    readonly property var cover: Process {
-        running: true
-        command: ["python", "/home/plof/configs/quickshell/lockscreen/artista.py", player]
-        manageLifetime: false
-        stdout: SplitParser {
-            onRead: data => {
-                image = data
-            }
-        }
-    }
+    Process {
+        id: artistProcess
+        command: ["python", "/home/plof/.config/quickshell/lockscreen/artista.py", player]
+        onStdoutReceived: {
+
 
     Timer {
         interval: 1500
