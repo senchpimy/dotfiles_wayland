@@ -1,0 +1,364 @@
+import QtQuick
+import QtQuick.Layouts
+import QtQuick.Controls // Using Controls 2 for potentially better styling later
+import Qt5Compat.GraphicalEffects // Keep using this for GaussianBlur if needed
+// Removed Controls.Fusion as we aim for custom styling
+// import Quickshell.Wayland // Assuming this is needed for LockContext
+// import Qt5Compat.GraphicalEffects // Already imported
+
+Item {
+    id: root
+    // Required properties from original code
+    required property LockContext context
+    // readonly property ColorGroup colors: Window.active ? palette.active : palette.inactive // Removed, using direct colors or theme
+
+    // --- Configurables ---
+    property int blurRadius: 40 // Slightly adjusted blur
+    property int blurSamples: 30
+    property real fadeOutMul: 1 // Control de animación (inicia en 1 para el fade-in)
+    property int animationDuration: 500 // Faster animation like iOS
+    property color textColorPrimary: "white" // Main text color (Time)
+    property color textColorSecondary: "#E0E0E0" // Secondary text color (Date, Widgets)
+    property color widgetBackgroundColor: "#33FFFFFF" // Semi-transparent white for widgets (adjust alpha)
+    property int widgetRadius: 20 // Rounded corners for widgets
+
+    // --- Background ---
+    Loader {
+        id: strLoad
+        source: "ImagePath.qml" // Assuming this provides image path and maybe primary colors
+        // Example fallback if ImagePath fails or doesn't provide colors:
+        property string path: "default_background.jpg" // Provide a default image
+        property color color0: root.textColorSecondary // Fallback secondary color
+        property color color7: root.textColorPrimary   // Fallback primary color
+        property color input_back: "#44FFFFFF"      // Fallback input background
+    }
+
+    Item {
+        id: backgroundLayer
+        anchors.fill: parent
+
+        Image {
+            id: backgroundImage
+            source: strLoad.item ? strLoad.item.path : strLoad.path // Use loaded path or fallback
+            anchors.fill: parent
+            fillMode: Image.PreserveAspectCrop
+            visible: false // Used as source for blur
+        }
+
+        GaussianBlur {
+            anchors.fill: backgroundImage
+            source: backgroundImage
+            radius: root.blurRadius
+            samples: root.blurSamples
+        }
+
+        Rectangle { // Darkening overlay
+            anchors.fill: parent
+            color: "#2A000000" // Slightly darker overlay
+            opacity: 1.0 - root.fadeOutMul // Fade in overlay as content fades out
+        }
+    }
+
+    // --- Main Content Area ---
+    Item {
+        id: mainContent
+        anchors.fill: parent
+        opacity: 1.0 - root.fadeOutMul // Fade in content
+
+        // --- Top Section (Lock Icon, Time, Date, Widgets) ---
+        ColumnLayout {
+            id: topSectionLayout
+            anchors {
+                top: parent.top
+                topMargin: 80 // Adjust margin from top
+                horizontalCenter: parent.horizontalCenter
+            }
+            spacing: 15 // Spacing between elements in this column
+
+            // Lock Icon (Simulated)
+            Label {
+                id: lockIcon
+                text: "🔒" // Unicode lock character (alternatively use an Image)
+                font.pointSize: 20
+                color: root.textColorSecondary
+                Layout.alignment: Qt.AlignHCenter
+                // You might need an Image element if unicode doesn't render well
+                // Image { source: "path/to/lock_icon.png"; width: 24; height: 24; }
+            }
+
+            // Date Label (iOS Style)
+            Label {
+                id: dateLabel // Renamed from 'day'
+                property var currentDate: new Date() // Use local var for date
+                text: currentDate.toLocaleDateString(Qt.locale(), "dddd, MMMM d") // Format: "Monday, July 15"
+                font.pointSize: 18
+                font.weight: Font.Normal // Lighter weight for date
+                color: root.textColorSecondary
+                Layout.alignment: Qt.AlignHCenter
+
+                // Timer to update date if needed (though lock screens usually don't update date live)
+                 Timer {
+                     interval: 60000 * 60 // Update once an hour or less
+                     running: true
+                     repeat: true
+                     onTriggered: dateLabel.currentDate = new Date()
+                 }
+            }
+
+            // Clock Label (iOS Style)
+            Label {
+                id: clockLabel // Renamed from 'clock'
+                property var currentTime: new Date()
+                text: Qt.formatTime(currentTime, "hh:mm") // Format: "10:30"
+                font.pointSize: 80 // Large font size for time
+                font.weight: Font.Bold // Bold weight for time
+                color: root.textColorPrimary
+                renderType: Text.NativeRendering
+                Layout.alignment: Qt.AlignHCenter
+
+                Timer {
+                    interval: 1000 // Update every second
+                    running: true
+                    repeat: true
+                    onTriggered: clockLabel.currentTime = new Date()
+                }
+            }
+
+            // --- Widgets Area ---
+            ColumnLayout {
+                id: widgetsLayout
+                spacing: 10
+                Layout.topMargin: 20
+                Layout.alignment: Qt.AlignHCenter
+
+                // Simulated Weather Widget
+                Rectangle {
+                    id: weatherWidget
+                    implicitWidth: 200
+                    implicitHeight: 80
+                    color: root.widgetBackgroundColor
+                    radius: root.widgetRadius
+                    Layout.alignment: Qt.AlignHCenter
+
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.margins: 15
+                        spacing: 10
+
+                        Image {
+                            source: "path/to/weather_icon.png" // Provide icon path
+                            Layout.preferredWidth: 40
+                            Layout.preferredHeight: 40
+                            fillMode: Image.PreserveAspectFit
+                        }
+                        ColumnLayout {
+                            Label { text: "Cupertino"; font.pointSize: 14; color: root.textColorPrimary; font.weight: Font.Medium; }
+                            Label { text: "72° Mostly Sunny"; font.pointSize: 12; color: root.textColorSecondary; }
+                        }
+                    }
+                }
+
+                // Simulated Battery Widget (using placeholder, could integrate your 'Battery' component)
+                 Rectangle {
+                     id: batteryWidgetSimulated
+                     implicitWidth: 200
+                     implicitHeight: 50
+                     color: root.widgetBackgroundColor
+                     radius: root.widgetRadius
+                     Layout.alignment: Qt.AlignHCenter
+
+                     RowLayout {
+                         anchors.fill: parent
+                         anchors.margins: 15
+                         spacing: 10
+                         Image {
+                             source: "path/to/battery_icon.png" // Provide icon path
+                             Layout.preferredWidth: 25
+                             Layout.preferredHeight: 25
+                             fillMode: Image.PreserveAspectFit
+                             Layout.alignment: Qt.AlignVCenter
+                         }
+                         Label {
+                             text: "92%" // Replace with actual battery % from context or Battery component
+                             font.pointSize: 14
+                             color: root.textColorPrimary
+                             font.weight: Font.Medium
+                             Layout.alignment: Qt.AlignVCenter
+                         }
+                     }
+                     // If your Battery component provides the necessary info, integrate it here.
+                     // Example:
+                     // Battery { id: bat; /* ... properties ... */ }
+                     // Label { text: bat.percentage + "%" }
+                 }
+
+                // Placeholder for your existing MediaControls
+                // Position it within the widget layout
+                MediaControls {
+                    id: mediaControls
+                    player: "spotify" // As per original code
+                    Layout.preferredWidth: 250 // Adjust size as needed
+                    Layout.alignment: Qt.AlignHCenter
+                    // You might need to modify MediaControls internally for iOS styling
+                    // Or wrap it in a styled Rectangle
+                }
+            } // End Widgets Area
+        } // End Top Section Layout
+
+        // --- Bottom Section (Unlock Prompt / Input) ---
+        ColumnLayout {
+            id: bottomSectionLayout
+            anchors {
+                bottom: parent.bottom
+                bottomMargin: 50 // Adjust as needed
+                horizontalCenter: parent.horizontalCenter
+            }
+            spacing: 15
+
+            // Fingerprint/Face ID Prompt (using your Huella component)
+            Huella {
+                id: fingerprintSensor
+                func: root.context // Pass context
+                // Adjust size/appearance as needed within Huella.qml
+                Layout.alignment: Qt.AlignHCenter
+                // Consider adding a prompt like "Face ID" or Touch ID icon visually
+            }
+
+            // Password Field (Styled like iOS) - Often hidden until swipe/tap on real iOS
+            TextField {
+                id: passwordBox
+                implicitWidth: 250
+                implicitHeight: 45
+                padding: 10
+                horizontalAlignment: Text.AlignHCenter // Center text inside
+                verticalAlignment: Text.AlignVCenter
+                font.pointSize: 17
+                color: root.textColorPrimary // Text color inside field
+                // Placeholder text similar to iOS
+                placeholderText: "Enter Passcode"
+                placeholderTextColor: root.textColorSecondary
+
+                enabled: !root.context.unlockInProgress
+                echoMode: TextInput.Password // Keep password echo mode
+                inputMethodHints: Qt.ImhSensitiveData | Qt.ImhNoPredictiveText
+
+                // Connections remain the same
+                onTextChanged: root.context.currentText = text
+                onAccepted: root.context.tryUnlock()
+                Connections {
+                    target: root.context
+                    function onCurrentTextChanged() { passwordBox.text = root.context.currentText; }
+                }
+
+                // iOS-like background
+                background: Rectangle {
+                    color: strLoad.item ? strLoad.item.input_back : strLoad.input_back // Semi-transparent background
+                    radius: height / 2 // Pill shape
+                    border.color: "#88FFFFFF" // Subtle border
+                    border.width: 1
+                }
+                 Layout.alignment: Qt.AlignHCenter
+            }
+
+            // Failure Message (iOS Style)
+            Label {
+                id: failureLabel
+                visible: root.context.showFailure
+                text: "Incorrect Passcode" // Changed text
+                color: "#FF6B6B" // iOS-like error color (adjust as needed)
+                font.pointSize: 14
+                Layout.alignment: Qt.AlignHCenter
+                Layout.topMargin: 5
+            }
+
+             // Swipe up to unlock indicator (Optional)
+            Label {
+                text: "Swipe up to unlock"
+                font.pointSize: 15
+                color: root.textColorPrimary
+                Layout.alignment: Qt.AlignHCenter
+                Layout.topMargin: 20
+                opacity: 0.8
+                 // You might want this to pulse or animate subtly
+            }
+
+        } // End Bottom Section Layout
+
+         // --- Bottom Corner Shortcuts (Optional, Simulated) ---
+        RowLayout {
+             anchors {
+                 bottom: parent.bottom
+                 bottomMargin: 30
+                 left: parent.left
+                 leftMargin: 40
+                 right: parent.right
+                 rightMargin: 40
+             }
+
+             // Flashlight Button (Simulated)
+            Rectangle {
+                 width: 50; height: 50
+                 radius: 25
+                 color: "#555555AA" // Dark semi-transparent circle
+                 Image {
+                     anchors.centerIn: parent
+                     source: "path/to/flashlight_icon.png"
+                     width: 25; height: 25
+                     fillMode: Image.PreserveAspectFit
+                 }
+                 // Add MouseArea for interaction
+             }
+
+             // Spacer to push buttons apart
+             Item { Layout.fillWidth: true }
+
+             // Camera Button (Simulated)
+            Rectangle {
+                 width: 50; height: 50
+                 radius: 25
+                 color: "#555555AA" // Dark semi-transparent circle
+                 Image {
+                     anchors.centerIn: parent
+                     source: "path/to/camera_icon.png"
+                     width: 25; height: 25
+                     fillMode: Image.PreserveAspectFit
+                 }
+                 // Add MouseArea for interaction
+             }
+        }
+
+    } // End Main Content Area
+
+    // --- Animations ---
+    // Fade-in animation for the main content
+    NumberAnimation {
+        target: root
+        property: "fadeOutMul"
+        from: 1
+        to: 0
+        duration: root.animationDuration
+        easing.type: Easing.OutCubic
+        running: true // Start immediately
+    }
+
+    // Connection for unlock success (assuming context emits 'unlocked')
+    Connections {
+        target: root.context
+        function onUnlocked() {
+            // Start fade-out animation on unlock success
+            unlockFadeOutAnimation.start();
+        }
+    }
+
+    // Fade-out animation triggered on successful unlock
+    NumberAnimation {
+        id: unlockFadeOutAnimation
+        target: root
+        property: "fadeOutMul"
+        from: 0
+        to: 1
+        duration: root.animationDuration // Use same duration for consistency
+        easing.type: Easing.InCubic
+        // This animation is started manually by the onUnlocked signal handler
+    }
+}

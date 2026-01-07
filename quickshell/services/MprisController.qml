@@ -9,12 +9,14 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import Quickshell.Services.Mpris
+import qs.modules.common
 
 /**
  * A service that provides easy access to the active Mpris player.
  */
 Singleton {
 	id: root;
+	property list<MprisPlayer> players: Mpris.players.values.filter(player => isRealPlayer(player));
 	property MprisPlayer trackedPlayer: null;
 	property MprisPlayer activePlayer: trackedPlayer ?? Mpris.players.values[0] ?? null;
 	signal trackChanged(reverse: bool);
@@ -23,6 +25,29 @@ Singleton {
 
 	property var activeTrack;
 
+	property bool hasPlasmaIntegration: false
+    Process {
+        id: plasmaIntegrationAvailabilityCheckProc
+        running: true
+        command: ["bash", "-c", "command -v plasma-browser-integration-host"]
+        onExited: (exitCode, exitStatus) => {
+            root.hasPlasmaIntegration = (exitCode === 0);
+        }
+    }
+	function isRealPlayer(player) {
+        if (!Config.options.media.filterDuplicatePlayers) {
+            return true;
+        }
+        return (
+            // Remove unecessary native buses from browsers if there's plasma integration
+            !(hasPlasmaIntegration && player.dbusName.startsWith('org.mpris.MediaPlayer2.firefox')) && !(hasPlasmaIntegration && player.dbusName.startsWith('org.mpris.MediaPlayer2.chromium')) &&
+            // playerctld just copies other buses and we don't need duplicates
+            !player.dbusName?.startsWith('org.mpris.MediaPlayer2.playerctld') &&
+            // Non-instance mpd bus
+            !(player.dbusName?.endsWith('.mpd') && !player.dbusName.endsWith('MediaPlayer2.mpd')));
+    }
+
+	// Original stuff from fox below
 	Instantiator {
 		model: Mpris.players;
 
@@ -85,9 +110,9 @@ Singleton {
 		this.activeTrack = {
 			uniqueId: this.activePlayer?.uniqueId ?? 0,
 			artUrl: this.activePlayer?.trackArtUrl ?? "",
-			title: this.activePlayer?.trackTitle || qsTr("Unknown Title"),
-			artist: this.activePlayer?.trackArtist || qsTr("Unknown Artist"),
-			album: this.activePlayer?.trackAlbum || qsTr("Unknown Album"),
+			title: this.activePlayer?.trackTitle || Translation.tr("Unknown Title"),
+			artist: this.activePlayer?.trackArtist || Translation.tr("Unknown Artist"),
+			album: this.activePlayer?.trackAlbum || Translation.tr("Unknown Album"),
 		};
 
 		this.trackChanged(__reverse);

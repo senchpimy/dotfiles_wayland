@@ -1,49 +1,61 @@
 //@ pragma UseQApplication
 //@ pragma Env QS_NO_RELOAD_POPUP=1
 //@ pragma Env QT_QUICK_CONTROLS_STYLE=Basic
+//@ pragma Env QT_QUICK_FLICKABLE_WHEEL_DECELERATION=10000
 
 // Adjust this to make the app smaller or larger
 //@ pragma Env QT_SCALE_FACTOR=1
 
-import Qt5Compat.GraphicalEffects
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Window
 import Quickshell
-import Quickshell.Io
-import Quickshell.Hyprland
-import "root:/services/"
-import "root:/modules/common/"
-import "root:/modules/common/widgets/"
-import "root:/modules/common/functions/color_utils.js" as ColorUtils
-import "root:/modules/common/functions/file_utils.js" as FileUtils
-import "root:/modules/common/functions/string_utils.js" as StringUtils
+import qs.services
+import qs.modules.common
+import qs.modules.common.widgets
+import qs.modules.common.functions as CF
 
 ApplicationWindow {
     id: root
-    property string firstRunFilePath: FileUtils.trimFileProtocol(`${Directories.state}/user/first_run.txt`)
+    property string firstRunFilePath: CF.FileUtils.trimFileProtocol(`${Directories.state}/user/first_run.txt`)
     property string firstRunFileContent: "This file is just here to confirm you've been greeted :>"
     property real contentPadding: 8
     property bool showNextTime: false
     property var pages: [
         {
-            name: "Style",
-            icon: "palette",
-            component: "modules/settings/StyleConfig.qml"
+            name: Translation.tr("Quick"),
+            icon: "instant_mix",
+            component: "modules/settings/QuickConfig.qml"
         },
         {
-            name: "Interface",
-            icon: "cards",
+            name: Translation.tr("General"),
+            icon: "browse",
+            component: "modules/settings/GeneralConfig.qml"
+        },
+        {
+            name: Translation.tr("Bar"),
+            icon: "toast",
+            iconRotation: 180,
+            component: "modules/settings/BarConfig.qml"
+        },
+        {
+            name: Translation.tr("Interface"),
+            icon: "bottom_app_bar",
             component: "modules/settings/InterfaceConfig.qml"
         },
         {
-            name: "Services",
+            name: Translation.tr("Services"),
             icon: "settings",
             component: "modules/settings/ServicesConfig.qml"
         },
         {
-            name: "About",
+            name: Translation.tr("Advanced"),
+            icon: "construction",
+            component: "modules/settings/AdvancedConfig.qml"
+        },
+        {
+            name: Translation.tr("About"),
             icon: "info",
             component: "modules/settings/About.qml"
         }
@@ -56,10 +68,11 @@ ApplicationWindow {
 
     Component.onCompleted: {
         MaterialThemeLoader.reapplyTheme()
+        Config.readWriteDelay = 0 // Settings app always only sets one var at a time so delay isn't needed
     }
 
-    minimumWidth: 600
-    minimumHeight: 400
+    minimumWidth: 750
+    minimumHeight: 500
     width: 1100
     height: 750
     color: Appearance.m3colors.m3background
@@ -105,9 +118,12 @@ ApplicationWindow {
                     leftMargin: 12
                 }
                 color: Appearance.colors.colOnLayer0
-                text: "Settings"
-                font.pixelSize: Appearance.font.pixelSize.title
-                font.family: Appearance.font.family.title
+                text: Translation.tr("Settings")
+                font {
+                    family: Appearance.font.family.title
+                    pixelSize: Appearance.font.pixelSize.title
+                    variableAxes: Appearance.font.variableAxes.title
+                }
             }
             RowLayout { // Window controls row
                 id: windowControlsRow
@@ -156,16 +172,29 @@ ApplicationWindow {
 
                     FloatingActionButton {
                         id: fab
-                        iconText: "edit"
-                        buttonText: "Edit config"
+                        property bool justCopied: false
+                        iconText: justCopied ? "check" : "edit"
+                        buttonText: justCopied ? Translation.tr("Path copied") : Translation.tr("Config file")
                         expanded: navRail.expanded
-                        onClicked: {
+                        downAction: () => {
                             Qt.openUrlExternally(`${Directories.config}/illogical-impulse/config.json`);
+                        }
+                        altAction: () => {
+                            Quickshell.clipboardText = CF.FileUtils.trimFileProtocol(`${Directories.config}/illogical-impulse/config.json`);
+                            fab.justCopied = true;
+                            revertTextTimer.restart()
+                        }
+
+                        Timer {
+                            id: revertTextTimer
+                            interval: 1500
+                            onTriggered: {
+                                fab.justCopied = false;
+                            }
                         }
 
                         StyledToolTip {
-                            extraVisibleCondition: !navRail.expanded
-                            content: "Edit shell config file"
+                            text: Translation.tr("Open the shell config file\nAlternatively right-click to copy path")
                         }
                     }
 
@@ -178,9 +207,10 @@ ApplicationWindow {
                                 required property var index
                                 required property var modelData
                                 toggled: root.currentPage === index
-                                onClicked: root.currentPage = index;
+                                onPressed: root.currentPage = index;
                                 expanded: navRail.expanded
                                 buttonIcon: modelData.icon
+                                buttonIconRotation: modelData.iconRotation || 0
                                 buttonText: modelData.name
                                 showToggledHighlight: false
                             }
@@ -202,14 +232,17 @@ ApplicationWindow {
                     id: pageLoader
                     anchors.fill: parent
                     opacity: 1.0
-                    source: root.pages[0].component
+
+                    active: Config.ready
+                    Component.onCompleted: {
+                        source = root.pages[0].component
+                    }
+
                     Connections {
                         target: root
                         function onCurrentPageChanged() {
-                            if (pageLoader.sourceComponent !== root.pages[root.currentPage].component) {
-                                switchAnim.complete();
-                                switchAnim.start();
-                            }
+                            switchAnim.complete();
+                            switchAnim.start();
                         }
                     }
 
@@ -225,19 +258,36 @@ ApplicationWindow {
                             easing.type: Appearance.animation.elementMoveExit.type
                             easing.bezierCurve: Appearance.animationCurves.emphasizedFirstHalf
                         }
-                        PropertyAction {
-                            target: pageLoader
-                            property: "source"
-                            value: root.pages[root.currentPage].component
+                        ParallelAnimation {
+                            PropertyAction {
+                                target: pageLoader
+                                property: "source"
+                                value: root.pages[root.currentPage].component
+                            }
+                            PropertyAction {
+                                target: pageLoader
+                                property: "anchors.topMargin"
+                                value: 20
+                            }
                         }
-                        NumberAnimation {
-                            target: pageLoader
-                            properties: "opacity"
-                            from: 0
-                            to: 1
-                            duration: 200
-                            easing.type: Appearance.animation.elementMoveEnter.type
-                            easing.bezierCurve: Appearance.animationCurves.emphasizedLastHalf
+                        ParallelAnimation {
+                            NumberAnimation {
+                                target: pageLoader
+                                properties: "opacity"
+                                from: 0
+                                to: 1
+                                duration: 200
+                                easing.type: Appearance.animation.elementMoveEnter.type
+                                easing.bezierCurve: Appearance.animationCurves.emphasizedLastHalf
+                            }
+                            NumberAnimation {
+                                target: pageLoader
+                                properties: "anchors.topMargin"
+                                to: 0
+                                duration: 200
+                                easing.type: Appearance.animation.elementMoveEnter.type
+                                easing.bezierCurve: Appearance.animationCurves.emphasizedLastHalf
+                            }
                         }
                     }
                 }

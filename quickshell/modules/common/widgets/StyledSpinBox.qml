@@ -1,5 +1,5 @@
-import "root:/modules/common"
-import "root:/modules/common/functions/color_utils.js" as ColorUtils
+import qs.modules.common
+import qs.modules.common.functions
 import QtQuick
 import QtQuick.Controls
 
@@ -13,6 +13,8 @@ SpinBox {
     property real radius: Appearance.rounding.small
     property real innerButtonRadius: Appearance.rounding.unsharpen
     editable: true
+
+    opacity: root.enabled ? 1 : 0.4
 
     background: Rectangle {
         color: Appearance.colors.colLayer2
@@ -28,6 +30,8 @@ SpinBox {
             anchors.centerIn: parent
             text: root.value // displayText would make the numbers weird like 1,000 instead of 1000
             color: Appearance.colors.colOnLayer2
+            font.family: Appearance.font.family.numbers
+            font.variableAxes: Appearance.font.variableAxes.numbers
             font.pixelSize: Appearance.font.pixelSize.small
             validator: root.validator
             onTextChanged: {

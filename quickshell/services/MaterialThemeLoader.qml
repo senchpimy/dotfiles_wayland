@@ -1,7 +1,7 @@
 pragma Singleton
 pragma ComponentBehavior: Bound
 
-import "root:/modules/common"
+import qs.modules.common
 import QtQuick
 import Quickshell
 import Quickshell.Io
@@ -32,6 +32,21 @@ Singleton {
         Appearance.m3colors.darkmode = (Appearance.m3colors.m3background.hslLightness < 0.5)
     }
 
+    function resetFilePathNextTime() {
+        resetFilePathNextWallpaperChange.enabled = true
+    }
+
+    Connections {
+        id: resetFilePathNextWallpaperChange
+        enabled: false
+        target: Config.options.background
+        function onWallpaperPathChanged() {
+            root.filePath = ""
+            root.filePath = Directories.generatedMaterialThemePath
+            resetFilePathNextWallpaperChange.enabled = false
+        }
+    }
+
     Timer {
         id: delayedFileRead
         interval: Config.options?.hacks?.arbitraryRaceConditionDelay ?? 100
@@ -54,5 +69,6 @@ Singleton {
             const fileContent = themeFileView.text()
             root.applyColors(fileContent)
         }
+        onLoadFailed: root.resetFilePathNextTime();
     }
 }

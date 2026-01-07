@@ -1,8 +1,6 @@
-import "root:/modules/common"
-import "root:/modules/common/widgets"
-import "root:/modules/common/functions/color_utils.js" as ColorUtils
+import qs.modules.common
+import qs.modules.common.widgets
 import QtQuick
-import QtQuick.Controls
 import QtQuick.Layouts
 
 /**
@@ -12,14 +10,17 @@ import QtQuick.Layouts
 Rectangle {
     id: root
     default property alias data: rowLayout.data
+    property alias uniformCellSizes: rowLayout.uniformCellSizes
     property real spacing: 5
     property real padding: 0
-    property int clickIndex: rowLayout.clickIndex
+    property alias clickIndex: rowLayout.clickIndex
+    property alias childrenCount: rowLayout.childrenCount
 
     property real contentWidth: {
         let total = 0;
         for (let i = 0; i < rowLayout.children.length; ++i) {
             const child = rowLayout.children[i];
+            if (!child.visible) continue;
             total += child.baseWidth ?? child.implicitWidth ?? child.width;
         }
         return total + rowLayout.spacing * (rowLayout.children.length - 1);
@@ -43,5 +44,6 @@ Rectangle {
         anchors.margins: root.padding
         spacing: root.spacing
         property int clickIndex: -1
+        property int childrenCount: children.length
     }]
 }

@@ -1,14 +1,12 @@
-import "root:/modules/common"
-import "root:/modules/common/widgets"
-import "root:/modules/common/functions/color_utils.js" as ColorUtils
+import qs.services
+import qs.modules.common
+import qs.modules.common.widgets
+import qs.modules.common.functions
 import QtQuick
-import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
-import Quickshell.Io
-import Quickshell.Hyprland
 
-GroupButton {
+RippleButton {
     id: lightDarkButtonRoot
     required property bool dark
     property color previewBg: dark ? ColorUtils.colorWithHueOf("#3f3838", Appearance.m3colors.m3primary) : 
@@ -74,8 +72,8 @@ GroupButton {
                         Layout.bottomMargin: 5
                         Layout.fillWidth: true
                         value: 0.7
-                        sperm: true
-                        animateSperm: lightDarkButtonRoot.toggled
+                        wavy: true
+                        animateWave: lightDarkButtonRoot.toggled
                         highlightColor: lightDarkButtonRoot.toggled ? Appearance.m3colors.m3primary : lightDarkButtonRoot.previewFg
                         trackColor: ColorUtils.mix(lightDarkButtonRoot.previewBg, lightDarkButtonRoot.previewFg, 0.5)
                     }
@@ -115,7 +113,7 @@ GroupButton {
             }
             StyledText {
                 Layout.fillWidth: true
-                text: dark ? "Dark" : "Light"
+                text: dark ? Translation.tr("Dark") : Translation.tr("Light")
                 color: lightDarkButtonRoot.toggled ? Appearance.m3colors.m3onPrimary : Appearance.colors.colOnLayer2
                 horizontalAlignment: Text.AlignHCenter
             }

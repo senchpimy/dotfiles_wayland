@@ -1,8 +1,7 @@
 import QtQuick
-import QtQuick.Controls
 import QtQuick.Layouts
-import "root:/modules/common/"
-import "root:/modules/common/widgets/"
+import qs.modules.common
+import qs.modules.common.widgets
 
 RippleButton {
     id: buttonWithIconRoot
@@ -12,18 +11,20 @@ RippleButton {
     property string mainText: "Button text"
     property Component mainContentComponent: Component {
         StyledText {
+            visible: text !== ""
             text: buttonWithIconRoot.mainText
             font.pixelSize: Appearance.font.pixelSize.small
             color: Appearance.colors.colOnSecondaryContainer
         }
     }
     implicitHeight: 35
-    horizontalPadding: 15
+    horizontalPadding: 10
     buttonRadius: Appearance.rounding.small
     colBackground: Appearance.colors.colLayer2
 
     contentItem: RowLayout {
         Item {
+            Layout.fillWidth: false
             implicitWidth: Math.max(materialIconLoader.implicitWidth, nerdIconLoader.implicitWidth)
             Loader {
                 id: materialIconLoader
@@ -49,6 +50,7 @@ RippleButton {
             }
         }
         Loader {
+            Layout.fillWidth: true
             sourceComponent: buttonWithIconRoot.mainContentComponent
             Layout.alignment: Qt.AlignVCenter
         }

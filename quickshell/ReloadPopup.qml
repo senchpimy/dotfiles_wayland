@@ -1,7 +1,8 @@
 import QtQuick
 import QtQuick.Layouts
-import Quickshell
 import Qt5Compat.GraphicalEffects
+import Quickshell
+import Quickshell.Wayland
 
 Scope {
 	id: root
@@ -34,11 +35,14 @@ Scope {
 		PanelWindow {
 			id: popup
 
+			exclusiveZone: 0
 			anchors.top: true
 			margins.top: 0
 
 			implicitWidth: rect.width + shadow.radius * 2
 			implicitHeight: rect.height + shadow.radius * 2
+
+			WlrLayershell.namespace: "quickshell:reloadPopup"
 
 			// color blending is a bit odd as detailed in the type reference.
 			color: "transparent"
@@ -57,7 +61,7 @@ Scope {
 				MouseArea {
 					id: mouseArea
 					anchors.fill: parent
-					onClicked: {
+					onPressed: {
 						popupLoader.active = false
 					}
 
@@ -77,7 +81,7 @@ Scope {
 
 					Text {
 						renderType: Text.NativeRendering
-						font.family: "Rubik"
+						font.family: "Google Sans Flex"
 						font.pointSize: 14
 						text: root.failed ? "Quickshell: Reload failed" : "Quickshell reloaded"
 						color: failed ? "#ff93000A" : "#ff0C1F13"
