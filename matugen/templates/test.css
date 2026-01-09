@@ -47,6 +47,6 @@ chain together {{ colors.source_color.default.rgba | set_alpha: 0.7 | set_hue: -
 containerGradientStart {{ colors.source_color.default.rgba | set_alpha: 0.4 }};
 containerGradientEnd   {{ colors.source_color.default.rgba | set_alpha: 0.2 }};
 containerBorderColor   {{ colors.source_color.default.rgba | set_alpha: 0.6 }};
-containerShadowColor   {{ "rgba(0,0,0,1.0)" | set_alpha: 0.25 }};
+containerShadowColor   {{ "rgba(0,0,0,1.0)" | to_color | set_alpha: 0.25 }};
 
 st.background: {{ colors.surface_container_lowest.default.hex | set_lightness: 1.0 }};

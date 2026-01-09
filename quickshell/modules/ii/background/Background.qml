@@ -19,6 +19,8 @@ import qs.modules.ii.background.widgets.clock
 import qs.modules.ii.background.widgets.weather
 import qs.modules.ii.background.widgets.calendar
 import qs.modules.ii.background.widgets.battery
+import qs.modules.ii.background.widgets.pendientes
+import qs.modules.ii.background.widgets.image
 
 Variants {
     id: root
@@ -68,17 +70,6 @@ Variants {
                 anchors.fill: parent
 
                 FadeLoader {
-                    shown: Config.options.background.widgets.weather.enable
-                    sourceComponent: WeatherWidget {
-                        screenWidth: bgRoot.screen.width
-                        screenHeight: bgRoot.screen.height
-                        scaledScreenWidth: bgRoot.screen.width
-                        scaledScreenHeight: bgRoot.screen.height
-                        wallpaperScale: 1
-                    }
-                }
-
-                FadeLoader {
                     shown: Config.options.background.widgets.clock.enable
                     sourceComponent: ClockWidget {
                         screenWidth: bgRoot.screen.width
@@ -102,7 +93,30 @@ Variants {
                 }
 
                 FadeLoader {
-                    shown: Config.options.background.widgets.battery.enable
+                    shown: Config.options.background.widgets.pendientes.enable
+                    sourceComponent: PendientesWidget {
+                        screenWidth: bgRoot.screen.width
+                        screenHeight: bgRoot.screen.height
+                        scaledScreenWidth: bgRoot.screen.width
+                        scaledScreenHeight: bgRoot.screen.height
+                        wallpaperScale: 1
+                    }
+                }
+
+                FadeLoader {
+                    shown: Config.options.background.widgets.image.enable
+                    sourceComponent: ImageWidget {
+                        screenWidth: bgRoot.screen.width
+                        screenHeight: bgRoot.screen.height
+                        scaledScreenWidth: bgRoot.screen.width
+                        scaledScreenHeight: bgRoot.screen.height
+                        wallpaperScale: 1
+                    }
+                }
+
+                FadeLoader {
+                    active: Battery.available
+                    shown: Config.options.background.widgets.battery.enable && Battery.available
                     sourceComponent: BatteryWidget {
                         screenWidth: bgRoot.screen.width
                         screenHeight: bgRoot.screen.height

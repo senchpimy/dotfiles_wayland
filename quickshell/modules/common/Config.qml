@@ -213,6 +213,22 @@ Singleton {
                         property real x: 100
                         property real y: 100
                     }
+                    property JsonObject pendientes: JsonObject {
+                        property bool enable: true
+                        property string placementStrategy: "free"
+                        property real x: 100
+                        property real y: 600
+                    }
+                    property JsonObject image: JsonObject {
+                        property bool enable: true
+                        property string placementStrategy: "free"
+                        property real x: 500
+                        property real y: 500
+                        property string path: "/home/plof/Documents/gettyImagesIngrid.png"
+                        property real width: 300
+                        property real height: 200
+                        property real opacity: 1.0
+                    }
                 }
                 property string wallpaperPath: ""
                 property bool hideWhenFullscreen: true

@@ -240,9 +240,9 @@ Item {
             rightMargin: 100
             bottomMargin: 50
         }
-        iconColor: strLoad.item.color7
+        iconColor: ColorUtils.isDark(strLoad.item.input_back) ? "white" : "black"
         menuBackgroundColor: strLoad.item.input_back
-        menuTextColor: strLoad.item.color7
+        menuTextColor: ColorUtils.isDark(strLoad.item.input_back) ? "white" : "black"
     }
 
     Rectangle {

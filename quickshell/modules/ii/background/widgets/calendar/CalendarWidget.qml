@@ -108,7 +108,7 @@ AbstractBackgroundWidget {
         implicitWidth: mainLayout.implicitWidth + 40
         implicitHeight: Math.max(mainLayout.implicitHeight + 40, 200)
         radius: Appearance.rounding.large
-        color: Appearance.colors.colLayer1
+        color: Appearance.colors.colSecondaryContainer
         
         StyledRectangularShadow {
             target: mainContainer

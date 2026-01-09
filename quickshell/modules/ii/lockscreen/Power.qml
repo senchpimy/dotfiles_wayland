@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import QtQuick.Controls
 import Quickshell.Io
+import "../../../modules/common/widgets" as Widgets
 
 Rectangle {
     id: main
@@ -54,14 +55,11 @@ Rectangle {
             height: 40
             color: "transparent"
             radius: 10
-            Label {
+            Widgets.MaterialSymbol {
                 anchors.centerIn: parent
                 text: parent.t_text
                 color: main.menuTextColor
-                font {
-                    family: "Material Symbols Rounded"
-                    pixelSize: 24
-                }
+                iconSize: 24
             }
             MouseArea {
                 id: mouseArea
@@ -102,15 +100,12 @@ Rectangle {
         cursorShape: Qt.PointingHandCursor
         onClicked: main.expanded = !main.expanded
         
-        Label {
+        Widgets.MaterialSymbol {
             id: powerIcon
             text: "drag_indicator"
             color: main.iconColor
             anchors.centerIn: parent
-            font {
-                family: "Material Symbols Rounded"
-                pixelSize: 24
-            }
+            iconSize: 24
             rotation: main.expanded ? 90 : 0
             Behavior on rotation {
                 NumberAnimation { duration: 300; easing.type: Easing.OutCubic }

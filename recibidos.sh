@@ -14,3 +14,4 @@ echo "Enlaces simbólicos creados para todas las carpetas."
 
 ln -s $source/.zshrc ~/.zshrc
 ln -s $source/.Xdefaults ~/.Xdefaults
+ln -s $source/bin ~/.local/share/bin
