@@ -21,6 +21,7 @@ import qs.modules.ii.background.widgets.calendar
 import qs.modules.ii.background.widgets.battery
 import qs.modules.ii.background.widgets.pendientes
 import qs.modules.ii.background.widgets.image
+import qs.modules.ii.background.widgets.media
 
 Variants {
     id: root
@@ -121,11 +122,23 @@ Variants {
                         screenWidth: bgRoot.screen.width
                         screenHeight: bgRoot.screen.height
                         scaledScreenWidth: bgRoot.screen.width
-                        scaledScreenHeight: bgRoot.screen.height
-                        wallpaperScale: 1
-                    }
-                }
-            }
-        }
-    }
-}
+                                                scaledScreenHeight: bgRoot.screen.height
+                                                wallpaperScale: 1
+                                            }
+                                        }
+                        
+                                        FadeLoader {
+                                            shown: Config.options.background.widgets.media.enable
+                                            sourceComponent: MediaWidget {
+                                                screenWidth: bgRoot.screen.width
+                                                screenHeight: bgRoot.screen.height
+                                                scaledScreenWidth: bgRoot.screen.width
+                                                scaledScreenHeight: bgRoot.screen.height
+                                                wallpaperScale: 1
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        

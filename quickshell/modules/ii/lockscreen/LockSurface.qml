@@ -8,6 +8,8 @@ import "../../../services"
 import "../../../modules/common/widgets" as Widgets
 import "../../../modules/common/functions"
 import "../../../GlobalStates.qml" as G
+import "../background/widgets/battery"
+import "../background/widgets/media"
 import Quickshell
 
 Item {
@@ -120,16 +122,43 @@ Item {
 
         ColumnLayout {
             y: 350
-            x: (parent.width / 2) - (75 * bat.total) - (13 * (bat.total > 1 ? bat.total : 0))
-            LockBattery {
+            anchors.horizontalCenter: parent.horizontalCenter
+            BatteryContent {
                 id: bat
                 anchors.horizontalCenter: parent.horizontalCenter
+                
+                // Override colors for lockscreen visibility
+                backgroundColor: "#80000000"
+                ringBackgroundColor: "#40FFFFFF"
+                textColor: "white"
+                ringColorNormal: "white"
+                ringColorCharging: "#2DCF59"
+                ringColorLow: "#F2330D"
+                ringColorMedium: "#FDD509"
+                chargeIndicatorColor: "white"
+                chargeIconColor: "black"
+                
+                shadowEnabled: false 
+                
+                // Añadir sombra manualmente si BatteryContent desactivó la suya interna
+                // o confiar en el diseño actual. BatteryContent tiene sombra opcional.
+                layer.enabled: true
+                layer.effect: DropShadow {
+                    transparentBorder: true
+                    radius: 16
+                    samples: 32
+                    color: "#40000000"
+                }
             }
         }
 
-        MediaControls {
-            id: papu
-            player: "spotify"
+        MediaContent {
+            id: mediaControls
+            anchors {
+                horizontalCenter: parent.horizontalCenter
+                top: parent.verticalCenter
+                topMargin: 100
+            }
         }
 
         Widgets.Toolbar {

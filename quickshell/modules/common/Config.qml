@@ -206,6 +206,12 @@ Singleton {
                         property real x: 1300
                         property real y: 100
                     }
+                    property JsonObject media: JsonObject {
+                        property bool enable: true
+                        property string placementStrategy: "free"
+                        property real x: 100
+                        property real y: 800
+                    }
                     property JsonObject weather: JsonObject {
                         property bool enable: true
                         property string style: "Heart" // Opciones: Pill, Arch, Circle, Heart, Burst, Puffy, Diamond, Gem, Sunny, Flower
