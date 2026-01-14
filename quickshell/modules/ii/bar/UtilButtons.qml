@@ -21,6 +21,27 @@ Item {
         anchors.centerIn: parent
 
         Loader {
+            active: true
+            visible: true
+            sourceComponent: CircleUtilButton {
+                id: screenRecordButton
+                property bool recording: false
+                Layout.alignment: Qt.AlignVCenter
+                onClicked: {
+                    recording = !recording;
+                    Hyprland.dispatch("exec $HOME/.local/share/bin/record-script.sh --audio")
+                }
+                MaterialSymbol {
+                    horizontalAlignment: Qt.AlignHCenter
+                    fill: 0
+                    text: screenRecordButton.recording ? "stop_circle" : "radio_button_checked"
+                    iconSize: Appearance.font.pixelSize.large
+                    color: screenRecordButton.recording ? "#ff5555" : Appearance.colors.colOnLayer2
+                }
+            }
+        }
+
+        Loader {
             active: Config.options.bar.utilButtons.showScreenSnip
             visible: Config.options.bar.utilButtons.showScreenSnip
             sourceComponent: CircleUtilButton {
@@ -48,27 +69,6 @@ Item {
                     text: "capture"
                     iconSize: Appearance.font.pixelSize.large
                     color: Appearance.colors.colOnLayer2
-                }
-            }
-        }
-
-        Loader {
-            active: Config.options.bar.utilButtons.showScreenRecord
-            visible: Config.options.bar.utilButtons.showScreenRecord
-            sourceComponent: CircleUtilButton {
-                id: screenRecordButton
-                property bool recording: false
-                Layout.alignment: Qt.AlignVCenter
-                onClicked: {
-                    recording = !recording;
-                    Hyprland.dispatch("exec $HOME/.local/share/bin/record-script.sh --audio")
-                }
-                MaterialSymbol {
-                    horizontalAlignment: Qt.AlignHCenter
-                    fill: 0
-                    text: screenRecordButton.recording ? "stop_circle" : "radio_button_checked"
-                    iconSize: Appearance.font.pixelSize.large
-                    color: screenRecordButton.recording ? "#ff5555" : Appearance.colors.colOnLayer2
                 }
             }
         }
