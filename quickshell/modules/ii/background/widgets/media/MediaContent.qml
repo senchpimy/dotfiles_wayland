@@ -112,7 +112,7 @@ Item {
                         Rectangle {
                             height: 150
                             width: 600
-                            radius: 20
+                            radius: Appearance.rounding.large
                             
                             gradient: Gradient {
                                 GradientStop {
@@ -131,11 +131,7 @@ Item {
                                 }
                             }
                             
-                            border.color: {
-                                if (root.isDesktop) return Appearance.colors.colPrimary
-                                return strLoad.item ? strLoad.item.containerBorderColor : "#99749b15"
-                            }
-                            border.width: 1
+                            border.width: 0
                             
                             layer.enabled: true
                             layer.effect: DropShadow {
@@ -178,7 +174,7 @@ Item {
                                             maskSource: Rectangle {
                                                 width: albumArt.width
                                                 height: albumArt.height
-                                                radius: 20
+                                                radius: Appearance.rounding.large
                                             }
                                         }
                                     }
@@ -200,6 +196,7 @@ Item {
                                         }
                                         text: player ? player.identity : ""
                                         font.pointSize: 10
+                                        font.family: "Google Sans"
                                         color: "#888888"
                                         renderType: Text.NativeRendering
                                     }
@@ -216,6 +213,7 @@ Item {
                                         }
                                         font.pointSize: 21
                                         font.bold: true
+                                        font.family: "Google Sans"
                                         color: "#E0E4DB"
                                         renderType: Text.NativeRendering
                                     }
@@ -234,6 +232,7 @@ Item {
                                             return String(artist)
                                         }
                                         font.pointSize: 15
+                                        font.family: "Google Sans"
                                         color: "#555555"
                                         renderType: Text.NativeRendering
                                     }

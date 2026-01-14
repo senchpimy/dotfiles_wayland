@@ -12,7 +12,7 @@ import "../background/widgets/battery"
 import "../background/widgets/media"
 import Quickshell
 
-Item {
+FocusScope {
     id: root
     required property LockContext context
 
@@ -20,6 +20,18 @@ Item {
     property int blurSamples: 50
     property real fadeOutMul: 1
     property int animationDuration: 1200
+
+    Component.onCompleted: passwordBox.forceActiveFocus()
+
+    onVisibleChanged: {
+        if (visible) {
+            passwordBox.forceActiveFocus();
+        }
+    }
+
+    TapHandler {
+        onTapped: passwordBox.forceActiveFocus()
+    }
 
     SequentialAnimation {
         id: wrongPasswordShakeAnim
@@ -186,7 +198,7 @@ Item {
             Widgets.ToolbarTextField {
                 id: passwordBox
                 Layout.rightMargin: -Layout.leftMargin
-                placeholderText: G.screenUnlockFailed ? "Incorrect password" : "Enter password"
+                placeholderText: root.context.showFailure ? "Incorrect password" : "Enter password"
 
                 focus: true
                 clip: true
@@ -204,6 +216,13 @@ Item {
                     target: root.context
                     function onCurrentTextChanged() {
                         passwordBox.text = root.context.currentText;
+                    }
+
+                    function onShowFailureChanged() {
+                        if (root.context.showFailure) {
+                            wrongPasswordShakeAnim.restart();
+                            passwordBox.forceActiveFocus();
+                        }
                     }
                 }
 
@@ -227,13 +246,6 @@ Item {
                         rightMargin: passwordBox.padding
                     }
                     length: root.context.currentText.length
-                }
-
-                Connections {
-                    target: GlobalStates
-                    function onScreenUnlockFailedChanged() {
-                        if (G.screenUnlockFailed) wrongPasswordShakeAnim.restart();
-                    }
                 }
             }
 

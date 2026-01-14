@@ -14,7 +14,7 @@ AbstractBackgroundWidget {
     id: root
     configEntryName: "pendientes"
     
-    property string serverUrl: "http://localhost:8080"
+    property string serverUrl: "http://192.168.1.84:8080"
     property int pend_n: 0
     property bool alreadyLoaded: false
 
@@ -64,7 +64,7 @@ AbstractBackgroundWidget {
         var xhr = new XMLHttpRequest();
         xhr.open("POST", root.serverUrl + "/update", true);
         xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        var data = JSON.stringify({ "index": index, "checked": isChecked });
+        var data = JSON.stringify({ "id": index, "checked": isChecked });
         xhr.send(data);
     }
 
@@ -88,7 +88,7 @@ AbstractBackgroundWidget {
             }
             checkBoxComponent.createObject(column, {
                 "dynamicText": item.text || "Texto por defecto",
-                "dynamicIndex": index,
+                "dynamicId": item.id,
                 "dynamicCheck": !!item.checked
             });
         });
@@ -103,7 +103,7 @@ AbstractBackgroundWidget {
 
             property bool checked: dynamicCheck
             property string dynamicText: "Texto no definido"
-            property int dynamicIndex: -1
+            property int dynamicId: -1
             property bool dynamicCheck: false
 
             property var _parsedData: {
@@ -150,7 +150,7 @@ AbstractBackgroundWidget {
                 cursorShape: Qt.PointingHandCursor
                 onClicked: {
                     itemRoot.checked = !itemRoot.checked;
-                    sendUpdateToServer(dynamicIndex, itemRoot.checked);
+                    sendUpdateToServer(itemRoot.dynamicId, itemRoot.checked);
                 }
             }
 
