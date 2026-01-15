@@ -5,10 +5,10 @@ post_hook = 'gsettings set org.gnome.desktop.interface gtk-theme "adw-gtk3-dark"
 input_path = '~/.config/matugen/templates/ImagePath.qml'
 output_path = '~/.config/quickshell/modules/ii/lockscreen/ImagePath.qml'
 
-[templates.quickshell_pendientes]
-input_path = '~/.config/matugen/templates/pendientes_colores.qml'
-#output_path = '~/.config/quickshell/extra/pendientes/Colores.qml'
-output_path = '~/Documents/PythonProjects/TareasGenerador/Colores.qml'
+#[templates.quickshell_pendientes]
+#input_path = '~/.config/matugen/templates/pendientes_colores.qml'
+##output_path = '~/.config/quickshell/extra/pendientes/Colores.qml'
+#output_path = '~/Documents/PythonProjects/TareasGenerador/Colores.qml'
 
 [templates.hyprlock]
 input_path = '~/.config/matugen/templates/colors-hyprland.conf'

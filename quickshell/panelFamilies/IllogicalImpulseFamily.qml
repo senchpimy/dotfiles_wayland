@@ -31,6 +31,7 @@ Scope {
     PanelLoader { component: NotificationPopup {} }
     PanelLoader { component: OnScreenDisplay {} }
     PanelLoader { component: OnScreenKeyboard {} }
+    PanelLoader { component: PortsPopup {} }
     PanelLoader { component: Overlay {} }
     PanelLoader { component: Overview {} }
     PanelLoader { component: Polkit {} }

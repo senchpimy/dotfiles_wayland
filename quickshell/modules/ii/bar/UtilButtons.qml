@@ -74,6 +74,22 @@ Item {
         }
 
         Loader {
+            active: true
+            visible: true
+            sourceComponent: CircleUtilButton {
+                Layout.alignment: Qt.AlignVCenter
+                onClicked: GlobalStates.portsOpen = !GlobalStates.portsOpen
+                MaterialSymbol {
+                    horizontalAlignment: Qt.AlignHCenter
+                    fill: 1
+                    text: "lan"
+                    iconSize: Appearance.font.pixelSize.large
+                    color: GlobalStates.portsOpen ? Appearance.m3colors.m3primary : Appearance.colors.colOnLayer2
+                }
+            }
+        }
+
+        Loader {
             active: Config.options.bar.utilButtons.showColorPicker
             visible: Config.options.bar.utilButtons.showColorPicker
             sourceComponent: CircleUtilButton {
