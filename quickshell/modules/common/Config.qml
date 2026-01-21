@@ -230,7 +230,6 @@ Singleton {
                         property string placementStrategy: "free"
                         property real x: 500
                         property real y: 500
-                        property string path: "/home/plof/Documents/gettyImagesIngrid.png"
                         property real width: 300
                         property real height: 200
                         property real opacity: 1.0

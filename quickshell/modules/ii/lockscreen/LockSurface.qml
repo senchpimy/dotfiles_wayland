@@ -135,6 +135,7 @@ FocusScope {
         ColumnLayout {
             y: 350
             anchors.horizontalCenter: parent.horizontalCenter
+            visible: Battery.available
             BatteryContent {
                 id: bat
                 anchors.horizontalCenter: parent.horizontalCenter

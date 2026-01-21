@@ -55,7 +55,13 @@ Scope {
             margins {
                 top: Config.options.bar.vertical ? ((popupWindow.screen.height / 2) - root.widgetHeight / 2) : Appearance.sizes.barHeight
                 bottom: Appearance.sizes.barHeight
-                left: Config.options.bar.vertical ? Appearance.sizes.barHeight : ((popupWindow.screen.width / 2) - (root.widgetWidth / 2))
+                left: {
+                    if (Config.options.bar.vertical) return Appearance.sizes.barHeight;
+                    
+                    let screenWidth = popupWindow.screen?.width ?? 1920;
+                    // Ajustado más a la derecha (+100) para alinearse mejor con UtilButtons
+                    return (screenWidth / 2) + 100;
+                }
                 right: Appearance.sizes.barHeight
             }
             

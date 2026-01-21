@@ -77,6 +77,7 @@ Item {
             active: true
             visible: true
             sourceComponent: CircleUtilButton {
+                id: portsButton
                 Layout.alignment: Qt.AlignVCenter
                 onClicked: GlobalStates.portsOpen = !GlobalStates.portsOpen
                 MaterialSymbol {

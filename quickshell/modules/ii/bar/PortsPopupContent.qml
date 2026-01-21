@@ -135,14 +135,7 @@ Item {
                             text: modelData.port
                             font.bold: true
                             color: Appearance.m3colors.m3primary
-                            Layout.preferredWidth: 50
-                        }
-                        
-                        StyledText {
-                            text: modelData.protocol.toUpperCase()
-                            color: Appearance.colors.colSubtext
-                            font.pixelSize: Appearance.font.pixelSize.small
-                            Layout.preferredWidth: 40
+                            Layout.preferredWidth: 60
                         }
                         
                         StyledText {
@@ -155,7 +148,7 @@ Item {
                             text: modelData.pid === -1 ? "-" : modelData.pid
                             color: Appearance.colors.colSubtext
                             font.pixelSize: Appearance.font.pixelSize.small
-                            Layout.preferredWidth: 50
+                            Layout.preferredWidth: 60
                             horizontalAlignment: Text.AlignRight
                         }
                         
@@ -183,6 +176,23 @@ Item {
                                 }
                             }
                         }
+                    }
+                }
+
+                ColumnLayout {
+                    anchors.centerIn: parent
+                    visible: root.portsData.length === 0
+                    spacing: 5
+                    MaterialSymbol {
+                        Layout.alignment: Qt.AlignHCenter
+                        text: "search_off"
+                        iconSize: Appearance.font.pixelSize.large
+                        color: Appearance.colors.colSubtext
+                    }
+                    StyledText {
+                        text: "No development ports found"
+                        color: Appearance.colors.colSubtext
+                        font.pixelSize: Appearance.font.pixelSize.small
                     }
                 }
                 
