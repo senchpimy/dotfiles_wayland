@@ -179,8 +179,8 @@ Item { // Bar content region
                 }
 
                 Loader {
-                    active: Battery.available
-                    visible: (root.useShortenedForm < 2 && Battery.available)
+                    active: UPower.displayDevice.isLaptopBattery && UPower.displayDevice.percentage > 0
+                    visible: (root.useShortenedForm < 2 && active)
                     Layout.alignment: Qt.AlignVCenter
                     sourceComponent: BatteryIndicator { }
                 }

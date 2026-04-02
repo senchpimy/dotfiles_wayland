@@ -25,7 +25,7 @@ AbstractBackgroundWidget {
     // Lista de imágenes
     property var imageList: [
         //"/home/plof/Documents/gettyImagesIngrid.png",
-        "/home/plof/Downloads/peces.gif"
+        "/home/plof/.config/quickshell/peces.gif"
     ]
     
     property int currentIndex: 0

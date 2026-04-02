@@ -9,7 +9,32 @@ import Quickshell.Io
 
 Singleton {
     id: root
-    property bool available: UPower.displayDevice.isLaptopBattery
+    
+    property bool hasExternalBatteries: false
+    
+    Timer {
+        interval: 2000
+        running: true
+        repeat: true
+        triggeredOnStart: true
+        onTriggered: {
+            const devices = UPower.devices.values;
+            let found = false;
+            for (let i = 0; i < devices.length; i++) {
+                const dev = devices[i];
+                // Solo contar dispositivos que no sean el cargador, no sean desconocidos y tengan algo de carga
+                if (dev.type !== UPowerDeviceType.LinePower && dev.type !== UPowerDeviceType.Unknown && dev.percentage > 0) {
+                    found = true;
+                    break;
+                }
+            }
+            root.hasExternalBatteries = found;
+        }
+    }
+
+    // Solo disponible si es una batería de laptop real con carga o hay periféricos con batería
+    property bool available: (UPower.displayDevice.isLaptopBattery && UPower.displayDevice.type === UPowerDeviceType.Battery && UPower.displayDevice.percentage > 0) || hasExternalBatteries
+    
     property var chargeState: UPower.displayDevice.state
     property bool isCharging: chargeState == UPowerDeviceState.Charging
     property bool isPluggedIn: isCharging || chargeState == UPowerDeviceState.PendingCharge
@@ -17,10 +42,10 @@ Singleton {
     readonly property bool allowAutomaticSuspend: Config.options.battery.automaticSuspend
     readonly property bool soundEnabled: Config.options.sounds.battery
 
-    property bool isLow: available && (percentage <= Config.options.battery.low / 100)
-    property bool isCritical: available && (percentage <= Config.options.battery.critical / 100)
-    property bool isSuspending: available && (percentage <= Config.options.battery.suspend / 100)
-    property bool isFull: available && (percentage >= Config.options.battery.full / 100)
+    property bool isLow: UPower.displayDevice.isLaptopBattery && (percentage <= Config.options.battery.low / 100)
+    property bool isCritical: UPower.displayDevice.isLaptopBattery && (percentage <= Config.options.battery.critical / 100)
+    property bool isSuspending: UPower.displayDevice.isLaptopBattery && (percentage <= Config.options.battery.suspend / 100)
+    property bool isFull: UPower.displayDevice.isLaptopBattery && (percentage >= Config.options.battery.full / 100)
 
     property bool isLowAndNotCharging: isLow && !isCharging
     property bool isCriticalAndNotCharging: isCritical && !isCharging

@@ -34,6 +34,8 @@ Singleton {
     property string shellConfigName: "config.json"
     property string shellConfigPath: `${Directories.shellConfig}/${Directories.shellConfigName}`
 	property string todoPath: FileUtils.trimFileProtocol(`${Directories.state}/user/todo.json`)
+	property string pendientesPath: FileUtils.trimFileProtocol(`${Directories.state}/user/pendientes.json`)
+	property string pendingUpdatesPath: FileUtils.trimFileProtocol(`${Directories.state}/user/pending_updates.json`)
 	property string notesPath: FileUtils.trimFileProtocol(`${Directories.state}/user/notes.txt`)
 	property string conflictCachePath: FileUtils.trimFileProtocol(`${Directories.cache}/conflict-killer`)
     property string notificationsPath: FileUtils.trimFileProtocol(`${Directories.cache}/notifications/notifications.json`)
@@ -54,6 +56,7 @@ Singleton {
     // Cleanup on init
     Component.onCompleted: {
         Quickshell.execDetached(["mkdir", "-p", `${shellConfig}`])
+        Quickshell.execDetached(["mkdir", "-p", `${FileUtils.parentDirectory(todoPath)}`])
         Quickshell.execDetached(["mkdir", "-p", `${favicons}`])
         Quickshell.execDetached(["bash", "-c", `rm -rf '${coverArt}'; mkdir -p '${coverArt}'`])
         Quickshell.execDetached(["bash", "-c", `rm -rf '${booruPreviews}'; mkdir -p '${booruPreviews}'`])

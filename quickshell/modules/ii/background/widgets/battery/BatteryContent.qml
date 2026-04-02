@@ -49,13 +49,14 @@ Item {
         
         for (let i = 0; i < devices.length; i++) {
             const dev = devices[i]
-            if (dev.type === UPowerDeviceType.LinePower) continue
+            // Ignorar cargadores y dispositivos desconocidos/sin carga
+            if (dev.type === UPowerDeviceType.LinePower || dev.type === UPowerDeviceType.Unknown || dev.percentage <= 0) continue
             
             let icon = "battery_std"
             if (dev.type === UPowerDeviceType.Battery) icon = "laptop_mac"
             else if (dev.type === UPowerDeviceType.Mouse) icon = "mouse"
             else if (dev.type === UPowerDeviceType.Keyboard) icon = "keyboard"
-            else if (dev.type === UPowerDeviceType.Headphones) icon = "headphones"
+            else if (dev.type === UPowerDeviceType.Headset || dev.type === UPowerDeviceType.Headphones) icon = "headphones"
             else if (dev.type === UPowerDeviceType.Phone) icon = "smartphone"
             else if (dev.type === UPowerDeviceType.Tablet) icon = "tablet_mac"
             else if (dev.type === UPowerDeviceType.Monitor) icon = "monitor"
@@ -71,6 +72,7 @@ Item {
 
     Rectangle {
         id: mainContainer
+        visible: deviceModel.count > 0
         implicitWidth: devicesLayout.implicitWidth + 50
         implicitHeight: devicesLayout.implicitHeight + 50
         radius: Appearance.rounding.large
