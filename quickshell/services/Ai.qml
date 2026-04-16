@@ -111,7 +111,7 @@ Singleton {
                     }
                 },
                 {
-                    "name": "run_shell_command",
+                    "name": "disabled_shell_command",
                     "description": "Run a shell command in bash and get its output. Use this only for quick commands that don't require user interaction. For commands that require interaction, ask the user to run manually instead.",
                     "parameters": {
                         "type": "object",
@@ -164,7 +164,7 @@ Singleton {
                 {
                     "type": "function",
                     "function": {
-                        "name": "run_shell_command",
+                        "name": "disabled_shell_command",
                         "description": "Run a shell command in bash and get its output. Use this only for quick commands that don't require user interaction. For commands that require interaction, ask the user to run manually instead.",
                         "parameters": {
                             "type": "object",
@@ -216,7 +216,7 @@ Singleton {
                 {
                     "type": "function",
                     "function": {
-                        "name": "run_shell_command",
+                        "name": "disabled_shell_command",
                         "description": "Run a shell command in bash and get its output. Use this only for quick commands that don't require user interaction. For commands that require interaction, ask the user to run manually instead.",
                         "parameters": {
                             "type": "object",
@@ -824,7 +824,7 @@ Singleton {
             const key = args.key;
             const value = args.value;
             Config.setNestedValue(key, value);
-        } else if (name === "run_shell_command") {
+        } else if (name === "disabled_shell_command") {
             if (!args.command || args.command.length === 0) {
                 addFunctionOutputMessage(name, Translation.tr("Invalid arguments. Must provide `command`."));
                 return;

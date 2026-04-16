@@ -140,6 +140,7 @@ return {
       require("inc_rename").setup()
     end,
   },
+  --[[
   {
     'MeanderingProgrammer/render-markdown.nvim',
     ft = { "markdown", "quarto" },
@@ -151,6 +152,7 @@ return {
       require('render-markdown').setup({})
     end,
   },
+  ]]--
   --/////////////// TEST \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
   { "Isrothy/neominimap.nvim",
   init = function()

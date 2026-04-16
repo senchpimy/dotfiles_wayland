@@ -1,6 +1,6 @@
 #!/bin/bash
 
-folders=("alacritty" "hyde" "hypr" "lvim" "rofi" "wal" "waybar" "wlogout" "lf" "eww" "spicetify"  "ags" "matugen" "rio" "cava" "quickshell" "nwg-dock-hyprland" "kitty" "nvim" "flameshot")
+folders=("alacritty" "hyde" "hypr" "lvim" "rofi" "wal" "waybar" "wlogout" "lf" "eww" "spicetify"  "ags" "matugen" "rio" "cava" "quickshell" "nwg-dock-hyprland" "kitty" "nvim" "flameshot" "mpv" "marmol" "awesome")
 
 source="/home/plof/configs"
 
@@ -14,4 +14,4 @@ echo "Enlaces simbólicos creados para todas las carpetas."
 
 ln -s $source/.zshrc ~/.zshrc
 ln -s $source/.Xdefaults ~/.Xdefaults
-ln -s $source/bin ~/.local/share/bin
+ln -s $source/bin ~/.local/share

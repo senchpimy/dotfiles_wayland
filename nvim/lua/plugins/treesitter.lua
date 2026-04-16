@@ -1,15 +1,23 @@
-if true then return {} end -- WARN: REMOVE THIS LINE TO ACTIVATE THIS FILE
-
--- Customize Treesitter
-
----@type LazySpec
 return {
   "nvim-treesitter/nvim-treesitter",
   opts = {
     ensure_installed = {
       "lua",
       "vim",
-      -- add more arguments for adding more treesitter parsers
+      "python",
+      "markdown",
+    },
+    highlight = {
+      enable = true,
+      -- Si Treesitter da error de 'range', desactivamos el resaltado para Python temporalmente
+      -- para que el LSP (Pyright/Pylsp) tome el control sin crashes.
+      disable = function(lang, buf)
+        if lang == "python" then return true end
+        return false
+      end,
+    },
+    indent = {
+      enable = false, -- Desactivamos indent para evitar el error de node:range()
     },
   },
 }

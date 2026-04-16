@@ -6,16 +6,12 @@ import Quickshell.Services.Mpris
 import Qt5Compat.GraphicalEffects
 import qs.modules.common.functions
 import qs.modules.common
+import qs.modules.common.widgets
+import qs.modules.common.models
 
 Item {
     id: root
     property bool isDesktop: false
-    
-    // Cargamos los colores del tema original
-    Loader {
-        id: strLoad
-        source: "../../../../lockscreen/ImagePath.qml"
-    }
     
     // Lista de todos los players disponibles
     property var allPlayers: Mpris.players.values
@@ -45,7 +41,7 @@ Item {
                 width: 8
                 height: 8
                 radius: 4
-                color: index === root.currentPlayerIndex ? "#E0E4DB" : "#555555"
+                color: index === root.currentPlayerIndex ? Appearance.colors.colOnLayer0 : Appearance.colors.colSubtext
                 opacity: index === root.currentPlayerIndex ? 1.0 : 0.5
                 
                 Behavior on color { ColorAnimation { duration: 200 } }
@@ -104,43 +100,66 @@ Item {
                     height: root.height
                     
                     property var player: modelData
+                    property string artUrl: player ? (player.metadata["mpris:artUrl"] || "") : ""
                     
+                    ColorQuantizer {
+                        id: colorQuantizer
+                        source: artUrl
+                        depth: 0
+                        rescaleSize: 1
+                    }
+
+                    property color artDominantColor: ColorUtils.mix((colorQuantizer?.colors[0] ?? Appearance.colors.colPrimary), Appearance.colors.colPrimaryContainer, 0.8)
+                    
+                    property QtObject blendedColors: AdaptedMaterialScheme {
+                        color: artDominantColor
+                    }
+
                     ColumnLayout {
                         anchors.horizontalCenter: parent.horizontalCenter
                         
-                        // Fondo con gradiente original
+                        // Fondo con el mismo efecto que en el escritorio
                         Rectangle {
+                            id: background
                             height: 150
                             width: 600
                             radius: Appearance.rounding.large
-                            
-                            gradient: Gradient {
-                                GradientStop {
-                                    position: 0.0
-                                    color: {
-                                        if (root.isDesktop) return Appearance.colors.colPrimaryContainer
-                                        return strLoad.item ? strLoad.item.containerGradientStart : "#66749b15"
-                                    }
-                                }
-                                GradientStop {
-                                    position: 1.0
-                                    color: {
-                                        if (root.isDesktop) return Appearance.colors.colPrimaryContainer
-                                        return strLoad.item ? strLoad.item.containerGradientEnd : "#33749b15"
-                                    }
-                                }
-                            }
-                            
-                            border.width: 0
+                            color: ColorUtils.applyAlpha(blendedColors.colLayer0, 1)
                             
                             layer.enabled: true
-                            layer.effect: DropShadow {
-                                color: strLoad.item ? strLoad.item.containerShadowColor : "#40000000"
-                                radius: 12
-                                samples: 20
-                                horizontalOffset: 0
-                                verticalOffset: 5
+                            layer.effect: OpacityMask {
+                                maskSource: Rectangle {
+                                    width: background.width
+                                    height: background.height
+                                    radius: background.radius
+                                }
                             }
+
+                            Image {
+                                id: blurredArt
+                                anchors.fill: parent
+                                source: artUrl
+                                sourceSize.width: background.width
+                                sourceSize.height: background.height
+                                fillMode: Image.PreserveAspectCrop
+                                cache: true
+                                antialiasing: true
+                                asynchronous: true
+
+                                layer.enabled: true
+                                layer.effect: StyledBlurEffect {
+                                    source: blurredArt
+                                }
+
+                                Rectangle {
+                                    anchors.fill: parent
+                                    color: ColorUtils.transparentize(blendedColors.colLayer0, 0.3)
+                                    radius: background.radius
+                                }
+                            }
+                            
+                            border.width: 1
+                            border.color: Appearance.colors.colLayer0Border
                         }
                         
                         // Contenido (Imagen y controles)
@@ -162,7 +181,7 @@ Item {
                                     
                                     Image {
                                         id: albumArt
-                                        source: player ? player.metadata["mpris:artUrl"] || "" : ""
+                                        source: artUrl
                                         width: 130
                                         height: 130
                                         fillMode: Image.PreserveAspectCrop
@@ -196,8 +215,8 @@ Item {
                                         }
                                         text: player ? player.identity : ""
                                         font.pointSize: 10
-                                        font.family: "Google Sans"
-                                        color: "#888888"
+                                        font.family: Appearance.font.family.main
+                                        color: blendedColors.colSubtext
                                         renderType: Text.NativeRendering
                                     }
                                     
@@ -213,8 +232,8 @@ Item {
                                         }
                                         font.pointSize: 21
                                         font.bold: true
-                                        font.family: "Google Sans"
-                                        color: "#E0E4DB"
+                                        font.family: Appearance.font.family.title
+                                        color: blendedColors.colOnLayer0
                                         renderType: Text.NativeRendering
                                     }
                                     
@@ -232,8 +251,8 @@ Item {
                                             return String(artist)
                                         }
                                         font.pointSize: 15
-                                        font.family: "Google Sans"
-                                        color: "#555555"
+                                        font.family: Appearance.font.family.main
+                                        color: blendedColors.colSubtext
                                         renderType: Text.NativeRendering
                                     }
                                     

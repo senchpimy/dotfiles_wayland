@@ -1,5 +1,5 @@
 [config]
-post_hook = 'gsettings set org.gnome.desktop.interface gtk-theme "adw-gtk3-dark" && gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"'
+post_hook = 'gsettings set org.gnome.desktop.interface gtk-theme "Adwaita" && gsettings set org.gnome.desktop.interface color-scheme "prefer-light" && gsettings set org.gnome.desktop.interface color-scheme "prefer-dark" && dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP && killall -q xdg-desktop-portal-gtk && killall -q xdg-desktop-portal'
 
 [templates.quickshell]
 input_path = '~/.config/matugen/templates/ImagePath.qml'
@@ -13,6 +13,10 @@ output_path = '~/.config/quickshell/modules/ii/lockscreen/ImagePath.qml'
 [templates.hyprlock]
 input_path = '~/.config/matugen/templates/colors-hyprland.conf'
 output_path = '~/.config/hypr/colors.conf'
+
+#[templates.rofi]
+#input_path = '~/.config/matugen/templates/colors-hyprland.conf'
+#output_path = '~/.config/hypr/colors.conf'
 
 [templates.wlogout]
 input_path = '~/.config/matugen/templates/theme.css'

@@ -1,6 +1,6 @@
-/* Colores dinámicos para Thunar y GTK3 */
+/* Forzado de Colores Oscuros para el Selector de Archivos (Eliminando fondos Adwaita Light) */
 
-/* Colores Base */
+/* Variables de Matugen */
 @define-color theme_bg_color {{colors.surface_container.default.hex}};
 @define-color theme_fg_color {{colors.on_surface.default.hex}};
 @define-color theme_base_color {{colors.surface.default.hex}};
@@ -8,94 +8,86 @@
 @define-color theme_selected_bg_color {{colors.primary.default.hex}};
 @define-color theme_selected_fg_color {{colors.on_primary.default.hex}};
 
-/* Principal - Usamos surface para que sea un poco más claro que surface_container si es necesario */
-window, 
+/* Sobreescribir variables del sistema para evitar el color #f6f5f4 */
+@define-color window_bg_color @theme_bg_color;
+@define-color window_fg_color @theme_fg_color;
+@define-color view_bg_color @theme_base_color;
+@define-color view_fg_color @theme_text_color;
+@define-color headerbar_bg_color {{colors.surface_container_high.default.hex}};
+@define-color headerbar_fg_color @theme_fg_color;
+@define-color sidebar_bg_color {{colors.surface_container_low.default.hex}};
+@define-color sidebar_fg_color @theme_fg_color;
+
+/* 1. ELIMINAR EL FONDO CLARO (#f6f5f4) DE LAS VENTANAS Y DIÁLOGOS */
+window,
+dialog,
+filechooser,
 .background,
-thunar-window,
-.thunar {
-    background-color: @theme_bg_color;
-    color: @theme_fg_color;
+stack,
+grid {
+    background-color: @theme_bg_color !important;
+    color: @theme_fg_color !important;
 }
 
-/* Área de archivos */
-standard-view,
-.standard-view,
-view,
+/* 2. ELIMINAR EL FONDO CLARO DE LAS LISTAS DE ARCHIVOS */
+treeview.view,
+list.view,
 .view,
-ThunarStandardView,
-ThunarIconView,
-ThunarTreeView,
-ThunarDetailsView {
-    background-color: @theme_base_color;
-    color: @theme_text_color;
+view,
+scrolledwindow {
+    background-color: @theme_base_color !important;
+    color: @theme_text_color !important;
 }
 
-/* Sidebar */
-.sidebar,
+/* 3. BARRA LATERAL (Donde suele aparecer el #f4f3f2) */
 .navigation-sidebar,
-scrolledwindow.sidebar,
-ThunarShortcutsView,
-ThunarTreeView,
-.shortcuts-pane,
-.tree-pane {
-    background-color: {{colors.surface_container_low.default.hex}};
+stacksidebar,
+.sidebar,
+viewport {
+    background-color: @sidebar_bg_color !important;
+    color: @theme_fg_color !important;
 }
 
-/* Toolbar y Barras */
-toolbar,
-.toolbar,
-.location-bar,
+/* Asegurar que los iconos en la barra lateral no se camuflen */
+.navigation-sidebar image,
+.sidebar image,
+stacksidebar row image {
+    color: @theme_fg_color !important;
+    opacity: 1.0 !important;
+}
+
+/* 4. BARRA SUPERIOR (HEADERBAR) */
 headerbar,
-menubar,
-.menubar {
-    background-color: {{colors.surface_container_high.default.hex}};
-    color: {{colors.on_surface.default.hex}};
+.headerbar,
+menubar {
+    background-color: @headerbar_bg_color !important;
+    color: @theme_fg_color !important;
 }
 
-/* Menus (File, Edit, View, etc.) */
-menubar > menuitem {
-    padding: 4px 8px;
+/* 5. TEXTOS SECUNDARIOS (Tipo de archivo, etc.) */
+/* Estos suelen quedarse en gris sobre blanco, los forzamos a color legible */
+label.dim-label,
+label:disabled,
+.dim-label {
+    color: {{colors.on_surface_variant.default.hex}} !important;
+    opacity: 1.0 !important;
 }
 
-menubar > menuitem label {
-    color: {{colors.on_surface.default.hex}};
+/* 6. BOTONES Y ENTRADAS */
+button {
+    background-color: {{colors.surface_container_highest.default.hex}} !important;
+    color: @theme_fg_color !important;
+    border: 1px solid {{colors.outline_variant.default.hex}} !important;
 }
 
-/* Manejo de Focus (Backdrop) */
-window:backdrop,
-.background:backdrop,
-thunar-window:backdrop {
-    color: {{colors.on_surface_variant.default.hex}};
-}
-
-menubar:backdrop,
-menubar > menuitem:backdrop,
-menubar > menuitem label:backdrop {
-    color: {{colors.on_surface_variant.default.hex}};
-}
-
-/* Barra de búsqueda / Entradas de texto */
 entry {
-    background-color: {{colors.surface_container_highest.default.hex}};
-    color: {{colors.on_surface.default.hex}};
-    border: 1px solid {{colors.outline.default.hex}};
-    border-radius: 6px;
-    padding: 4px;
+    background-color: {{colors.surface_container_highest.default.hex}} !important;
+    color: @theme_fg_color !important;
 }
 
-entry:focus {
-    border-color: @theme_selected_bg_color;
-}
-
-/* Selección */
-view:selected,
-.view:selected,
-entry:selected {
-    background-color: @theme_selected_bg_color;
-    color: @theme_selected_fg_color;
-}
-
-/* Separadores */
-separator {
-    background-color: transparent;
+/* 7. SELECCIÓN */
+:selected,
+:selected:focus {
+    background-color: @theme_selected_bg_color !important;
+    color: @theme_selected_fg_color !important;
 }

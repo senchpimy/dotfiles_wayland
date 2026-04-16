@@ -19,13 +19,13 @@ switch() {
 
 	# ags run-js "wallpaper.set('')"
 	# sleep 0.1 && ags run-js "wallpaper.set('${imgpath}')" &
-	swww img "$imgpath" --transition-step 100 --transition-fps 120 \
+	awww img "$imgpath" --transition-step 100 --transition-fps 120 \
 		--transition-type grow --transition-angle 30 --transition-duration 1 \
 		--transition-pos "$cursorposx, $cursorposy_inverted"
 }
 
 if [ "$1" == "--noswitch" ]; then
-	imgpath=$(swww query | awk -F 'image: ' '{print $2}')
+	imgpath=$(awww query | awk -F 'image: ' '{print $2}')
 	# imgpath=$(ags run-js 'wallpaper.get(0)')
 elif [[ "$1" ]]; then
 	switch "$1"

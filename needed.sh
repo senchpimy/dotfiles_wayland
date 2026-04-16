@@ -74,7 +74,7 @@ paru -S --needed \
     screenfetch \
     spotify \
     starship \
-    swww \
+    awww \
     texlive-core \
     texlive-latexextra \
     texlive-pictures \

@@ -107,5 +107,5 @@ fi
 
 #// wallpaper
 
-"${scrDir}/swwwallpaper.sh" -s "$(readlink "${hydeThemeDir}/wall.set")"
+"${scrDir}/awwwallpaper.sh" -s "$(readlink "${hydeThemeDir}/wall.set")"
 

@@ -249,9 +249,31 @@ wtf() {
 }
 eval "$(starship init zsh)"
 
-export ANDROID_HOME=/opt/android-sdk
-export PATH=$PATH:$ANDROID_HOME/emulator
+#export ANDROID_HOME=/opt/android-sdk
+#export PATH=$PATH:$ANDROID_HOME/emulator
+#export PATH=$PATH:$ANDROID_HOME/platform-tools
+#export PATH=$PATH:$ANDROID_HOME/tools/bin
+#export ANDROID_NDK_ROOT=/opt/android-sdk/ndk/27.1.12297006
+##export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+#export PATH=$JAVA_HOME/bin:$PATH
+#export ANDROID_HOME=$HOME/Android/Sdk
+#export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH
+
+# --- ANDROID CONFIG ---
+export ANDROID_HOME=$HOME/Android/Sdk
+export ANDROID_NDK_ROOT=$ANDROID_HOME/ndk/26.1.10909125
+
+# Java 17 es obligatorio (Asegúrate que el path sea correcto en Arch)
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+
+
+# PATH unificado
+export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
 export PATH=$PATH:$ANDROID_HOME/platform-tools
-export PATH=$PATH:$ANDROID_HOME/tools/bin
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$JAVA_HOME/bin
+
+
+export PATH="/root/.bun/bin:$PATH"
 export ELECTRON_OZONE_PLATFORM_HINT=wayland
-export ANDROID_NDK_ROOT=/opt/android-sdk/ndk/27.1.12297006
+export OLLAMA_MODELS="/home/plof/AI/ollama_models"
