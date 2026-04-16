@@ -46,7 +46,7 @@ Item {
             visible: Config.options.bar.utilButtons.showScreenSnip
             sourceComponent: CircleUtilButton {
                 Layout.alignment: Qt.AlignVCenter
-                onClicked: Hyprland.dispatch("exec flameshot gui")
+                onClicked: Hyprland.dispatch("exec XDG_CURRENT_DESKTOP=sway flameshot gui")
                 MaterialSymbol {
                     horizontalAlignment: Qt.AlignHCenter
                     fill: 1
