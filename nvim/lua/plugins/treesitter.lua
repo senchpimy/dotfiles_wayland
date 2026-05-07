@@ -9,12 +9,9 @@ return {
     },
     highlight = {
       enable = true,
-      -- Si Treesitter da error de 'range', desactivamos el resaltado para Python temporalmente
-      -- para que el LSP (Pyright/Pylsp) tome el control sin crashes.
-      disable = function(lang, buf)
-        if lang == "python" then return true end
-        return false
-      end,
+      -- Si Treesitter da error de 'range', desactivamos el resaltado para ciertos lenguajes
+      -- para que el LSP tome el control sin crashes en versiones experimentales.
+      disable = function(lang, buf) return false end,
     },
     indent = {
       enable = false, -- Desactivamos indent para evitar el error de node:range()

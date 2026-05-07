@@ -1,3 +1,7 @@
+-- Silenciar avisos de deprecación (ESENCIAL al inicio en versiones experimentales)
+vim.deprecate = function() end
+vim.g.deprecation_warnings = false
+
 -- This file simply bootstraps the installation of Lazy.nvim and then calls other files for execution
 -- This file doesn't necessarily need to be touched, BE CAUTIOUS editing this file and proceed at your own risk.
 local lazypath = vim.env.LAZY or vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
@@ -55,3 +59,16 @@ vim.g.neominimap = {
 
 
 vim.keymap.set("n", "<C-f>", "<Cmd>Yazi toggle<CR>")
+
+-- Fix for Neovim v0.12 Treesitter Markdown crash
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
+  callback = function(args)
+    pcall(vim.treesitter.stop, args.buf)
+    vim.bo[args.buf].syntax = "on"
+  end,
+})
+
+-- Silenciar avisos de deprecación (útil en versiones experimentales de nvim)
+-- Neovim v0.12 usa vim.deprecate para estos mensajes.
+vim.deprecate = function() end

@@ -1,5 +1,3 @@
-if true then return {} end -- WARN: REMOVE THIS LINE TO ACTIVATE THIS FILE
-
 -- Customize Mason
 
 ---@type LazySpec
@@ -13,9 +11,11 @@ return {
       ensure_installed = {
         -- install language servers
         "lua-language-server",
+        "texlab",
 
         -- install formatters
         "stylua",
+        "bibtex-tidy",
 
         -- install debuggers
         "debugpy",
@@ -23,18 +23,18 @@ return {
         -- install any other package
         "tree-sitter-cli",
         "pyright",
-        "tsserver",
-        "html",
-        "cssls",
-        "tailwindcss",
-        "jsonls",
-        "yamlls",
+        "typescript-language-server",
+        "html-lsp",
+        "css-lsp",
+        "tailwindcss-language-server",
+        "json-lsp",
+        "yaml-language-server",
         "marksman", -- Para Markdown
-        "bashls",   -- Para scripts de Shell
+        "bash-language-server",   -- Para scripts de Shell
         "gopls",    -- Para Go
-        "rust_analyzer", -- Para Rust
-        "dockerls", -- Para Dockerfiles
-        "eslint", -- ESlint como linter/formateador
+        "rust-analyzer", -- Para Rust
+        "dockerfile-language-server", -- Para Dockerfiles
+        "eslint-lsp", -- ESlint como linter/formateador
       },
     },
   },

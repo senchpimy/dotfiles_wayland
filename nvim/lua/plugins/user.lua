@@ -2,9 +2,9 @@
 return {
 
   --"andweeb/presence.nvim", -- Discord trash/ migth use
-      "benlubas/molten-nvim",
-  "sindrets/diffview.nvim" ,
-{
+  "benlubas/molten-nvim",
+  "sindrets/diffview.nvim",
+  {
     "ray-x/lsp_signature.nvim",
     event = "BufRead", -- Carga el plugin cuando abres un archivo
     opts = {
@@ -13,29 +13,34 @@ return {
         border = "rounded", -- Estilo del borde: "rounded", "single", "double", "shadow"
       },
       hint_prefix = "💡 ", -- Prefijo para la ayuda de parámetros (puedes usar "🐼 ", "▸ ", etc.)
-      zindex = 200,      -- Asegura que la ventana flotante aparezca sobre otros elementos como el menú de autocompletado
-      doc_lines = 5,     -- Muestra hasta 5 líneas de documentación en la ventana flotante
+      zindex = 200, -- Asegura que la ventana flotante aparezca sobre otros elementos como el menú de autocompletado
+      doc_lines = 5, -- Muestra hasta 5 líneas de documentación en la ventana flotante
       floating_window_above_cur_line = true, -- Intenta mostrar la ventana sobre la línea actual para no tapar el autocompletado
-      max_width = 80,    -- Ancho máximo de la ventana flotante
+      max_width = 80, -- Ancho máximo de la ventana flotante
     },
     config = function(_, opts)
       require("lsp_signature").setup(opts)
 
-      vim.keymap.set({ 'n' }, '<leader>lk', function()
-        require('lsp_signature').toggle_float_win()
-      end, { silent = true, noremap = true, desc = 'Toggle signature help' })
-    end
+      vim.keymap.set(
+        { "n" },
+        "<leader>lk",
+        function() require("lsp_signature").toggle_float_win() end,
+        { silent = true, noremap = true, desc = "Toggle signature help" }
+      )
+    end,
   },
   {
     "folke/snacks.nvim",
     opts = {
+      -- indent = { enabled = false },
+      --scope = { enabled = false },
       dashboard = {
         sections = {
           {
-            section='terminal',
+            section = "terminal",
             --cmd = 'chafa ~/img.jpg --format symbols --symbols vhalf --size 60x17 --stretch; sleep .1',
             cmd = "pokemon-colorscripts -r --no-title; sleep .1",
-            random=18,
+            random = 18,
             height = 18,
             padding = 1,
           },
@@ -44,7 +49,7 @@ return {
             { section = "keys", gap = 1, padding = 1 },
             --{ section = "startup" },
           },
-        }
+        },
       },
     },
   },
@@ -93,9 +98,7 @@ return {
   { "jeetsukumaran/vim-indentwise" },
   {
     "senchpimy/liverserver.nvim",
-    config = function()
-      require('liveserver')
-    end
+    config = function() require "liveserver" end,
   },
   {
     "kylechui/nvim-surround",
@@ -104,7 +107,7 @@ return {
     opts = {},
   },
   {
-  "mikavilpas/yazi.nvim",
+    "mikavilpas/yazi.nvim",
     config = function()
       require("yazi").setup()
       vim.keymap.set("n", "<C-f>", "<Cmd>Yazi<CR>")
@@ -127,55 +130,52 @@ return {
   {
     "hedyhli/outline.nvim",
     config = function()
-      vim.keymap.set("n", "<leader>o", "<cmd>Outline<CR>",
-        { desc = "Toggle Outline" })
+      vim.keymap.set("n", "<leader>o", "<cmd>Outline<CR>", { desc = "Toggle Outline" })
 
-      require("outline").setup {
-      }
+      require("outline").setup {}
     end,
   },
   {
     "smjonas/inc-rename.nvim",
-    config = function()
-      require("inc_rename").setup()
-    end,
+    config = function() require("inc_rename").setup() end,
   },
-  --[[
   {
-    'MeanderingProgrammer/render-markdown.nvim',
+    "MeanderingProgrammer/render-markdown.nvim",
+    enabled = false,
     ft = { "markdown", "quarto" },
-    after = { 'nvim-treesitter' },
-    dependencies = { 'echasnovski/mini.nvim', opt = true }, -- if you use the mini.nvim suite
+    after = { "nvim-treesitter" },
+    dependencies = { "echasnovski/mini.nvim", opt = true }, -- if you use the mini.nvim suite
     -- requires = { 'echasnovski/mini.icons', opt = true }, -- if you use standalone mini plugins
     -- requires = { 'nvim-tree/nvim-web-devicons', opt = true }, -- if you prefer nvim-web-devicons
-    config = function()
-      require('render-markdown').setup({})
-    end,
+    config = function() require("render-markdown").setup {} end,
   },
-  ]]--
   --/////////////// TEST \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-  { "Isrothy/neominimap.nvim",
-  init = function()
-    -- The following options are recommended when layout == "float"
-    vim.opt.wrap = false
-    vim.opt.sidescrolloff = 36 -- Set a large value
+  {
+    "Isrothy/neominimap.nvim",
+    init = function()
+      -- The following options are recommended when layout == "float"
+      vim.opt.wrap = false
+      vim.opt.sidescrolloff = 36 -- Set a large value
 
-    --- Put your configuration here
-    ---@type Neominimap.UserConfig
-    vim.g.neominimap = {
-      auto_enable = false,
-    }
-  end,
+      --- Put your configuration here
+      ---@type Neominimap.UserConfig
+      vim.g.neominimap = {
+        auto_enable = false,
+      }
+    end,
   },
   {
     "ThePrimeagen/refactoring.nvim",
     dependencies = {
-      { "nvim-lua/plenary.nvim" },
-      { "nvim-treesitter/nvim-treesitter" }
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+      "nvim-telescope/telescope.nvim",
     },
     config = function()
-      require("telescope").load_extension("refactoring")
-      require("refactoring").setup({
+      -- Fix for refactoring.nvim bug: it looks for 'async' but it should be 'plenary.async'
+      package.preload["async"] = function() return require "plenary.async" end
+
+      require("refactoring").setup {
         prompt_func_return_type = {
           go = true,
           python = true,
@@ -190,26 +190,27 @@ return {
           typescript = true,
           rust = true,
         },
-      })
+      }
+      -- Cargar la extensión de telescope de forma segura
+      pcall(require("telescope").load_extension, "refactoring")
 
       vim.keymap.set(
         { "n", "x" },
-        "<leader>rr", -- "Refactor Refactor"
-        function()
-          require("telescope").extensions.refactoring.refactors()
-        end,
+        "<leader>rr",
+        function() require("telescope").extensions.refactoring.refactors() end,
         { noremap = true, silent = true, desc = "[R]efactor -> [R]efactor menu" }
       )
-    end
+    end,
   },
   {
     "3rd/image.nvim",
+    -- enabled = false,
     ft = { "markdown", "norg" },
     config = function()
-      local image = require("image")
+      local image = require "image"
 
       ---@diagnostic disable-next-line: missing-fields
-      image.setup({
+      image.setup {
         backend = "kitty",
         integrations = {
           markdown = {
@@ -231,16 +232,17 @@ return {
         max_height = 8,
         max_height_window_percentage = math.huge,
         max_width_window_percentage = math.huge,
-        window_overlap_clear_enabled = true,    -- toggles images when windows are overlapped
+        window_overlap_clear_enabled = true, -- toggles images when windows are overlapped
         editor_only_render_when_focused = true, -- auto show/hide images when the editor gains/looses focus
         tmux_show_only_in_active_window = true, -- auto show/hide images in the correct Tmux window (needs visual-activity off)
         window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "fidget", "" },
-      })
+      }
     end,
   },
-  { "3rd/diagram.nvim",  dependencies = { "image.nvim" },      enabled = true, opts = {} },
+  { "3rd/diagram.nvim", dependencies = { "image.nvim" }, enabled = false, opts = {} },
   {
     "GCBallesteros/jupytext.nvim",
+    -- enabled = false,
     -- ft = { "ipynb" },
     opts = {
       style = "markdown",
@@ -248,9 +250,14 @@ return {
       force_ft = "markdown",
     },
   },
-  { "jmbuhr/otter.nvim", ft = { "markdown", "quarto", "norg" } },
+  {
+    "jmbuhr/otter.nvim",
+    -- enabled = false,
+    ft = { "markdown", "quarto", "norg" },
+  },
   {
     "quarto-dev/quarto-nvim",
+    enabled = false,
     dependencies = {
       "nvim-lspconfig",
       "hydra.nvim",
@@ -258,8 +265,8 @@ return {
     },
     ft = { "quarto", "markdown", "norg" },
     config = function()
-      local quarto = require("quarto")
-      quarto.setup({
+      local quarto = require "quarto"
+      quarto.setup {
         lspFeatures = {
           languages = { "python", "rust", "lua" },
           chunks = "all", -- 'curly' or 'all'
@@ -285,43 +292,36 @@ return {
           },
           default_method = "molten",
         },
-      })
+      }
 
-      vim.keymap.set("n", "<localleader>qp", quarto.quartoPreview,
-        { desc = "Preview the Quarto document", silent = true, noremap = true })
+      vim.keymap.set(
+        "n",
+        "<localleader>qp",
+        quarto.quartoPreview,
+        { desc = "Preview the Quarto document", silent = true, noremap = true }
+      )
       -- to create a cell in insert mode, I have the ` snippet
       vim.keymap.set("n", "<localleader>cc", "i`<c-j>", { desc = "Create a new code cell", silent = true })
-      vim.keymap.set("n", "<localleader>cs", "i```\r\r```{}<left>",
-        { desc = "Split code cell", silent = true, noremap = true })
+      vim.keymap.set(
+        "n",
+        "<localleader>cs",
+        "i```\r\r```{}<left>",
+        { desc = "Split code cell", silent = true, noremap = true }
+      )
 
       -- for more keybinds that I would use in a quarto document, see the configuration for molten
       --require("benlubas.hydra.notebook")
     end,
   },
   --/////////////// TEST \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-  
+
   {
     "chrisgrieser/nvim-spider",
     config = function()
-      vim.keymap.set(
-        { "n", "o", "x" },
-        "W",
-        "<cmd>lua require('spider').motion('w')<CR>",
-        { desc = "Spider-w" }
-      )
-      vim.keymap.set(
-        { "n", "o", "x" },
-        "E",
-        "<cmd>lua require('spider').motion('e')<CR>",
-        { desc = "Spider-e" }
-      )
-      vim.keymap.set(
-        { "n", "o", "x" },
-        "B",
-        "<cmd>lua require('spider').motion('b')<CR>",
-        { desc = "Spider-b" }
-      )
-    end
+      vim.keymap.set({ "n", "o", "x" }, "W", "<cmd>lua require('spider').motion('w')<CR>", { desc = "Spider-w" })
+      vim.keymap.set({ "n", "o", "x" }, "E", "<cmd>lua require('spider').motion('e')<CR>", { desc = "Spider-e" })
+      vim.keymap.set({ "n", "o", "x" }, "B", "<cmd>lua require('spider').motion('b')<CR>", { desc = "Spider-b" })
+    end,
   },
   { "RRethy/vim-illuminate" },
   --{ 'numToStr/Comment.nvim' },
@@ -346,7 +346,7 @@ return {
   {
     "anuvyklack/hydra.nvim",
     config = function()
-      local Hydra = require('hydra')
+      local Hydra = require "hydra"
       local window_hint = [[
         ^ ^^ Move     ^^Size   ^^   ^^Split   ^^   ^^Buffers
         ^ ^-------^^  ^^------^^   ^^----------^^ ^^---------
@@ -355,38 +355,37 @@ return {
         ^^   ^^ _j_ ^^      ^^ _-_   ^^   ^^_Q_: cerrar^^ ^^_J_:Vert2Hor
         	            ^^_=_: igual^
         ]]
-      Hydra({
+      Hydra {
         name = "Windows",
         hint = window_hint,
         config = {},
-        mode = 'n',
-        body = '<C-w>',
+        mode = "n",
+        body = "<C-w>",
         heads = {
-          { '+', '<Cmd>res +3<CR>',                       { desc = 'Aumentar horizontal' } },
-          { '-', '<Cmd>res -3<CR>',                       { desc = 'Disminuir horizontal' } },
-          { '=', '<Cmd>wincmd =<CR>',                     { desc = 'Igualar horizontal' } },
-          { '<', '<Cmd>vertical resize -3<CR>',           { desc = 'Disminuir vertical' } },
-          { '>', '<Cmd>vertical resize +3<CR>',           { desc = 'Aumentar vertical' } },
-          { 's', '<Cmd>wincmd s<CR>',                     { desc = 'Dividir Horizontal' } },
-          { 'l', '<Cmd>wincmd l<CR>',                     { desc = 'Navegar Izquierda' } },
-          { 'h', '<Cmd>wincmd h<CR>',                     { desc = 'Navegar Derecha' } },
-          { 'v', '<Cmd>wincmd v<CR>',                     { desc = 'Dividr Vertical' } },
-          { 'w', '<Cmd>wincmd w<CR>',                     { desc = 'Intercambiar cursor' } },
-          { 'j', '<Cmd>wincmd j<CR>',                     { desc = 'Navegar Abajo' } },
-          { 'r', '<Cmd>wincmd r<CR>',                     { desc = 'Intercambiar los buffers' } },
-          { 'k', '<Cmd>wincmd k<CR>',                     { desc = 'Navegar Arriba' } },
-          { 'Q', '<Cmd>try | close | catch | endtry<CR>', { desc = 'Cerrar buffer' } },
-          { 'H', '<Cmd>wincmd H<CR>',                     { desc = 'Pasar de horizontal a vertical ' } },
-          { 'J', '<Cmd>wincmd J<CR>',                     { desc = 'Pasar de vertical a horizontal' } } },
-      })
-    end
+          { "+", "<Cmd>res +3<CR>", { desc = "Aumentar horizontal" } },
+          { "-", "<Cmd>res -3<CR>", { desc = "Disminuir horizontal" } },
+          { "=", "<Cmd>wincmd =<CR>", { desc = "Igualar horizontal" } },
+          { "<", "<Cmd>vertical resize -3<CR>", { desc = "Disminuir vertical" } },
+          { ">", "<Cmd>vertical resize +3<CR>", { desc = "Aumentar vertical" } },
+          { "s", "<Cmd>wincmd s<CR>", { desc = "Dividir Horizontal" } },
+          { "l", "<Cmd>wincmd l<CR>", { desc = "Navegar Izquierda" } },
+          { "h", "<Cmd>wincmd h<CR>", { desc = "Navegar Derecha" } },
+          { "v", "<Cmd>wincmd v<CR>", { desc = "Dividr Vertical" } },
+          { "w", "<Cmd>wincmd w<CR>", { desc = "Intercambiar cursor" } },
+          { "j", "<Cmd>wincmd j<CR>", { desc = "Navegar Abajo" } },
+          { "r", "<Cmd>wincmd r<CR>", { desc = "Intercambiar los buffers" } },
+          { "k", "<Cmd>wincmd k<CR>", { desc = "Navegar Arriba" } },
+          { "Q", "<Cmd>try | close | catch | endtry<CR>", { desc = "Cerrar buffer" } },
+          { "H", "<Cmd>wincmd H<CR>", { desc = "Pasar de horizontal a vertical " } },
+          { "J", "<Cmd>wincmd J<CR>", { desc = "Pasar de vertical a horizontal" } },
+        },
+      }
+    end,
   },
   --{ 'andymass/vim-matchup' },
   {
     "phaazon/hop.nvim",
-    config = function()
-      require 'hop'.setup()
-    end
+    config = function() require("hop").setup() end,
   },
   { "lambdalisue/suda.vim" },
   { "github/copilot.vim" },
@@ -401,13 +400,13 @@ return {
     "norcalli/nvim-colorizer.lua",
     config = function()
       require("colorizer").setup({ "css", "scss", "html", "javascript", "json", "lua" }, {
-        RGB = true,      -- #RGB hex codes
-        RRGGBB = true,   -- #RRGGBB hex codes
+        RGB = true, -- #RGB hex codes
+        RRGGBB = true, -- #RRGGBB hex codes
         RRGGBBAA = true, -- #RRGGBBAA hex codes
-        rgb_fn = true,   -- CSS rgb() and rgba() functions
-        hsl_fn = true,   -- CSS hsl() and hsla() functions
-        css = true,      -- Enable all CSS features: rgb_fn, hsl_fn, names, RGB, RRGGBB
-        css_fn = true,   -- Enable all CSS *functions*: rgb_fn, hsl_fn
+        rgb_fn = true, -- CSS rgb() and rgba() functions
+        hsl_fn = true, -- CSS hsl() and hsla() functions
+        css = true, -- Enable all CSS features: rgb_fn, hsl_fn, names, RGB, RRGGBB
+        css_fn = true, -- Enable all CSS *functions*: rgb_fn, hsl_fn
       })
     end,
   },
@@ -452,33 +451,35 @@ return {
   --  end,
   --  dependencies = { { 'nvim-tree/nvim-web-devicons' } }
   --},
-  {"nvim-telescope/telescope.nvim"},
+  { "nvim-telescope/telescope.nvim" },
+  {
+    "windwp/nvim-ts-autotag",
+    enabled = false,
+  },
   {
     "giusgad/pets.nvim",
     dependencies = { "MunifTanjim/nui.nvim", "giusgad/hologram.nvim" },
-      config=function()
-        require("pets").setup(
-        {
-          row = 1, -- the row (height) to display the pet at (higher row means the pet is lower on the screen), must be 1<=row<=10
-          col = 0, -- the column to display the pet at (set to high number to have it stay still on the right side)
-          speed_multiplier = 1, -- you can make your pet move faster/slower. If slower the animation will have lower fps.
-          default_pet = "dog", -- the pet to use for the PetNew command
-          default_style = "brown", -- the style of the pet to use for the PetNew command
-          random = true, -- whether to use a random pet for the PetNew command, overrides default_pet and default_style
-          death_animation = true, -- animate the pet's death, set to false to feel less guilt -- currently no animations are available
-          popup = { -- popup options, try changing these if you see a rectangle around the pets
-            width = "30%", -- can be a string with percentage like "45%" or a number of columns like 45
-            winblend = 100, -- winblend value - see :h 'winblend' - only used if avoid_statusline is false
-            hl = { Normal = "Normal" }, -- hl is only set if avoid_statusline is true, you can put any hl group instead of "Normal"
-            avoid_statusline = false, -- if winblend is 100 then the popup is invisible and covers the statusline, if that
-            -- doesn't work for you then set this to true and the popup will use hl and will be spawned above the statusline (hopefully)
-          }
-        }
-      )
-      end
-  }
+    config = function()
+      require("pets").setup {
+        row = 1, -- the row (height) to display the pet at (higher row means the pet is lower on the screen), must be 1<=row<=10
+        col = 0, -- the column to display the pet at (set to high number to have it stay still on the right side)
+        speed_multiplier = 1, -- you can make your pet move faster/slower. If slower the animation will have lower fps.
+        default_pet = "dog", -- the pet to use for the PetNew command
+        default_style = "brown", -- the style of the pet to use for the PetNew command
+        random = true, -- whether to use a random pet for the PetNew command, overrides default_pet and default_style
+        death_animation = true, -- animate the pet's death, set to false to feel less guilt -- currently no animations are available
+        popup = { -- popup options, try changing these if you see a rectangle around the pets
+          width = "30%", -- can be a string with percentage like "45%" or a number of columns like 45
+          winblend = 100, -- winblend value - see :h 'winblend' - only used if avoid_statusline is false
+          hl = { Normal = "Normal" }, -- hl is only set if avoid_statusline is true, you can put any hl group instead of "Normal"
+          avoid_statusline = false, -- if winblend is 100 then the popup is invisible and covers the statusline, if that
+          -- doesn't work for you then set this to true and the popup will use hl and will be spawned above the statusline (hopefully)
+        },
+      }
+    end,
+  },
 }
 
 -- https://github.com/nvim-mini/mini.comment
 -- https://github.com/michaelb/sniprun
--- https://github.com/benlubas/molten-nvim 
+-- https://github.com/benlubas/molten-nvim
