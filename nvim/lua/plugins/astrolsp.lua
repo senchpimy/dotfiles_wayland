@@ -43,6 +43,18 @@ return {
     ---@diagnostic disable: missing-fields
     config = {
       -- clangd = { capabilities = { offsetEncoding = "utf-8" } },
+      texlab = {
+        capabilities = {
+          textDocument = {
+            semanticTokens = vim.NIL,
+          },
+        },
+        settings = {
+          texlab = {
+            semanticTokens = false, -- Algunas versiones de texlab aceptan esto
+          },
+        },
+      },
     },
     -- customize how language servers are attached
     handlers = {
@@ -96,8 +108,9 @@ return {
     -- A custom `on_attach` function to be run after the default `on_attach` function
     -- takes two parameters `client` and `bufnr`  (`:h lspconfig-setup`)
     on_attach = function(client, bufnr)
-      -- this would disable semanticTokensProvider for all clients
-      -- client.server_capabilities.semanticTokensProvider = nil
+      if vim.bo[bufnr].filetype == "tex" or vim.bo[bufnr].filetype == "latex" or client.name == "texlab" then
+        client.server_capabilities.semanticTokensProvider = nil
+      end
     end,
   },
 }

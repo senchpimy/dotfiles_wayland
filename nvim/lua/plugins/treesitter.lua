@@ -6,11 +6,10 @@ return {
       "vim",
       "python",
       "markdown",
+      "latex",
     },
     highlight = {
       enable = true,
-      -- Si Treesitter da error de 'range', desactivamos el resaltado para ciertos lenguajes
-      -- para que el LSP tome el control sin crashes en versiones experimentales.
       disable = function(lang, buf) return false end,
     },
     indent = {

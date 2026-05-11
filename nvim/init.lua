@@ -34,7 +34,7 @@ vim.keymap.set("n", "nh", ":HopWord<CR>")
 vim.keymap.set("n", "<TAB>", ":bnext<CR>")
 vim.keymap.set("n", "<S-TAB>", ":bprev<CR>")
 vim.keymap.set("n", "<C-c>", ":bdelete<CR>")
-vim.api.nvim_set_keymap('i', '<C-Tab>', 'copilot#Accept("<CR>")', { expr = true, silent = true, noremap = true })
+vim.api.nvim_set_keymap("i", "<C-Tab>", 'copilot#Accept("<CR>")', { expr = true, silent = true, noremap = true })
 vim.g.neovide_cursor_vfx_mode = "railgun"
 vim.g.neovide_cursor_trail_size = 1.0
 vim.g.neovide_cursor_animation_length = 0.1
@@ -43,20 +43,16 @@ vim.g.neovide_cursor_vfx_particle_density = 1.0
 
 function read_file_as_string(filepath)
   local file = io.open(filepath, "r")
-  if not file then
-    error("No se pudo abrir el archivo: " .. filepath)
-  end
+  if not file then error("No se pudo abrir el archivo: " .. filepath) end
 
-  local content = file:read("*a")
+  local content = file:read "*a"
   file:close()
   return content
 end
 
-
 vim.g.neominimap = {
-  auto_enable = false
+  auto_enable = false,
 }
-
 
 vim.keymap.set("n", "<C-f>", "<Cmd>Yazi toggle<CR>")
 
