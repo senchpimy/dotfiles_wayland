@@ -277,3 +277,4 @@ export PATH=$PATH:$JAVA_HOME/bin
 export PATH="/root/.bun/bin:$PATH"
 export ELECTRON_OZONE_PLATFORM_HINT=wayland
 export OLLAMA_MODELS="/home/plof/AI/ollama_models"
+export UV_CACHE_DIR="/home/plof/AI/uv_cache"

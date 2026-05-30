@@ -83,6 +83,45 @@ ExpandableChoiceButton {
                     }
                 }
             }
+
+            // Audio Profile Selector
+            ColumnLayout {
+                Layout.fillWidth: true
+                Layout.topMargin: 12
+                spacing: 6
+                visible: root.expanded && root.device?.connected && 
+                         (AudioProfiles.deviceProfiles[root.device?.address?.toUpperCase().replaceAll("-", ":")] !== undefined)
+
+                WText {
+                    text: Translation.tr("Audio Profile")
+                    font.pixelSize: Looks.font.pixelSize.base
+                    color: Looks.colors.subfg
+                    Layout.leftMargin: 4
+                }
+
+                Repeater {
+                    model: AudioProfiles.deviceProfiles[root.device?.address?.toUpperCase().replaceAll("-", ":")]?.profiles || []
+                    
+                    delegate: WButton {
+                        Layout.fillWidth: true
+                        implicitHeight: 32
+                        text: modelData.description
+                        horizontalAlignment: Text.AlignLeft
+                        Layout.leftMargin: 4
+                        
+                        readonly property bool active: AudioProfiles.deviceProfiles[root.device?.address?.toUpperCase().replaceAll("-", ":")]?.activeProfile === modelData.name
+                        
+                        colBackground: active ? Looks.colors.accent : Looks.colors.bg2
+                        colBackgroundHover: active ? Looks.colors.accentHover : Looks.colors.bg2Hover
+                        colForeground: active ? Looks.colors.onAccent : Looks.colors.fg
+
+                        onClicked: {
+                            const cardData = AudioProfiles.deviceProfiles[root.device?.address?.toUpperCase().replaceAll("-", ":")];
+                            AudioProfiles.setProfile(cardData.index, modelData.name);
+                        }
+                    }
+                }
+            }
         }
     }
 }

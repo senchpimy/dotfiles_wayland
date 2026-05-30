@@ -105,6 +105,66 @@ DialogListItem {
                 }
             }
         }
+
+        // Audio Profile Selector
+        ColumnLayout {
+            id: audioProfileSection
+            Layout.fillWidth: true
+            Layout.topMargin: 12
+            Layout.bottomMargin: 8
+            spacing: 4
+            
+            readonly property string deviceMac: AudioProfiles.getMacFromDevice(root.device)
+            readonly property var deviceData: AudioProfiles.deviceProfiles[deviceMac]
+            
+            visible: root.expanded && root.device?.connected && deviceMac !== ""
+
+            StyledText {
+                text: audioProfileSection.deviceData ? Translation.tr("Audio Profile") : Translation.tr("Looking for profiles...")
+                font.pixelSize: Appearance.font.pixelSize.smaller
+                color: Appearance.colors.colSubtext
+                Layout.leftMargin: 4
+            }
+
+            Repeater {
+                id: profileRepeater
+                model: audioProfileSection.deviceData?.profiles || []
+                
+                delegate: DialogListItem {
+                    id: profileItem
+                    Layout.fillWidth: true
+                    height: 36
+                    horizontalPadding: 8
+                    verticalPadding: 4
+                    
+                    readonly property var profile: modelData
+                    readonly property bool active: audioProfileSection.deviceData?.activeProfile === profile.name
+
+                    contentItem: RowLayout {
+                        anchors.fill: parent
+                        spacing: 12
+                        
+                        MaterialSymbol {
+                            text: profileItem.active ? "radio_button_checked" : "radio_button_unchecked"
+                            iconSize: Appearance.font.pixelSize.base
+                            color: profileItem.active ? Appearance.colors.colPrimary : Appearance.colors.colOnSurfaceVariant
+                        }
+                        
+                        StyledText {
+                            text: profile.description
+                            Layout.fillWidth: true
+                            elide: Text.ElideRight
+                            color: profileItem.active ? Appearance.colors.colPrimary : Appearance.colors.colOnSurfaceVariant
+                            font.pixelSize: Appearance.font.pixelSize.smaller
+                        }
+                    }
+                    
+                    onClicked: {
+                        AudioProfiles.setProfile(audioProfileSection.deviceData.index, profile.name);
+                    }
+                }
+            }
+        }
         Item {
             Layout.fillHeight: true
         }

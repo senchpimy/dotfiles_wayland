@@ -1,0 +1,126 @@
+-- General Configuration
+hl.config({
+	general = {
+		gaps_in = 4,
+		gaps_out = 5,
+		border_size = 3,
+
+		col = {
+			active_border = "rgb(787c99)",
+			inactive_border = "rgba(0a0a0ddb)",
+		},
+		--["col.inactive_border"] = "rgba(076978ff) rgba(CCF8FFff) 45deg",
+		--["col.active_border"] = "rgba(962D26ff) rgba(E08882ff) 50deg",
+		layout = "dwindle",
+		resize_on_border = true,
+		extend_border_grab_area = true,
+		snap = {
+			enabled = true,
+		},
+	},
+
+	input = {
+		kb_layout = "es",
+		follow_mouse = 1,
+		sensitivity = 1.0,
+		accel_profile = "flat",
+		force_no_accel = true,
+		touchpad = {
+			natural_scroll = false,
+		},
+	},
+
+	gestures = {
+		workspace_swipe_touch = true,
+		workspace_swipe_distance = 150,
+		workspace_swipe_cancel_ratio = 0.15,
+	},
+
+	dwindle = {
+		preserve_split = true,
+	},
+
+	misc = {
+		vrr = 1,
+		--vfr = 1,
+		disable_hyprland_logo = true,
+		disable_splash_rendering = true,
+		force_default_wallpaper = 0,
+		enable_swallow = false,
+		swallow_regex = "^(Alacritty|kitty|footclient|rio)$",
+		swallow_exception_regex = "^(?!.*firefox).+$",
+	},
+
+	xwayland = {
+		force_zero_scaling = true,
+	},
+
+	decoration = {
+		rounding = 30,
+		blur = {
+			enabled = true,
+			size = 8,
+			passes = 3,
+			new_optimizations = true,
+			ignore_opacity = true,
+			xray = false,
+			noise = 0.01,
+			contrast = 1.6,
+			brightness = 1.1,
+			vibrancy = 0.1696,
+			special = true,
+		},
+		dim_inactive = false,
+		dim_strength = 0.1,
+		dim_special = 0.3,
+		shadow = {
+			enabled = true,
+			range = 70,
+			render_power = 4,
+			offset = "5 10",
+			color = "rgb(000000)",
+			scale = 0.97,
+		},
+	},
+
+	group = {
+		col = {
+			border_active = "rgba(00000000)",
+			border_inactive = "rgba(00000000)",
+		},
+
+		groupbar = {
+			col = {
+				active = "rgba(080b00e6)",
+				inactive = "rgba(080b00b3)",
+			},
+
+			font_weight_active = "bold",
+			font_weight_inactive = "bold",
+
+			gradients = true,
+			font_size = 14,
+			height = 24,
+			gradient_rounding = 10,
+			text_color = "rgb(acb0d0)",
+
+			indicator_height = 0,
+			indicator_gap = 2,
+			keep_upper_gap = false,
+		},
+	},
+
+	cursor = {
+		no_hardware_cursors = true,
+	},
+
+	binds = {
+		allow_workspace_cycles = true,
+		movefocus_cycles_fullscreen = true,
+	},
+
+	debug = {
+		disable_scale_checks = true,
+		damage_tracking = 0, -- off
+	},
+})

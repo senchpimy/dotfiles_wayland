@@ -1,4 +1,4 @@
-/* Forzado de Colores Oscuros para el Selector de Archivos (Eliminando fondos Adwaita Light) */
+/* Forzado de Colores Oscuros (Plantilla Matugen para GTK3/4 con Parche Adwaita) */
 
 /* Variables de Matugen */
 @define-color theme_bg_color {{colors.surface_container.default.hex}};
@@ -8,7 +8,7 @@
 @define-color theme_selected_bg_color {{colors.primary.default.hex}};
 @define-color theme_selected_fg_color {{colors.on_primary.default.hex}};
 
-/* Sobreescribir variables del sistema para evitar el color #f6f5f4 */
+/* PARCHE CRÍTICO PARA LIBADWAITA (Nautilus) */
 @define-color window_bg_color @theme_bg_color;
 @define-color window_fg_color @theme_fg_color;
 @define-color view_bg_color @theme_base_color;
@@ -18,40 +18,59 @@
 @define-color sidebar_bg_color {{colors.surface_container_low.default.hex}};
 @define-color sidebar_fg_color @theme_fg_color;
 
-/* 1. ELIMINAR EL FONDO CLARO (#f6f5f4) DE LAS VENTANAS Y DIÁLOGOS */
+/* Sobreescribir variables internas de Adwaita para evitar el color claro sin foco */
+@define-color sidebar_backdrop_color @sidebar_bg_color;
+@define-color headerbar_backdrop_color @headerbar_bg_color;
+@define-color window_backdrop_color @theme_bg_color;
+
+/* 1. VENTANAS Y FONDO */
 window,
 dialog,
 filechooser,
 .background,
 stack,
-grid {
+grid,
+window:backdrop,
+dialog:backdrop {
     background-color: @theme_bg_color !important;
     color: @theme_fg_color !important;
 }
 
-/* 2. ELIMINAR EL FONDO CLARO DE LAS LISTAS DE ARCHIVOS */
+/* 2. LISTAS Y VISTAS DE ARCHIVOS */
 treeview.view,
 list.view,
 .view,
 view,
-scrolledwindow {
+scrolledwindow,
+treeview.view:backdrop,
+list.view:backdrop,
+.view:backdrop {
     background-color: @theme_base_color !important;
     color: @theme_text_color !important;
 }
 
-/* 3. BARRA LATERAL (Donde suele aparecer el #f4f3f2) */
+/* 3. BARRA LATERAL (FIX FINAL) */
 .navigation-sidebar,
 stacksidebar,
 .sidebar,
-viewport {
+viewport,
+.navigation-sidebar:backdrop,
+stacksidebar:backdrop,
+.sidebar:backdrop {
     background-color: @sidebar_bg_color !important;
     color: @theme_fg_color !important;
 }
 
-/* Asegurar que los iconos en la barra lateral no se camuflen */
+/* Asegurar que el texto y los iconos se vean en la barra lateral */
+.navigation-sidebar label,
 .navigation-sidebar image,
+.sidebar label,
 .sidebar image,
-stacksidebar row image {
+stacksidebar row label,
+stacksidebar row image,
+.navigation-sidebar:backdrop label,
+.navigation-sidebar:backdrop image,
+.navigation-sidebar:backdrop row label {
     color: @theme_fg_color !important;
     opacity: 1.0 !important;
 }
@@ -59,35 +78,40 @@ stacksidebar row image {
 /* 4. BARRA SUPERIOR (HEADERBAR) */
 headerbar,
 .headerbar,
-menubar {
+menubar,
+headerbar:backdrop,
+.headerbar:backdrop {
     background-color: @headerbar_bg_color !important;
     color: @theme_fg_color !important;
 }
 
-/* 5. TEXTOS SECUNDARIOS (Tipo de archivo, etc.) */
-/* Estos suelen quedarse en gris sobre blanco, los forzamos a color legible */
+/* 5. TEXTOS SECUNDARIOS */
 label.dim-label,
 label:disabled,
-.dim-label {
+.dim-label,
+label.dim-label:backdrop {
     color: {{colors.on_surface_variant.default.hex}} !important;
     opacity: 1.0 !important;
 }
 
 /* 6. BOTONES Y ENTRADAS */
-button {
+button,
+button:backdrop {
     background-color: {{colors.surface_container_highest.default.hex}} !important;
     color: @theme_fg_color !important;
     border: 1px solid {{colors.outline_variant.default.hex}} !important;
 }
 
-entry {
+entry,
+entry:backdrop {
     background-color: {{colors.surface_container_highest.default.hex}} !important;
     color: @theme_fg_color !important;
 }
 
 /* 7. SELECCIÓN */
 :selected,
-:selected:focus {
+:selected:focus,
+:selected:backdrop {
     background-color: @theme_selected_bg_color !important;
     color: @theme_selected_fg_color !important;
 }
