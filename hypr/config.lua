@@ -1,4 +1,5 @@
 -- General Configuration
+local col = require("colors")
 hl.config({
 	general = {
 		gaps_in = 4,
@@ -6,8 +7,8 @@ hl.config({
 		border_size = 3,
 
 		col = {
-			active_border = "rgb(787c99)",
-			inactive_border = "rgba(0a0a0ddb)",
+			active_border = col.active_border,
+			inactive_border = col.inactive_border,
 		},
 		--["col.inactive_border"] = "rgba(076978ff) rgba(CCF8FFff) 45deg",
 		--["col.active_border"] = "rgba(962D26ff) rgba(E08882ff) 50deg",
@@ -20,7 +21,7 @@ hl.config({
 	},
 
 	input = {
-		kb_layout = "es",
+		kb_layout = "es", --modificar segun la compu
 		follow_mouse = 1,
 		sensitivity = 1.0,
 		accel_profile = "flat",
@@ -85,14 +86,14 @@ hl.config({
 
 	group = {
 		col = {
-			border_active = "rgba(00000000)",
-			border_inactive = "rgba(00000000)",
+			border_active = col.group_active_border,
+			border_inactive = col.group_inactive_border,
 		},
 
 		groupbar = {
 			col = {
-				active = "rgba(080b00e6)",
-				inactive = "rgba(080b00b3)",
+				active = col.groupbar_active,
+				inactive = col.groupbar_inactive,
 			},
 
 			font_weight_active = "bold",
@@ -102,7 +103,7 @@ hl.config({
 			font_size = 14,
 			height = 24,
 			gradient_rounding = 10,
-			text_color = "rgb(acb0d0)",
+			text_color = col.groupbar_text_color,
 
 			indicator_height = 0,
 			indicator_gap = 2,

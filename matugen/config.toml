@@ -10,13 +10,13 @@ output_path = '~/.config/quickshell/modules/ii/lockscreen/ImagePath.qml'
 ##output_path = '~/.config/quickshell/extra/pendientes/Colores.qml'
 #output_path = '~/Documents/PythonProjects/TareasGenerador/Colores.qml'
 
-[templates.hyprlock]
-input_path = '~/.config/matugen/templates/colors-hyprland.conf'
-output_path = '~/.config/hypr/colors.conf'
-
-#[templates.rofi]
+#[templates.hyprlock]
 #input_path = '~/.config/matugen/templates/colors-hyprland.conf'
 #output_path = '~/.config/hypr/colors.conf'
+
+[templates.hypr]
+input_path = '~/.config/matugen/templates/colors.lua'
+output_path = '~/.config/hypr/colors.lua'
 
 [templates.wlogout]
 input_path = '~/.config/matugen/templates/theme.css'
@@ -48,10 +48,10 @@ compare_to = "{{colors.primary.default.hex}}"
 pre_hook = 'echo "source color {{colors.source_color.default.hex}}, source image {{image}}, closest color {{closest_color}}"'
 post_hook = 'echo "after gen"'
 
-[config.custom_colors]
-green = "#00FF00"
-red = "#FF0000"
-blue = { color = "#0000FF", blend = false }
+#[config.custom_colors]
+#green = "#00FF00"
+#red = "#FF0000"
+#blue = { color = "#0000FF", blend = false }
 
 [templates.kitty]
 input_path = '~/.config/matugen/templates/kitty.conf'
