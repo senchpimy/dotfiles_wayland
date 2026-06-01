@@ -1,5 +1,35 @@
 -- General Configuration
 local col = require("colors")
+
+local function is_laptop()
+	local handle = io.popen("hostnamectl chassis 2>/dev/null")
+	local result = ""
+	if handle then
+		result = handle:read("*a"):gsub("%s+", "")
+		handle:close()
+	end
+
+	if result == "laptop" or result == "convertible" or result == "tablet" then
+		return true
+	end
+
+	-- Fallback: Check for battery
+	local f = io.open("/sys/class/power_supply/BAT0", "r")
+	if f then
+		f:close()
+		return true
+	end
+	f = io.open("/sys/class/power_supply/BAT1", "r")
+	if f then
+		f:close()
+		return true
+	end
+
+	return false
+end
+
+local kb_layout = is_laptop() and "us" or "es"
+
 hl.config({
 	general = {
 		gaps_in = 4,
@@ -21,7 +51,7 @@ hl.config({
 	},
 
 	input = {
-		kb_layout = "es", --modificar segun la compu
+		kb_layout = kb_layout,
 		follow_mouse = 1,
 		sensitivity = 1.0,
 		accel_profile = "flat",

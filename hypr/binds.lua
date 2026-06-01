@@ -5,78 +5,77 @@ local mainMod = "SUPER"
 local term = "kitty"
 local file = "nautilus"
 
+-- General Binds
 local function bind_global(key, func, desc)
-    hl.bind(mainMod .. " +" .. key, hl.dsp.global(func), { description = desc })
+	hl.bind(mainMod .. " +" .. key, hl.dsp.global(func), { description = desc })
 end
 
 local function bind_exec(key, func)
-    hl.bind(mainMod .. " +" .. key, hl.dsp.exec_cmd(func))
+	hl.bind(mainMod .. " +" .. key, hl.dsp.exec_cmd(func))
 end
 
--- General Binds
 bind_global("V", "quickshell:overviewClipboardToggle", "Clipboard history")
 bind_global("SHIFT + Tab", "quickshell:overviewToggle", "Toggle overview")
 bind_global("Delete", "quickshell:sessionToggle", "Toggle session menu")
 bind_global("ALT +M ", "quickshell:mediaControlsToggle", "Toggle media controls")
-
---bindd = Super+Shift, 8, Toggle cheatsheet, global, quickshell:wallpaperSelectorToggle # Toggle cheatsheet
---bindd = Super+Shift, 8, Toggle cheatsheet, global, quickshell:lock
 
 hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 hl.bind(mainMod .. " + SHIFT + Q", hl.dsp.exit())
 hl.bind(mainMod .. " + Space", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + G", hl.dsp.group.toggle())
 hl.bind(mainMod .. " + D", hl.dsp.group.move_window("out"))
--- hl.bind(mainMod .. " + SHIFT + E", hl.dsp.exec_cmd(scrPath .. "/fuzzel-emoji.sh"))
--- #bind=ALT, TAB, changegroupactive
+hl.bind(mainMod .. " + SHIFT + E", hl.dsp.exec_cmd(scrPath .. "/fuzzel-emoji.sh"))
 hl.bind(mainMod .. " + M", hl.dsp.window.fullscreen({ action = "toggle" }))
+
 bind_exec("B", "qs -p ~/.config/quickshell/lockscreen.qml")
-bind_exec("SHIFT + F", scrPath .. "/windowpin.sh") --TODO eliminar necesidad de script
+hl.bind(mainMod .. " + SHIFT + F", hl.dsp.window.pin())
 bind_exec("SHIFT + Z", "woomer")
 hl.bind(
-    mainMod .. " + SHIFT + M",
-    hl.dsp.exec_cmd(
-        HOME
-        .. "/Documents/PythonProjects/audio/.venv/bin/python "
-        .. HOME
-        .. "/Documents/PythonProjects/audio/src/local_client.py"
-    )
+	mainMod .. " + SHIFT + M",
+	hl.dsp.exec_cmd(
+		HOME
+			.. "/Documents/PythonProjects/audio/.venv/bin/python "
+			.. HOME
+			.. "/Documents/PythonProjects/audio/src/local_client.py"
+	)
 )
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(mainMod .. " + CTRL + P", hl.dsp.exec_cmd(scrPath .. "/logoutlaunch.sh"))
+hl.bind("CTRL + Escape", hl.dsp.exec_cmd("killall waybar || waybar"))
 
 -- Apps
 hl.bind(mainMod .. " + RETURN", hl.dsp.exec_cmd(term))
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(file))
-hl.bind(mainMod .. " + R", hl.dsp.exec_cmd("pkill -x rofi || " .. scrPath .. "/runner.sh")) --TODO cambiar comando y script
+hl.bind(mainMod .. " + R", hl.dsp.exec_cmd("pkill -x rofi || " .. scrPath .. "/runner.sh"))
 hl.bind(mainMod .. " + TAB", hl.dsp.focus({ workspace = "previous" }))
---bind = $mainMod, C, exec, $editor # launch text editor
---bind = $mainMod, F, exec, $browser # launch web browser
 
 -- Audio
+hl.bind(mainMod .. " + F6", hl.dsp.exec_cmd(scrPath .. "/volumecontrol.sh -o m"))
+hl.bind(mainMod .. " + F7", hl.dsp.exec_cmd(scrPath .. "/volumecontrol.sh -o d"), { repeating = true })
+hl.bind(mainMod .. " + F8", hl.dsp.exec_cmd(scrPath .. "/volumecontrol.sh -o i"), { repeating = true })
 hl.bind("XF86AudioMute", hl.dsp.exec_cmd(scrPath .. "/volumecontrol.sh -o m"), { locked = true })
 hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd(scrPath .. "/volumecontrol.sh -i m"), { locked = true })
 hl.bind(
-    "XF86AudioLowerVolume",
-    hl.dsp.exec_cmd(scrPath .. "/volumecontrol.sh -o d"),
-    { locked = true, repeating = true }
+	"XF86AudioLowerVolume",
+	hl.dsp.exec_cmd(scrPath .. "/volumecontrol.sh -o d"),
+	{ locked = true, repeating = true }
 )
 hl.bind(
-    "XF86AudioRaiseVolume",
-    hl.dsp.exec_cmd(scrPath .. "/volumecontrol.sh -o i"),
-    { locked = true, repeating = true }
+	"XF86AudioRaiseVolume",
+	hl.dsp.exec_cmd(scrPath .. "/volumecontrol.sh -o i"),
+	{ locked = true, repeating = true }
 )
 
 -- Brightness
 hl.bind(
-    mainMod .. " + F3",
-    hl.dsp.exec_cmd("qs -c .config/quickshell/shell.qml ipc call brightness increment || brightnessctl s 5%+"),
-    { repeating = true }
+	mainMod .. " + F3",
+	hl.dsp.exec_cmd("qs -c .config/quickshell/shell.qml ipc call brightness increment || brightnessctl s 5%+"),
+	{ repeating = true }
 )
 hl.bind(
-    mainMod .. " + F2",
-    hl.dsp.exec_cmd("qs -c .config/quickshell/shell.qml ipc call brightness increment || brightnessctl s 5%-"),
-    { repeating = true }
+	mainMod .. " + F2",
+	hl.dsp.exec_cmd("qs -c .config/quickshell/shell.qml ipc call brightness increment || brightnessctl s 5%-"),
+	{ repeating = true }
 )
 
 -- Custom Scripts
@@ -94,27 +93,27 @@ hl.bind(mainMod .. " + Down", hl.dsp.focus({ direction = "d" }))
 
 -- Function to duplicate the behavior of monitor_workspaces.sh in Lua
 local function dispatch_workspace(action, key_num)
-    return function()
-        local active_monitor = hl.get_active_monitor()
-        local monitor_id = active_monitor and active_monitor.id or 0
-        local target = (monitor_id * 10) + key_num
+	return function()
+		local active_monitor = hl.get_active_monitor()
+		local monitor_id = active_monitor and active_monitor.id or 0
+		local target = (monitor_id * 10) + key_num
 
-        if action == "workspace" then
-            hl.dispatch(hl.dsp.focus({ workspace = target }))
-        elseif action == "movetoworkspace" then
-            hl.dispatch(hl.dsp.window.move({ workspace = target, follow = false }))
-        elseif action == "movetoworkspacesilent" then
-            hl.dispatch(hl.dsp.window.move({ workspace = target }))
-        end
-    end
+		if action == "workspace" then
+			hl.dispatch(hl.dsp.focus({ workspace = target }))
+		elseif action == "movetoworkspace" then
+			hl.dispatch(hl.dsp.window.move({ workspace = target, follow = false }))
+		elseif action == "movetoworkspacesilent" then
+			hl.dispatch(hl.dsp.window.move({ workspace = target }))
+		end
+	end
 end
 
 -- Workspaces
 for i = 1, 10 do
-    local key = i % 10
-    hl.bind(mainMod .. " + " .. tostring(key), dispatch_workspace("workspace", i))
-    hl.bind(mainMod .. " + SHIFT + " .. tostring(key), dispatch_workspace("movetoworkspace", i))
-    hl.bind(mainMod .. " + ALT + " .. tostring(key), dispatch_workspace("movetoworkspacesilent", i))
+	local key = i % 10
+	hl.bind(mainMod .. " + " .. tostring(key), dispatch_workspace("workspace", i))
+	hl.bind(mainMod .. " + SHIFT + " .. tostring(key), dispatch_workspace("movetoworkspace", i))
+	hl.bind(mainMod .. " + ALT + " .. tostring(key), dispatch_workspace("movetoworkspacesilent", i))
 end
 
 -- Relative Workspaces
