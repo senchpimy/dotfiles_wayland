@@ -1,6 +1,7 @@
 hyprpm update
 
-hyprpm add https://github.com/KZDKM/Hyprspace
+#hyprpm add https://github.com/KZDKM/Hyprspace
+hyprpm add https://github.com/ImanolBarba/Hyprspace
 hyprpm enable Hyprspace
 
 hyprpm add https://github.com/virtcode/hypr-dynamic-cursors

@@ -5,91 +5,90 @@ local mainMod = "SUPER"
 local term = "kitty"
 local file = "nautilus"
 
+-- Función universal para todos los binds
+local function bind(key, action, opts)
+	local resolved_action
+	-- Detecta si el parámetro es un comando (texto) o una función/dispatcher
+	if type(action) == "string" then
+		resolved_action = hl.dsp.exec_cmd(action)
+	else
+		resolved_action = action
+	end
+	hl.bind(key, resolved_action, opts)
+end
+
 -- General Binds
-local function bind_global(key, func, desc)
-	hl.bind(mainMod .. " +" .. key, hl.dsp.global(func), { description = desc })
-end
-
-local function bind_exec(key, func)
-	hl.bind(mainMod .. " +" .. key, hl.dsp.exec_cmd(func))
-end
-
-bind_global("V", "quickshell:overviewClipboardToggle", "Clipboard history")
-bind_global("SHIFT + Tab", "quickshell:overviewToggle", "Toggle overview")
-bind_global("Delete", "quickshell:sessionToggle", "Toggle session menu")
-bind_global("ALT +M ", "quickshell:mediaControlsToggle", "Toggle media controls")
-
-hl.bind(mainMod .. " + Q", hl.dsp.window.close())
-hl.bind(mainMod .. " + SHIFT + Q", hl.dsp.exit())
-hl.bind(mainMod .. " + Space", hl.dsp.window.float({ action = "toggle" }))
-hl.bind(mainMod .. " + G", hl.dsp.group.toggle())
-hl.bind(mainMod .. " + D", hl.dsp.group.move_window("out"))
-hl.bind(mainMod .. " + SHIFT + E", hl.dsp.exec_cmd(scrPath .. "/fuzzel-emoji.sh"))
-hl.bind(mainMod .. " + M", hl.dsp.window.fullscreen({ action = "toggle" }))
-
-bind_exec("B", "qs -p ~/.config/quickshell/lockscreen.qml")
-hl.bind(mainMod .. " + SHIFT + F", hl.dsp.window.pin())
-bind_exec("SHIFT + Z", "woomer")
-hl.bind(
-	mainMod .. " + SHIFT + M",
-	hl.dsp.exec_cmd(
-		HOME
-			.. "/Documents/PythonProjects/audio/.venv/bin/python "
-			.. HOME
-			.. "/Documents/PythonProjects/audio/src/local_client.py"
-	)
+bind(mainMod .. " + V", hl.dsp.global("quickshell:overviewClipboardToggle"), { description = "Clipboard history" })
+bind(mainMod .. " + SHIFT + Tab", hl.dsp.global("quickshell:overviewToggle"), { description = "Toggle overview" })
+bind(mainMod .. " + Delete", hl.dsp.global("quickshell:sessionToggle"), { description = "Toggle session menu" })
+bind(
+	mainMod .. " + ALT + M",
+	hl.dsp.global("quickshell:mediaControlsToggle"),
+	{ description = "Toggle media controls" }
 )
-hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
-hl.bind(mainMod .. " + CTRL + P", hl.dsp.exec_cmd(scrPath .. "/logoutlaunch.sh"))
-hl.bind("CTRL + Escape", hl.dsp.exec_cmd("killall waybar || waybar"))
+
+bind(mainMod .. " + Q", hl.dsp.window.close())
+bind(mainMod .. " + SHIFT + Q", hl.dsp.exit())
+bind(mainMod .. " + Space", hl.dsp.window.float({ action = "toggle" }))
+bind(mainMod .. " + G", hl.dsp.group.toggle())
+bind(mainMod .. " + D", hl.dsp.group.move_window("out"))
+bind(mainMod .. " + M", hl.dsp.window.fullscreen({ action = "toggle" }))
+bind(mainMod .. " + SHIFT + F", hl.dsp.window.pin())
+bind(mainMod .. " + P", hl.dsp.window.pseudo())
+
+-- Exec Binds (Pasan como string y la función los convierte automáticamente)
+bind(mainMod .. " + SHIFT + E", scrPath .. "/fuzzel-emoji.sh")
+bind(mainMod .. " + B", "qs -p ~/.config/quickshell/lockscreen.qml")
+bind(mainMod .. " + SHIFT + Z", "woomer")
+bind(
+	mainMod .. " + SHIFT + M",
+	HOME
+		.. "/Documents/PythonProjects/audio/.venv/bin/python "
+		.. HOME
+		.. "/Documents/PythonProjects/audio/src/local_client.py"
+)
+bind(mainMod .. " + CTRL + P", scrPath .. "/logoutlaunch.sh")
+bind("CTRL + Escape", "killall waybar || waybar")
 
 -- Apps
-hl.bind(mainMod .. " + RETURN", hl.dsp.exec_cmd(term))
-hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(file))
-hl.bind(mainMod .. " + R", hl.dsp.exec_cmd("pkill -x rofi || " .. scrPath .. "/runner.sh"))
-hl.bind(mainMod .. " + TAB", hl.dsp.focus({ workspace = "previous" }))
+bind(mainMod .. " + RETURN", term)
+bind(mainMod .. " + E", file)
+bind(mainMod .. " + R", "pkill -x rofi || " .. scrPath .. "/runner.sh")
+bind(mainMod .. " + TAB", hl.dsp.focus({ workspace = "previous" }))
 
--- Audio
-hl.bind(mainMod .. " + F6", hl.dsp.exec_cmd(scrPath .. "/volumecontrol.sh -o m"))
-hl.bind(mainMod .. " + F7", hl.dsp.exec_cmd(scrPath .. "/volumecontrol.sh -o d"), { repeating = true })
-hl.bind(mainMod .. " + F8", hl.dsp.exec_cmd(scrPath .. "/volumecontrol.sh -o i"), { repeating = true })
-hl.bind("XF86AudioMute", hl.dsp.exec_cmd(scrPath .. "/volumecontrol.sh -o m"), { locked = true })
-hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd(scrPath .. "/volumecontrol.sh -i m"), { locked = true })
-hl.bind(
-	"XF86AudioLowerVolume",
-	hl.dsp.exec_cmd(scrPath .. "/volumecontrol.sh -o d"),
-	{ locked = true, repeating = true }
-)
-hl.bind(
-	"XF86AudioRaiseVolume",
-	hl.dsp.exec_cmd(scrPath .. "/volumecontrol.sh -o i"),
-	{ locked = true, repeating = true }
-)
+-- Audio (Las teclas especiales XF86 pasan tal cual)
+bind(mainMod .. " + F6", scrPath .. "/volumecontrol.sh -o m")
+bind(mainMod .. " + F7", scrPath .. "/volumecontrol.sh -o d", { repeating = true })
+bind(mainMod .. " + F8", scrPath .. "/volumecontrol.sh -o i", { repeating = true })
+bind("XF86AudioMute", scrPath .. "/volumecontrol.sh -o m", { locked = true })
+bind("XF86AudioMicMute", scrPath .. "/volumecontrol.sh -i m", { locked = true })
+bind("XF86AudioLowerVolume", scrPath .. "/volumecontrol.sh -o d", { locked = true, repeating = true })
+bind("XF86AudioRaiseVolume", scrPath .. "/volumecontrol.sh -o i", { locked = true, repeating = true })
 
 -- Brightness
-hl.bind(
+bind(
 	mainMod .. " + F3",
-	hl.dsp.exec_cmd("qs -c .config/quickshell/shell.qml ipc call brightness increment || brightnessctl s 5%+"),
+	"qs -c .config/quickshell/shell.qml ipc call brightness increment || brightnessctl s 5%+",
 	{ repeating = true }
 )
-hl.bind(
+bind(
 	mainMod .. " + F2",
-	hl.dsp.exec_cmd("qs -c .config/quickshell/shell.qml ipc call brightness increment || brightnessctl s 5%-"),
+	"qs -c .config/quickshell/shell.qml ipc call brightness increment || brightnessctl s 5%-",
 	{ repeating = true }
 )
 
 -- Custom Scripts
-hl.bind(mainMod .. " + ALT + Right", hl.dsp.exec_cmd(scrPath .. "/awwwallpaper.sh -n"))
-hl.bind(mainMod .. " + ALT + Left", hl.dsp.exec_cmd(scrPath .. "/awwwallpaper.sh -p"))
-hl.bind(mainMod .. " + SHIFT + T", hl.dsp.exec_cmd("pkill -x rofi || " .. scrPath .. "/themeselect.sh"))
-hl.bind(mainMod .. " + SHIFT + A", hl.dsp.exec_cmd("pkill -x rofi || " .. scrPath .. "/rofiselect.sh"))
-hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("pkill -x rofi || " .. scrPath .. "/awwwallselect.sh"))
+bind(mainMod .. " + ALT + Right", scrPath .. "/awwwallpaper.sh -n")
+bind(mainMod .. " + ALT + Left", scrPath .. "/awwwallpaper.sh -p")
+bind(mainMod .. " + SHIFT + T", "pkill -x rofi || " .. scrPath .. "/themeselect.sh")
+bind(mainMod .. " + SHIFT + A", "pkill -x rofi || " .. scrPath .. "/rofiselect.sh")
+bind(mainMod .. " + SHIFT + W", "pkill -x rofi || " .. scrPath .. "/awwwallselect.sh")
 
 -- Focus
-hl.bind(mainMod .. " + Left", hl.dsp.focus({ direction = "l" }))
-hl.bind(mainMod .. " + Right", hl.dsp.focus({ direction = "r" }))
-hl.bind(mainMod .. " + Up", hl.dsp.focus({ direction = "u" }))
-hl.bind(mainMod .. " + Down", hl.dsp.focus({ direction = "d" }))
+bind(mainMod .. " + Left", hl.dsp.focus({ direction = "l" }))
+bind(mainMod .. " + Right", hl.dsp.focus({ direction = "r" }))
+bind(mainMod .. " + Up", hl.dsp.focus({ direction = "u" }))
+bind(mainMod .. " + Down", hl.dsp.focus({ direction = "d" }))
 
 -- Function to duplicate the behavior of monitor_workspaces.sh in Lua
 local function dispatch_workspace(action, key_num)
@@ -111,52 +110,55 @@ end
 -- Workspaces
 for i = 1, 10 do
 	local key = i % 10
-	hl.bind(mainMod .. " + " .. tostring(key), dispatch_workspace("workspace", i))
-	hl.bind(mainMod .. " + SHIFT + " .. tostring(key), dispatch_workspace("movetoworkspace", i))
-	hl.bind(mainMod .. " + ALT + " .. tostring(key), dispatch_workspace("movetoworkspacesilent", i))
+	bind(mainMod .. " + " .. tostring(key), dispatch_workspace("workspace", i))
+	bind(mainMod .. " + SHIFT + " .. tostring(key), dispatch_workspace("movetoworkspace", i))
+	bind(mainMod .. " + ALT + " .. tostring(key), dispatch_workspace("movetoworkspacesilent", i))
 end
 
 -- Relative Workspaces
-hl.bind(mainMod .. " + CTRL + Right", hl.dsp.focus({ workspace = "r+1" }))
-hl.bind(mainMod .. " + CTRL + Left", hl.dsp.focus({ workspace = "r-1" }))
-hl.bind(mainMod .. " + CTRL + Down", hl.dsp.focus({ workspace = "empty" }))
+bind(mainMod .. " + CTRL + Right", hl.dsp.focus({ workspace = "r+1" }))
+bind(mainMod .. " + CTRL + Left", hl.dsp.focus({ workspace = "r-1" }))
+bind(mainMod .. " + CTRL + Down", hl.dsp.focus({ workspace = "empty" }))
 
 -- Resize
-hl.bind(mainMod .. " + SHIFT + Right", hl.dsp.window.resize({ x = 30, y = 0, relative = true }), { repeating = true })
-hl.bind(mainMod .. " + SHIFT + Left", hl.dsp.window.resize({ x = -30, y = 0, relative = true }), { repeating = true })
-hl.bind(mainMod .. " + SHIFT + Up", hl.dsp.window.resize({ x = 0, y = -30, relative = true }), { repeating = true })
-hl.bind(mainMod .. " + SHIFT + Down", hl.dsp.window.resize({ x = 0, y = 30, relative = true }), { repeating = true })
+bind(mainMod .. " + SHIFT + Right", hl.dsp.window.resize({ x = 30, y = 0, relative = true }), { repeating = true })
+bind(mainMod .. " + SHIFT + Left", hl.dsp.window.resize({ x = -30, y = 0, relative = true }), { repeating = true })
+bind(mainMod .. " + SHIFT + Up", hl.dsp.window.resize({ x = 0, y = -30, relative = true }), { repeating = true })
+bind(mainMod .. " + SHIFT + Down", hl.dsp.window.resize({ x = 0, y = 30, relative = true }), { repeating = true })
 
 -- Move Windows
-hl.bind(mainMod .. " + SHIFT + CTRL + Left", hl.dsp.window.move({ direction = "l" }))
-hl.bind(mainMod .. " + SHIFT + CTRL + Right", hl.dsp.window.move({ direction = "r" }))
-hl.bind(mainMod .. " + SHIFT + CTRL + Up", hl.dsp.window.move({ direction = "u" }))
-hl.bind(mainMod .. " + SHIFT + CTRL + Down", hl.dsp.window.move({ direction = "d" }))
+bind(mainMod .. " + SHIFT + CTRL + Left", hl.dsp.window.move({ direction = "l" }))
+bind(mainMod .. " + SHIFT + CTRL + Right", hl.dsp.window.move({ direction = "r" }))
+bind(mainMod .. " + SHIFT + CTRL + Up", hl.dsp.window.move({ direction = "u" }))
+bind(mainMod .. " + SHIFT + CTRL + Down", hl.dsp.window.move({ direction = "d" }))
 
 -- Mouse Binds
-hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
-hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
-hl.bind(mainMod .. " + Z", hl.dsp.window.drag(), { mouse = true })
-hl.bind(mainMod .. " + X", hl.dsp.window.resize(), { mouse = true })
+bind(mainMod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
+bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
+bind(mainMod .. " + Z", hl.dsp.window.drag(), { mouse = true })
+bind(mainMod .. " + X", hl.dsp.window.resize(), { mouse = true })
 
 -- Special Workspace
-hl.bind(mainMod .. " + ALT + S", hl.dsp.window.move({ workspace = "special", follow = false }))
-hl.bind(mainMod .. " + S", hl.dsp.workspace.toggle_special(""))
-hl.bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "+0", follow = false }))
+bind(mainMod .. " + ALT + S", hl.dsp.window.move({ workspace = "special", follow = false }))
+bind(mainMod .. " + S", hl.dsp.workspace.toggle_special(""))
+bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "+0", follow = false }))
 
 -- Split
-hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))
+bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))
 
 -- Lid Switch
-hl.bind("switch:on:Lid Switch", hl.dsp.exec_cmd("hyprctl dispatch dpms off"))
-hl.bind("switch:off:Lid Switch", hl.dsp.exec_cmd("hyprctl dispatch dpms on"))
+bind("switch:on:Lid Switch", "hyprctl dispatch dpms off")
+bind("switch:off:Lid Switch", "hyprctl dispatch dpms on")
 
 -- Group Move
-hl.bind(mainMod .. " + SHIFT + ALT + Left", hl.dsp.group.move_window("l"))
-hl.bind(mainMod .. " + SHIFT + ALT + Right", hl.dsp.group.move_window("r"))
-hl.bind(mainMod .. " + SHIFT + ALT + Up", hl.dsp.group.move_window("u"))
-hl.bind(mainMod .. " + SHIFT + ALT + Down", hl.dsp.group.move_window("d"))
+bind(mainMod .. " + SHIFT + ALT + Left", hl.dsp.group.move_window("l"))
+bind(mainMod .. " + SHIFT + ALT + Right", hl.dsp.group.move_window("r"))
+bind(mainMod .. " + SHIFT + ALT + Up", hl.dsp.group.move_window("u"))
+bind(mainMod .. " + SHIFT + ALT + Down", hl.dsp.group.move_window("d"))
 
 -- Misc
-hl.bind(mainMod .. " + F", hl.dsp.exec_cmd("ags run-js 'cycleMode();'"))
-hl.bind(mainMod .. " + C", hl.dsp.exec_cmd('XDG_CURRENT_DESKTOP="gnome" gnome-control-center'))
+--bind(mainMod .. " + F", "ags run-js 'cycleMode();'")
+bind(mainMod .. " + C", 'XDG_CURRENT_DESKTOP="gnome" gnome-control-center')
+
+-- Plugins
+bind(mainMod .. " + L", hl.plugin.overview.toggle)
