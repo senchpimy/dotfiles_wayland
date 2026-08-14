@@ -1,10 +1,12 @@
 import qs
 import qs.modules.common
 import qs.modules.common.widgets
+import qs.services
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
-import Quickshell.Hyprland
+import Quickshell.Io
+// import Quickshell.Hyprland
 import Quickshell.Services.Pipewire
 import Quickshell.Services.UPower
 
@@ -13,6 +15,27 @@ Item {
     property bool borderless: Config.options.bar.borderless
     implicitWidth: rowLayout.implicitWidth + rowLayout.spacing * 2
     implicitHeight: rowLayout.implicitHeight
+
+    Process {
+        id: flameshotProc
+        command: ["flameshot", "gui"]
+        environment: ({ "XDG_CURRENT_DESKTOP": "sway" })
+    }
+
+    Process {
+        id: recordProc
+        command: [Quickshell.env("HOME") + "/.local/share/bin/record-script.sh", "--audio"]
+    }
+
+    Process {
+        id: imageOcrProc
+        command: ["image_ocr"]
+    }
+
+    Process {
+        id: wallpaperSwitchProc
+        command: [Directories.wallpaperSwitchScriptPath, "--mode", "light", "--noswitch"]
+    }
 
     RowLayout {
         id: rowLayout
@@ -29,7 +52,8 @@ Item {
                 Layout.alignment: Qt.AlignVCenter
                 onClicked: {
                     recording = !recording;
-                    Hyprland.dispatch("exec $HOME/.local/share/bin/record-script.sh --audio")
+                    // Hyprland.dispatch("exec $HOME/.local/share/bin/record-script.sh --audio")
+                    recordProc.startDetached()
                 }
                 MaterialSymbol {
                     horizontalAlignment: Qt.AlignHCenter
@@ -46,7 +70,10 @@ Item {
             visible: Config.options.bar.utilButtons.showScreenSnip
             sourceComponent: CircleUtilButton {
                 Layout.alignment: Qt.AlignVCenter
-                onClicked: Hyprland.dispatch("exec XDG_CURRENT_DESKTOP=sway flameshot gui")
+                onClicked: {
+                    // Hyprland.dispatch("exec XDG_CURRENT_DESKTOP=sway flameshot gui")
+                    flameshotProc.startDetached()
+                }
                 MaterialSymbol {
                     horizontalAlignment: Qt.AlignHCenter
                     fill: 1
@@ -62,7 +89,10 @@ Item {
             visible: true
             sourceComponent: CircleUtilButton {
                 Layout.alignment: Qt.AlignVCenter
-                onClicked: Hyprland.dispatch("exec image_ocr")
+                onClicked: {
+                    // Hyprland.dispatch("exec image_ocr")
+                    imageOcrProc.startDetached()
+                }
                 MaterialSymbol {
                     horizontalAlignment: Qt.AlignHCenter
                     fill: 1
@@ -145,9 +175,13 @@ Item {
                 Layout.alignment: Qt.AlignVCenter
                 onClicked: event => {
                     if (Appearance.m3colors.darkmode) {
-                        Hyprland.dispatch(`exec ${Directories.wallpaperSwitchScriptPath} --mode light --noswitch`);
+                        // Hyprland.dispatch(`exec ${Directories.wallpaperSwitchScriptPath} --mode light --noswitch`);
+                        wallpaperSwitchProc.command = [Directories.wallpaperSwitchScriptPath, "--mode", "light", "--noswitch"]
+                        wallpaperSwitchProc.startDetached()
                     } else {
-                        Hyprland.dispatch(`exec ${Directories.wallpaperSwitchScriptPath} --mode dark --noswitch`);
+                        // Hyprland.dispatch(`exec ${Directories.wallpaperSwitchScriptPath} --mode dark --noswitch`);
+                        wallpaperSwitchProc.command = [Directories.wallpaperSwitchScriptPath, "--mode", "dark", "--noswitch"]
+                        wallpaperSwitchProc.startDetached()
                     }
                 }
                 MaterialSymbol {
@@ -166,23 +200,12 @@ Item {
             sourceComponent: CircleUtilButton {
                 Layout.alignment: Qt.AlignVCenter
                 onClicked: event => {
-                    if (PowerProfiles.hasPerformanceProfile) {
-                        switch(PowerProfiles.profile) {
-                            case PowerProfile.PowerSaver: PowerProfiles.profile = PowerProfile.Balanced
-                            break;
-                            case PowerProfile.Balanced: PowerProfiles.profile = PowerProfile.Performance
-                            break;
-                            case PowerProfile.Performance: PowerProfiles.profile = PowerProfile.PowerSaver
-                            break;
-                        }
-                    } else {
-                        PowerProfiles.profile = PowerProfiles.profile == PowerProfile.Balanced ? PowerProfile.PowerSaver : PowerProfile.Balanced
-                    }
+                    TlpProfiles.cycle()
                 }
                 MaterialSymbol {
                     horizontalAlignment: Qt.AlignHCenter
                     fill: 0
-                    text: switch(PowerProfiles.profile) {
+                    text: switch(TlpProfiles.profile) {
                         case PowerProfile.PowerSaver: return "energy_savings_leaf"
                         case PowerProfile.Balanced: return "airwave"
                         case PowerProfile.Performance: return "local_fire_department"

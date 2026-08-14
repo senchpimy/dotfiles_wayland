@@ -76,7 +76,7 @@ Singleton {
     property string notificationsIcon: Notifications.silent ? "alert-snooze" : "alert"
 
     property string powerProfileIcon: {
-        switch (PowerProfiles.profile) {
+        switch (TlpProfiles.profile) {
         case PowerProfile.PowerSaver:
             return "leaf-two";
         case PowerProfile.Balanced:

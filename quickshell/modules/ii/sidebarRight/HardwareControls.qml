@@ -3,8 +3,10 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
+import Quickshell.Services.UPower
 import qs.modules.common
 import qs.modules.common.widgets
+import qs.services
 
 ColumnLayout {
     id: root
@@ -12,33 +14,19 @@ ColumnLayout {
     
     width: parent.width 
 
-    property string currentTlpStatus: qsTr("Cargando...")
+    property string currentTlpStatus: {
+        if (!TlpProfiles.available) return qsTr("Cargando...")
+        switch (TlpProfiles.profile) {
+        case PowerProfile.PowerSaver: return qsTr("Ahorro")
+        case PowerProfile.Performance: return qsTr("Rendimiento")
+        case PowerProfile.Balanced: return qsTr("Balanceado")
+        default: return qsTr("Cargando...")
+        }
+    }
     property int maxBrightness: 1
     property int currentBrightness: 0
 
     // Processes
-    Process {
-         id: tlpSwitchProcess
-         running: false
-         command: ["/home/plof/configs/tlp/client.py", "--switch"]
-         onRunningChanged: {
-             if (!running) {
-                 tlpStatusProcess.running = true;
-             }
-         }
-    }
-
-    Process {
-        id: tlpStatusProcess
-        running: false
-        command: ["/home/plof/configs/tlp/client.py","-m"]
-        stdout: SplitParser {
-            onRead: data => {
-                root.currentTlpStatus = data;
-            }
-        }
-    }
-
     Process {
         id: kbdMaxBrightnessProcess
         running: false
@@ -61,7 +49,6 @@ ColumnLayout {
     }
 
     Component.onCompleted: {
-        tlpStatusProcess.running = true;
         kbdMaxBrightnessProcess.running = true;
     }
 
@@ -132,7 +119,12 @@ ColumnLayout {
         Layout.rightMargin: 15
         Layout.preferredHeight: Appearance.sizes.barHeight
         
-        onClicked: tlpSwitchProcess.running = true
+        onClicked: TlpProfiles.cycle()
+
+        scale: tlpButton.down ? 0.95 : 1
+        Behavior on scale {
+            animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
+        }
 
         contentItem: RowLayout {
             spacing: 10
