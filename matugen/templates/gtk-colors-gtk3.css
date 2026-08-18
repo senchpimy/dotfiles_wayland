@@ -1,0 +1,37 @@
+/* Matugen Material You - GTK3
+   Recolorea el tema adw-gtk3-dark mediante @define-color (sin !important) */
+@define-color theme_bg_color {{colors.surface_container.default.hex}};
+@define-color theme_fg_color {{colors.on_surface.default.hex}};
+@define-color theme_base_color {{colors.surface.default.hex}};
+@define-color theme_text_color {{colors.on_surface.default.hex}};
+@define-color theme_selected_bg_color {{colors.primary.default.hex}};
+@define-color theme_selected_fg_color {{colors.on_primary.default.hex}};
+
+@define-color theme_unfocused_bg_color @theme_bg_color;
+@define-color theme_unfocused_fg_color @theme_fg_color;
+@define-color theme_unfocused_base_color @theme_base_color;
+@define-color theme_unfocused_text_color @theme_text_color;
+@define-color theme_unfocused_selected_bg_color @theme_selected_bg_color;
+@define-color theme_unfocused_selected_fg_color @theme_selected_fg_color;
+
+@define-color bg_color @theme_bg_color;
+@define-color fg_color @theme_fg_color;
+@define-color base_color @theme_base_color;
+@define-color text_color @theme_text_color;
+@define-color selected_bg_color @theme_selected_bg_color;
+@define-color selected_fg_color @theme_selected_fg_color;
+
+@define-color insensitive_bg_color mix(@theme_bg_color, @theme_base_color, 0.5);
+@define-color insensitive_fg_color mix(@theme_fg_color, @theme_base_color, 0.5);
+@define-color insensitive_base_color @theme_base_color;
+@define-color insensitive_text_color mix(@theme_fg_color, @theme_base_color, 0.5);
+
+@define-color borders mix(@theme_fg_color, @theme_bg_color, 0.5);
+@define-color unfocused_borders mix(@theme_fg_color, @theme_bg_color, 0.6);
+
+@define-color warning_color {{colors.tertiary.default.hex}};
+@define-color error_color {{colors.error.default.hex}};
+@define-color success_color {{colors.primary.default.hex}};
+
+@define-color tooltip_bg_color @theme_bg_color;
+@define-color tooltip_fg_color @theme_fg_color;
