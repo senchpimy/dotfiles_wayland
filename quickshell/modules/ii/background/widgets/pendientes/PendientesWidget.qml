@@ -14,7 +14,7 @@ AbstractBackgroundWidget {
     id: root
     configEntryName: "pendientes"
     
-    property string serverUrl: "http://192.168.1.84:8080"
+    property string serverUrl: "http://192.168.100.21:8080"
     property int pend_n: 0
     property bool alreadyLoaded: false
     property var cachedData: []

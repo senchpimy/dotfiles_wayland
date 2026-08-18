@@ -50,10 +50,13 @@ bind(
 bind(mainMod .. " + CTRL + P", scrPath .. "/logoutlaunch.sh")
 bind("CTRL + Escape", "killall waybar || waybar")
 
+-- Screenshot
+bind("Print", "flameshot gui", { description = "Take a screenshot" })
+
 -- Apps
 bind(mainMod .. " + RETURN", term)
 bind(mainMod .. " + E", file)
-bind(mainMod .. " + R", "pkill -x rofi || " .. scrPath .. "/runner.sh")
+bind(mainMod .. " + R", "pkill -x rofi || rofi -show drun -config ~/.config/rofi/transparente.rasi -show-icons -icon-theme kora")
 bind(mainMod .. " + TAB", hl.dsp.focus({ workspace = "previous" }))
 
 -- Audio (Las teclas especiales XF86 pasan tal cual)
@@ -68,21 +71,21 @@ bind("XF86AudioRaiseVolume", scrPath .. "/volumecontrol.sh -o i", { locked = tru
 -- Brightness
 bind(
 	mainMod .. " + F3",
-	"qs -c .config/quickshell/shell.qml ipc call brightness increment || brightnessctl s 5%+",
+	"qs ipc call brightness increment || brightnessctl s 5%+",
 	{ repeating = true }
 )
 bind(
 	mainMod .. " + F2",
-	"qs -c .config/quickshell/shell.qml ipc call brightness increment || brightnessctl s 5%-",
+	"qs ipc call brightness decrement || brightnessctl s 5%-",
 	{ repeating = true }
 )
 
 -- Custom Scripts
 bind(mainMod .. " + ALT + Right", scrPath .. "/awwwallpaper.sh -n")
 bind(mainMod .. " + ALT + Left", scrPath .. "/awwwallpaper.sh -p")
-bind(mainMod .. " + SHIFT + T", "pkill -x rofi || " .. scrPath .. "/themeselect.sh")
+bind(mainMod .. " + SHIFT + T", hl.dsp.global("quickshell:themeCarouselToggle"), { description = "Theme carousel" })
 bind(mainMod .. " + SHIFT + A", "pkill -x rofi || " .. scrPath .. "/rofiselect.sh")
-bind(mainMod .. " + SHIFT + W", "pkill -x rofi || " .. scrPath .. "/awwwallselect.sh")
+bind(mainMod .. " + SHIFT + W", hl.dsp.global("quickshell:wallpaperCarouselToggle"), { description = "Wallpaper carousel" })
 
 -- Focus
 bind(mainMod .. " + Left", hl.dsp.focus({ direction = "l" }))
