@@ -49,6 +49,12 @@ hl.env("INPUT_METHOD", "fcitx")
 -- GPU
 hl.env("AQ_DRM_DEVICES", "/dev/dri/card1:/dev/dri/card0")
 
+-- Library overrides
+hl.env("LD_LIBRARY_PATH", HOME .. "/.local/lib64:" .. (os.getenv("LD_LIBRARY_PATH") or ""))
+
+-- GTK theme
+hl.env("GTK_THEME", "adw-gtk3-dark")
+
 -- Cache paths
 hl.env("CUDA_CACHE_PATH", HOME .. "/.cache/cuda")
 hl.env("__GL_SHADER_DISK_CACHE_PATH", HOME .. "/.cache/nv")

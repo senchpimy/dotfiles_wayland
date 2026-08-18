@@ -2,12 +2,30 @@
 local HOME = os.getenv("HOME")
 local scrPath = HOME .. "/.local/share/bin"
 
+local function is_systemd()
+    local f = io.open("/proc/1/comm", "r")
+    if f then
+        local comm = f:read("*l")
+        f:close()
+        return comm == "systemd"
+    end
+    return false
+end
+
+local audio_start
+if is_systemd() then
+    audio_start = "systemctl --user --now enable pipewire pipewire-pulse wireplumber"
+else
+    audio_start = "sh -c 'pipewire & sleep 1 && wireplumber & sleep 1 && pipewire-pulse &'"
+end
+
 hl.on("hyprland.start", function()
     local cmds = {
+        audio_start,
         "sh ~/.config/hypr/bringtop.sh",
         "eww daemon",
         "qs &",
-        "hyprpm reload -n",
+        HOME .. "/.local/bin/hyprpm reload -n",
         "qs -p ~/Documents/PythonProjects/TareasGenerador/pendientes.qml",
         HOME .. "/Documents/PythonProjects/TareasGenerador/server",
         "qs -p ~/.config/quickshell/extra/activate.qml",

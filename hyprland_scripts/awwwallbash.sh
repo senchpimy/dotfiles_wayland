@@ -241,9 +241,9 @@ if [ "${enableWallDcol}" -eq 0 ] && [[ "${reload_flag}" -eq 1 ]] ; then
 elif [ "${enableWallDcol}" -gt 0 ] ; then
 
     echo ":: deploying wallbash colors :: ${dcol_mode} wallpaper detected"
-    find "${wallbashDir}/Wall-Dcol" -type f -name "*.dcol" | parallel fn_wallbash {} "dcol"
+    find "${wallbashDir}/Wall-Dcol" -type f -name "*.dcol" | while read -r f; do fn_wallbash "$f" "dcol"; done
 
 fi
 
-find "${wallbashDir}/Wall-Ways" -type f -name "*.dcol" | parallel fn_wallbash {} "dcol"
+find "${wallbashDir}/Wall-Ways" -type f -name "*.dcol" | while read -r f; do fn_wallbash "$f" "dcol"; done
 

@@ -89,7 +89,8 @@ step="${2:-5}"
 case "${1}" in
     i) action_${ctrl} i ;;
     d) action_${ctrl} d ;;
-    m) "${ctrl}" "${srce}" -t && notify_mute && exit 0 ;;
+    m) "${ctrl}" "${srce}" -t && notify_mute && qs ipc call osdVolume trigger && exit 0 ;;
     *) print_error ;;
 esac
-#ags run-js 'indicator.popup(1);'
+
+qs ipc call osdVolume trigger

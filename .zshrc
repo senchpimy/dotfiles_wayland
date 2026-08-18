@@ -2,7 +2,6 @@
 #export EDITOR="neovide"
 export EDITOR="nvim"
 export STARSHIP_CONFIG="/home/plof/.starship.toml"
-source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 autoload -U colors && colors
 alias ls="ls --color=auto" 
 alias cat="bat" 
@@ -18,10 +17,10 @@ export MAKEFLAGS="-j$NUMCPUS"
 export RUSTC_WRAPPER=/usr/bin/sccache
 
 # Basic auto/tab complete:
-autoload -U compinit
+autoload -Uz compinit -C
 zstyle ':completion:*' menu select
 zmodload zsh/complist
-compinit
+compinit -C
 _comp_options+=(globdots)		# Include hidden files.
 
 HISTSIZE=50000
@@ -41,9 +40,10 @@ zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 
 
 #&&&&&&&&&&&&&&&&& VI-MODE &&&&&&&&&&&&&&&&&&&&&&&&&&
-#plugins=(vi-mode)
-#bindkey -v
-#export KEYTIMEOUT=1
+bindkey -v
+export KEYTIMEOUT=1
+bindkey '^[[3~' delete-char
+bindkey '^[3;5~' delete-char
 #
 #function zle-keymap-select {
 #  if [[ ${KEYMAP} == vicmd ]] ||
@@ -129,7 +129,11 @@ alias anaconda_exit='source /opt/anaconda/bin/deactivate root'
 
 alias vmrss='f() { while true; do /bin/cat /proc/$1/status | grep "VmRSS"; sleep 1; done};f'
 
-source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+if [[ -f /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
+    source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+elif [[ -f /usr/share/zsh/site-functions/zsh-syntax-highlighting.zsh ]]; then
+    source /usr/share/zsh/site-functions/zsh-syntax-highlighting.zsh
+fi
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 #[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
@@ -182,7 +186,7 @@ function sxiveh {
 
 export PYENV_ROOT="$HOME/.pyenv"
 [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
+eval "$(pyenv init - --no-rehash)"
 
 
 
@@ -253,15 +257,15 @@ eval "$(starship init zsh)"
 #export PATH=$PATH:$ANDROID_HOME/emulator
 #export PATH=$PATH:$ANDROID_HOME/platform-tools
 #export PATH=$PATH:$ANDROID_HOME/tools/bin
-#export ANDROID_NDK_ROOT=/opt/android-sdk/ndk/27.1.12297006
+export ANDROID_NDK_ROOT=/opt/android-sdk/ndk/27.1.12297006
 ##export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 #export PATH=$JAVA_HOME/bin:$PATH
 #export ANDROID_HOME=$HOME/Android/Sdk
 #export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH
 
 # --- ANDROID CONFIG ---
-export ANDROID_HOME=$HOME/Android/Sdk
-export ANDROID_NDK_ROOT=$ANDROID_HOME/ndk/26.1.10909125
+#export ANDROID_HOME=$HOME/Android/Sdk
+#export ANDROID_NDK_ROOT=$ANDROID_HOME/ndk/26.1.10909125
 
 # Java 17 es obligatorio (Asegúrate que el path sea correcto en Arch)
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
@@ -278,3 +282,19 @@ export PATH="/root/.bun/bin:$PATH"
 export ELECTRON_OZONE_PLATFORM_HINT=wayland
 export OLLAMA_MODELS="/home/plof/AI/ollama_models"
 export UV_CACHE_DIR="/home/plof/AI/uv_cache"
+export XDG_RUNTIME_DIR="/run/user/$(id -u)"
+
+# Neofetch 3D Wrapper (Ratty Protocol)
+neofetch() {
+    command neofetch "$@"
+    # Pequeña pausa para asegurar que neofetch haya terminado de resetear la terminal
+    (
+        sleep 0.05
+        printf "\x1b_ratty;g;d\x1b\\" > /dev/tty
+        printf "\x1b_ratty;g;r;id=123;fmt=obj;path=/home/plof/bomber.obj\x1b\\" > /dev/tty
+        printf "\x1b_ratty;g;p;id=123;row=2;col=3;w=35;h=18;animate=1;scale=1.0;color=ffffff\x1b\\" > /dev/tty
+    ) &!
+}
+
+export ANDROID_HOME=/opt/android-sdk
+export ANDROID_NDK_ROOT=/opt/android-sdk/ndk/27.0.12077973

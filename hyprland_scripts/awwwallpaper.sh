@@ -114,10 +114,8 @@ fi
 #// apply wallpaper
 
 echo ":: applying wall :: \"$(readlink -f "${wallSet}")\""
-#wal -i "$(readlink -f "${wallSet}")"
-sh ~/.config/ags/scripts/color_generation/colorgen.sh "$(readlink -f "${wallSet}")" --apply --smart &
 awww img "$(readlink "${wallSet}")" --transition-bezier .43,1.19,1,.4 --transition-type "${xtrans}" --transition-duration "${wallTransDuration}" --transition-fps "${wallFramerate}" --invert-y --transition-pos "$(hyprctl cursorpos)" &
 imagePath="$(readlink -f "${wallSet}")"
-matugen image "${imagePath}"
-wal -i "${imagePath}"
-xrdb -load ~/.Xdefaults
+command -v matugen >/dev/null 2>&1 && matugen image --prefer saturation "${imagePath}" 2>/dev/null &
+command -v wal >/dev/null 2>&1 && wal -i "${imagePath}" 2>/dev/null &
+command -v xrdb >/dev/null 2>&1 && xrdb -load ~/.Xdefaults 2>/dev/null &
