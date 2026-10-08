@@ -164,7 +164,6 @@ Item {
                         
                         // Contenido (Imagen y controles)
                         Rectangle {
-                            anchors.top: parent.top
                             color: "transparent"
                             
                             RowLayout {
@@ -172,12 +171,9 @@ Item {
                                 
                                 // Imagen del álbum
                                 Item {
-                                    anchors {
-                                        top: parent.top
-                                        left: parent.left
-                                        leftMargin: 10
-                                        topMargin: 10
-                                    }
+                                    Layout.alignment: Qt.AlignTop | Qt.AlignLeft
+                                    Layout.leftMargin: 10
+                                    Layout.topMargin: 10
                                     
                                     Image {
                                         id: albumArt
@@ -202,10 +198,8 @@ Item {
                                 // Información y controles
                                 Rectangle {
                                     color: "transparent"
-                                    anchors {
-                                        top: parent.top
-                                        topMargin: 90
-                                    }
+                                    Layout.alignment: Qt.AlignTop
+                                    Layout.topMargin: 90
                                     
                                     // Nombre del player (app)
                                     Text {
