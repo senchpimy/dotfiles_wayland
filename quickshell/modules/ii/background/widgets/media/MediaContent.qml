@@ -115,14 +115,17 @@ Item {
                         color: artDominantColor
                     }
 
-                    ColumnLayout {
+                    // Tarjeta del reproductor
+                    Item {
+                        id: card
                         anchors.horizontalCenter: parent.horizontalCenter
+                        width: 600
+                        height: 150
                         
                         // Fondo con el mismo efecto que en el escritorio
                         Rectangle {
                             id: background
-                            height: 150
-                            width: 600
+                            anchors.fill: parent
                             radius: Appearance.rounding.large
                             color: ColorUtils.applyAlpha(blendedColors.colLayer0, 1)
                             
@@ -163,184 +166,193 @@ Item {
                         }
                         
                         // Contenido (Imagen y controles)
-                        Rectangle {
-                            color: "transparent"
+                        Item {
+                            id: content
+                            anchors.fill: parent
                             
-                            RowLayout {
-                                spacing: 180
+                            // Imagen del álbum
+                            Item {
+                                id: albumArtContainer
+                                anchors {
+                                    top: parent.top
+                                    left: parent.left
+                                    topMargin: 10
+                                    leftMargin: 10
+                                }
+                                width: 130
+                                height: 130
                                 
-                                // Imagen del álbum
-                                Item {
-                                    Layout.alignment: Qt.AlignTop | Qt.AlignLeft
-                                    Layout.leftMargin: 10
-                                    Layout.topMargin: 10
+                                Image {
+                                    id: albumArt
+                                    anchors.fill: parent
+                                    source: artUrl
+                                    fillMode: Image.PreserveAspectCrop
+                                    asynchronous: true
+                                    cache: true
                                     
-                                    Image {
-                                        id: albumArt
-                                        source: artUrl
-                                        width: 130
-                                        height: 130
-                                        fillMode: Image.PreserveAspectCrop
-                                        asynchronous: true
-                                        cache: true
-                                        
-                                        layer.enabled: true
-                                        layer.effect: OpacityMask {
-                                            maskSource: Rectangle {
-                                                width: albumArt.width
-                                                height: albumArt.height
-                                                radius: Appearance.rounding.large
-                                            }
+                                    layer.enabled: true
+                                    layer.effect: OpacityMask {
+                                        maskSource: Rectangle {
+                                            width: albumArt.width
+                                            height: albumArt.height
+                                            radius: Appearance.rounding.large
                                         }
                                     }
                                 }
+                            }
+                            
+                            // Información y controles
+                            Rectangle {
+                                id: mediaInfo
+                                anchors {
+                                    top: parent.top
+                                    left: albumArtContainer.right
+                                    leftMargin: 20
+                                    topMargin: 90
+                                }
+                                width: 400
+                                height: 140
+                                color: "transparent"
                                 
-                                // Información y controles
-                                Rectangle {
-                                    color: "transparent"
-                                    Layout.alignment: Qt.AlignTop
-                                    Layout.topMargin: 90
-                                    
-                                    // Nombre del player (app)
-                                    Text {
-                                        anchors {
-                                            top: parent.top
-                                            topMargin: -90
-                                        }
-                                        text: player ? player.identity : ""
-                                        font.pointSize: 10
-                                        font.family: Appearance.font.family.main
-                                        color: blendedColors.colSubtext
-                                        renderType: Text.NativeRendering
+                                // Nombre del player (app)
+                                Text {
+                                    anchors {
+                                        top: parent.top
+                                        topMargin: -90
                                     }
-                                    
-                                    // Título de la canción
-                                    Text {
-                                        anchors {
-                                            top: parent.top
-                                            topMargin: -70
-                                        }
-                                        text: {
-                                            const title = player ? (player.metadata["xesam:title"] || "") : ""
-                                            return title.length < 32 ? title : title.slice(0, 32) + "..."
-                                        }
-                                        font.pointSize: 21
-                                        font.bold: true
-                                        font.family: Appearance.font.family.title
-                                        color: blendedColors.colOnLayer0
-                                        renderType: Text.NativeRendering
+                                    text: player ? player.identity : ""
+                                    font.pointSize: 10
+                                    font.family: Appearance.font.family.main
+                                    color: blendedColors.colSubtext
+                                    renderType: Text.NativeRendering
+                                }
+                                
+                                // Título de la canción
+                                Text {
+                                    anchors {
+                                        top: parent.top
+                                        topMargin: -70
                                     }
-                                    
-                                    // Artista
-                                    Text {
-                                        anchors {
-                                            top: parent.top
-                                            topMargin: -30
-                                        }
-                                        text: {
-                                            var artist = player ? (player.metadata["xesam:artist"] || "") : ""
-                                            if (Array.isArray(artist)) {
-                                                return artist.join(", ")
-                                            }
-                                            return String(artist)
-                                        }
-                                        font.pointSize: 15
-                                        font.family: Appearance.font.family.main
-                                        color: blendedColors.colSubtext
-                                        renderType: Text.NativeRendering
+                                    text: {
+                                        const title = player ? (player.metadata["xesam:title"] || "") : ""
+                                        return title.length < 32 ? title : title.slice(0, 32) + "..."
                                     }
+                                    font.pointSize: 21
+                                    font.bold: true
+                                    font.family: Appearance.font.family.title
+                                    color: blendedColors.colOnLayer0
+                                    renderType: Text.NativeRendering
+                                }
+                                
+                                // Artista
+                                Text {
+                                    anchors {
+                                        top: parent.top
+                                        topMargin: -30
+                                    }
+                                    text: {
+                                        var artist = player ? (player.metadata["xesam:artist"] || "") : ""
+                                        if (Array.isArray(artist)) {
+                                            return artist.join(", ")
+                                        }
+                                        return String(artist)
+                                    }
+                                    font.pointSize: 15
+                                    font.family: Appearance.font.family.main
+                                    color: blendedColors.colSubtext
+                                    renderType: Text.NativeRendering
+                                }
+                                
+                                // Controles de reproducción
+                                RowLayout {
+                                    spacing: 90
                                     
-                                    // Controles de reproducción
-                                    RowLayout {
-                                        spacing: 90
+                                    Button {
+                                        focusPolicy: Qt.NoFocus
+                                        implicitHeight: 45
+                                        implicitWidth: 45
+                                        enabled: player && player.canGoPrevious
+                                        opacity: enabled ? 1.0 : 0.3
                                         
-                                        Button {
-                                            focusPolicy: Qt.NoFocus
-                                            implicitHeight: 45
-                                            implicitWidth: 45
-                                            enabled: player && player.canGoPrevious
-                                            opacity: enabled ? 1.0 : 0.3
-                                            
-                                            onClicked: {
-                                                if (player && player.canGoPrevious) {
-                                                    player.previous()
-                                                }
+                                        onClicked: {
+                                            if (player && player.canGoPrevious) {
+                                                player.previous()
                                             }
-                                            
-                                            background: Rectangle { color: "transparent" }
-                                            
-                                            Image {
-                                                width: parent.width
-                                                height: parent.height
-                                                source: "file://" + Quickshell.shellPath("assets/lockscreen/previous.svg")
-                                                anchors.centerIn: parent
-                                                fillMode: Image.PreserveAspectFit
-                                            }
-                                            
-                                            scale: pressed ? 0.8 : 1.0
-                                            Behavior on scale { NumberAnimation { duration: 100 } }
                                         }
                                         
-                                        Button {
-                                            focusPolicy: Qt.NoFocus
-                                            implicitHeight: 45
-                                            implicitWidth: 45
-                                            enabled: player && player.canPause
-                                            
-                                            onClicked: {
-                                                if (player) {
-                                                    if (player.playbackState === MprisPlaybackState.Playing) {
-                                                        if (player.canPause) {
-                                                            player.pause()
-                                                        }
-                                                    } else {
-                                                        if (player.canPlay) {
-                                                            player.play()
-                                                        }
+                                        background: Rectangle { color: "transparent" }
+                                        
+                                        Image {
+                                            width: parent.width
+                                            height: parent.height
+                                            source: "file://" + Quickshell.shellPath("assets/lockscreen/previous.svg")
+                                            anchors.centerIn: parent
+                                            fillMode: Image.PreserveAspectFit
+                                        }
+                                        
+                                        scale: pressed ? 0.8 : 1.0
+                                        Behavior on scale { NumberAnimation { duration: 100 } }
+                                    }
+                                    
+                                    Button {
+                                        focusPolicy: Qt.NoFocus
+                                        implicitHeight: 45
+                                        implicitWidth: 45
+                                        enabled: player && player.canPause
+                                        
+                                        onClicked: {
+                                            if (player) {
+                                                if (player.playbackState === MprisPlaybackState.Playing) {
+                                                    if (player.canPause) {
+                                                        player.pause()
+                                                    }
+                                                } else {
+                                                    if (player.canPlay) {
+                                                        player.play()
                                                     }
                                                 }
                                             }
-                                            
-                                            background: Rectangle { color: "transparent" }
-                                            
-                                            Image {
-                                                width: parent.width
-                                                height: parent.height
-                                                source: "file://" + Quickshell.shellPath("assets/lockscreen/play-pause.svg")
-                                                anchors.centerIn: parent
-                                                fillMode: Image.PreserveAspectFit
-                                            }
-                                            
-                                            scale: pressed ? 0.8 : 1.0
-                                            Behavior on scale { NumberAnimation { duration: 100 } }
                                         }
                                         
-                                        Button {
-                                            focusPolicy: Qt.NoFocus
-                                            implicitHeight: 45
-                                            implicitWidth: 45
-                                            enabled: player && player.canGoNext
-                                            opacity: enabled ? 1.0 : 0.3
-                                            
-                                            onClicked: {
-                                                if (player && player.canGoNext) {
-                                                    player.next()
-                                                }
-                                            }
-                                            
-                                            background: Rectangle { color: "transparent" }
-                                            
-                                            Image {
-                                                width: parent.width
-                                                height: parent.height
-                                                source: "file://" + Quickshell.shellPath("assets/lockscreen/next.svg")
-                                                anchors.centerIn: parent
-                                                fillMode: Image.PreserveAspectFit
-                                            }
-                                            
-                                            scale: pressed ? 0.8 : 1.0
-                                            Behavior on scale { NumberAnimation { duration: 100 } }
+                                        background: Rectangle { color: "transparent" }
+                                        
+                                        Image {
+                                            width: parent.width
+                                            height: parent.height
+                                            source: "file://" + Quickshell.shellPath("assets/lockscreen/play-pause.svg")
+                                            anchors.centerIn: parent
+                                            fillMode: Image.PreserveAspectFit
                                         }
+                                        
+                                        scale: pressed ? 0.8 : 1.0
+                                        Behavior on scale { NumberAnimation { duration: 100 } }
+                                    }
+                                    
+                                    Button {
+                                        focusPolicy: Qt.NoFocus
+                                        implicitHeight: 45
+                                        implicitWidth: 45
+                                        enabled: player && player.canGoNext
+                                        opacity: enabled ? 1.0 : 0.3
+                                        
+                                        onClicked: {
+                                            if (player && player.canGoNext) {
+                                                player.next()
+                                            }
+                                        }
+                                        
+                                        background: Rectangle { color: "transparent" }
+                                        
+                                        Image {
+                                            width: parent.width
+                                            height: parent.height
+                                            source: "file://" + Quickshell.shellPath("assets/lockscreen/next.svg")
+                                            anchors.centerIn: parent
+                                            fillMode: Image.PreserveAspectFit
+                                        }
+                                        
+                                        scale: pressed ? 0.8 : 1.0
+                                        Behavior on scale { NumberAnimation { duration: 100 } }
                                     }
                                 }
                             }
