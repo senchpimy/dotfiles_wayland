@@ -56,6 +56,7 @@ Singleton {
     // Cleanup on init
     Component.onCompleted: {
         Quickshell.execDetached(["mkdir", "-p", `${shellConfig}`])
+        Quickshell.execDetached(["mkdir", "-p", `${shellConfig}/translations`])
         Quickshell.execDetached(["mkdir", "-p", `${FileUtils.parentDirectory(todoPath)}`])
         Quickshell.execDetached(["mkdir", "-p", `${favicons}`])
         Quickshell.execDetached(["bash", "-c", `rm -rf '${coverArt}'; mkdir -p '${coverArt}'`])
