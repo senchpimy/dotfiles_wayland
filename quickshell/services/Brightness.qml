@@ -19,6 +19,7 @@ Singleton {
     signal brightnessChanged()
 
     property var ddcMonitors: []
+    property bool ddcutilAvailable: false
     readonly property list<BrightnessMonitor> monitors: Quickshell.screens.map(screen => monitorComp.createObject(root, {
         screen
     }))
@@ -45,7 +46,8 @@ Singleton {
 
     onMonitorsChanged: {
         ddcMonitors = [];
-        ddcProc.running = true;
+        if (root.ddcutilAvailable)
+            ddcProc.running = true;
     }
 
     function initializeMonitor(i: int): void {
@@ -56,6 +58,21 @@ Singleton {
 
     function ddcDetectFinished(): void {
         initializeMonitor(0);
+    }
+
+    Process {
+        id: whichDdcutil
+        command: ["which", "ddcutil"]
+        running: true
+        onExited: (exitCode, exitStatus) => {
+            root.ddcutilAvailable = exitCode === 0;
+            if (root.ddcutilAvailable) {
+                root.ddcMonitors = [];
+                ddcProc.running = true;
+            } else {
+                root.ddcDetectFinished();
+            }
+        }
     }
 
     Process {
