@@ -32,17 +32,17 @@ Item {
     signal dismissed()
 
     // ---- geometry (pibble's values) ----
-    readonly property int barWidth: 220
-    readonly property int barHeight: 440
-    readonly property int slotSpacing: 262
-    readonly property real parallaxPx: 75
+    readonly property int barWidth: 233
+    readonly property int barHeight: 546
+    readonly property int slotSpacing: 302
+    readonly property real parallaxPx: 86
     readonly property int captionGap: 14
     readonly property real edgeFloor: 0.7
     readonly property real edgeRate: 0.07
     readonly property real edgeBreak: (1 - edgeFloor) / edgeRate
     readonly property real edgeClampedStep: slotSpacing - barWidth * (1 - edgeFloor)
 
-    readonly property int wallsVisible: 7
+    readonly property int wallsVisible: 6
     readonly property int halfVisible: Math.floor((wallsVisible - 1) / 2)
     readonly property int bufferSlots: 2
     readonly property int restSpan: halfVisible + bufferSlots
