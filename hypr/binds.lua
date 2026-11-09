@@ -2,7 +2,7 @@
 local HOME = os.getenv("HOME")
 local scrPath = HOME .. "/.local/share/bin"
 local mainMod = "SUPER"
-local term = "kitty"
+local term = "kitty --single-instance"
 local file = "nautilus"
 
 -- Función universal para todos los binds
