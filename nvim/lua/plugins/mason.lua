@@ -12,6 +12,7 @@ return {
         -- install language servers
         "lua-language-server",
         "texlab",
+        "clangd", -- Para C/C++
 
         -- install formatters
         "stylua",
@@ -35,6 +36,8 @@ return {
         "rust-analyzer", -- Para Rust
         "dockerfile-language-server", -- Para Dockerfiles
         "eslint-lsp", -- ESlint como linter/formateador
+        -- zls debe coincidir con la version de Zig instalada (`zig version`)
+        { "zls", version = "0.16.0" },
       },
     },
   },

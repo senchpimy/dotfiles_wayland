@@ -1,5 +1,5 @@
 import QtQuick
 
 QtObject {
-    property string path: "/home/plof/configs/hyde/themes/Millenium/wallpapers/1775939692503852.jpg"
+    property string path: "/home/plof/configs/hyde/themes/Millenium/wallpapers/1782505285346878.jpg"
   }

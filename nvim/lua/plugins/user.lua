@@ -384,7 +384,7 @@ return {
   },
   --{ 'andymass/vim-matchup' },
   {
-    "yuki-yano/hop.nvim",
+    "smoka7/hop.nvim",
     config = function() require("hop").setup() end,
   },
   { "lambdalisue/suda.vim" },

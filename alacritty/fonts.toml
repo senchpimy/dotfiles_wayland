@@ -1,14 +1,18 @@
 [font]
-size = 12
+size = 13.0
 
 [font.bold]
-family = "Cascadia Code"
+family = "CaskaydiaCove Nerd Font Mono"
+style = "Bold"
 
 [font.bold_italic]
-family = "Cascadia Code"
+family = "CaskaydiaCove Nerd Font Mono"
+style = "Bold Italic"
 
 [font.italic]
-family = "Cascadia Code"
+family = "CaskaydiaCove Nerd Font Mono"
+style = "Italic"
 
 [font.normal]
-family = "Cascadia Code"
+family = "CaskaydiaCove Nerd Font Mono"
+style = "Regular"

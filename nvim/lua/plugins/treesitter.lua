@@ -7,6 +7,9 @@ return {
       "python",
       "markdown",
       "latex",
+      "cpp",
+      "c",
+      "zig",
     },
     highlight = {
       enable = true,

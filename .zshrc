@@ -10,6 +10,7 @@ alias lf="lfrun"
 alias grep="grep --color "
 alias record_screen="ffmpeg -video_size 1024x768 -framerate 25 -f x11grab -i :0.0+100,200 output.mp4"
 alias mpvyt='yt-dlp -o - $(parcellite -p) | mpv -'
+alias sxiv='nsxiv'
 export PATH=/home/plof/.local/bin:$PATH
 export PATH=/home/plof/.cargo/bin:$PATH
 export NUMCPUS=`grep -c '^processor' /proc/cpuinfo`
@@ -285,16 +286,52 @@ export UV_CACHE_DIR="/home/plof/AI/uv_cache"
 export XDG_RUNTIME_DIR="/run/user/$(id -u)"
 
 # Neofetch 3D Wrapper (Ratty Protocol)
+# Detecta si la terminal activa es ratty subiendo por el arbol de procesos.
+_neofetch_in_ratty() {
+    local pid=$PPID depth=0 comm
+    while [[ -n $pid && $pid -gt 1 && $depth -lt 8 ]]; do
+        comm=$(ps -o comm= -p "$pid" 2>/dev/null)
+        [[ $comm == ratty ]] && return 0
+        pid=$(ps -o ppid= -p "$pid" 2>/dev/null | tr -d ' ')
+        (( depth += 1 ))
+    done
+    return 1
+}
+
 neofetch() {
-    command neofetch "$@"
-    # Pequeña pausa para asegurar que neofetch haya terminado de resetear la terminal
-    (
-        sleep 0.05
-        printf "\x1b_ratty;g;d\x1b\\" > /dev/tty
-        printf "\x1b_ratty;g;r;id=123;fmt=obj;path=/home/plof/bomber.obj\x1b\\" > /dev/tty
-        printf "\x1b_ratty;g;p;id=123;row=2;col=3;w=35;h=18;animate=1;scale=1.0;color=ffffff\x1b\\" > /dev/tty
-    ) &!
+    if _neofetch_in_ratty; then
+        # En ratty: neofetch usa el logo vacio (empty_logo.txt) que reserva el
+        # espacio donde se dibuja el modelo 3D.
+        command neofetch "$@"
+        # Pequeña pausa para asegurar que neofetch haya terminado de resetear la terminal
+        (
+            sleep 0.05
+            printf "\x1b_ratty;g;d\x1b\\" > /dev/tty
+            printf "\x1b_ratty;g;r;id=123;fmt=obj;path=/home/plof/bomber.obj\x1b\\" > /dev/tty
+            printf "\x1b_ratty;g;p;id=123;row=2;col=3;w=35;h=18;animate=1;scale=1.0;color=ffffff\x1b\\" > /dev/tty
+        ) &!
+    else
+        # En cualquier otra terminal: logo ASCII segun la distro detectada.
+        command neofetch --source auto "$@"
+    fi
 }
 
 export ANDROID_HOME=/opt/android-sdk
 export ANDROID_NDK_ROOT=/opt/android-sdk/ndk/27.0.12077973
+# Función para copiar al portapapeles local a través del navegador (OSC 52)
+cb() {
+    # Leer de la entrada estándar
+    local input=$(cat)
+    # Codificar en base64 quitando los saltos de línea extra
+    local b64=$(echo -n "$input" | base64 | tr -d '\n')
+    # Enviar la secuencia de escape OSC 52
+    printf "\033]52;c;%s\a" "$b64"
+}
+
+alias oc='opencode2'
+
+# Lista TODAS las sesiones de opencode (de cualquier carpeta), no solo las del proyecto actual.
+# Oculta subsesiones por defecto. Ver `ocl -h` para opciones.
+alias ocl='"$HOME/configs/bin/ocl-sessions.py"'
+
+export PATH="/home/plof/.pixi/bin:$PATH"
